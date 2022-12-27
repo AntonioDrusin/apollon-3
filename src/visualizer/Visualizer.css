@@ -1,0 +1,7 @@
+.Visualizer {
+    background-color: var(--color-background);
+    min-height: 100vh;
+    display: flex;
+    color: var(--color-text);
+    justify-content: center;
+}

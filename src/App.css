@@ -7,14 +7,9 @@
   pointer-events: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
 
 .App-header {
-  background-color: #282c34;
+  background-color: var(--color-background);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -35,4 +30,17 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* Application colors */
+html {
+  --color-background: #142941;
+  --color-dark: #2C5A8F;
+  --color-highlight: #db7970;
+  --color-light: #5a96db;
+  --color-accent: #818f33;
+  --color-accent-light: #c5db44;
+  --color-text: var(--color-light);
+
+  background-color: var(--color-background);
 }

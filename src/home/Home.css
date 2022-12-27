@@ -1,0 +1,15 @@
+.Home {
+    background-color: var(--color-background);
+    min-height: 100vh;
+    display: flex;
+    color: var(--color-text);
+    justify-content: center;
+}
+
+a:link {
+    color: var(--color-accent);
+}
+
+a:visited {
+    color: var(--color-accent-light);
+}
