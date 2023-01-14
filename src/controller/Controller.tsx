@@ -1,9 +1,9 @@
 import {
     AppBar,
-    Box, Button, Chip,
-    Container, Dialog, DialogContent, DialogTitle, IconButton, Menu, MenuItem,
+    Box, Button,
+    Container, Menu, MenuItem,
     Slider,
-    Stack, TextField,
+    Stack,
     Toolbar,
     Typography
 } from "@mui/material";
@@ -18,9 +18,9 @@ export function controllerLoader() {
 
 export default function Controller() {
     const [width, setWidth] = useState(0)
-    const [context] = useState(null);
+    const [context] = useState({authenticated: false});
 
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
     const open = !!anchorEl;
     const menuButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -40,7 +40,7 @@ export default function Controller() {
 
 
     const widthChange = (event: Event, newValue: number | number[]) => {
-        setWidth(newValue);
+        setWidth(newValue as number);
     };
 
     useEffect(() => {

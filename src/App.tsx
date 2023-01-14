@@ -5,7 +5,6 @@ import {
 import Home, {homeLoader} from "./home/Home"
 import Visualizer, {visualizerLoader} from "./visualizer/Visualizer";
 import Controller, {controllerLoader} from "./controller/Controller";
-import {LoginPage} from "./controller/LoginPage";
 import React from "react";
 import {theme} from "./theme";
 import {CssBaseline, ThemeProvider} from "@mui/material";
@@ -19,7 +18,6 @@ const router = createHashRouter([
         path: "controller", element: <Controller/>, loader: controllerLoader,
         children: []
     },
-    {path: "login", element: <LoginPage/>},
     {path: "/", element: <Home/>, loader: homeLoader},
 ]);
 
@@ -29,8 +27,7 @@ function App() {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline/>
-            <RouterProvider router={router}>
-            </RouterProvider>
+            <RouterProvider router={router}/>
         </ThemeProvider>
     );
 }

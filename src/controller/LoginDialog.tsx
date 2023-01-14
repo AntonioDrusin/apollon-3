@@ -1,13 +1,17 @@
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField} from "@mui/material";
 import React, {useState} from "react";
 
-export default function LoginDialog(props) {
+
+interface LoginDialogProps {
+    onClose?(): void;
+    open: boolean;
+}
+
+export default function LoginDialog(props: LoginDialogProps) {
     const [deviceId, setDeviceId] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
 
     function onLogin() {
-        if ( props.onClose) props.onClose();
+        props.onClose?.();
     }
 
     return (

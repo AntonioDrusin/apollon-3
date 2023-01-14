@@ -8,11 +8,11 @@ export function visualizerLoader() {
 
 export default function Visualizer() {
 
-    const value = JSON.parse(localStorage.getItem('controls')) || {};
-    const [width, setWidth] = useState(value.width);
+    const value = JSON.parse(localStorage.getItem('controls') || "") || {};
+    const [width, setWidth] = useState<number>(value.width);
 
     const localStorageUpdated = () => {
-        const value = JSON.parse(localStorage.getItem('controls')) || {};
+        const value = JSON.parse(localStorage.getItem('controls') || "") || {};
         setWidth(value.width);
     };
 
