@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/crispy-caschetto-machine/static/css/main.b2baa509.css",
-    "main.js": "/crispy-caschetto-machine/static/js/main.d273f9ba.js",
-    "static/js/787.95382b35.chunk.js": "/crispy-caschetto-machine/static/js/787.95382b35.chunk.js",
-    "index.html": "/crispy-caschetto-machine/index.html",
-    "main.b2baa509.css.map": "/crispy-caschetto-machine/static/css/main.b2baa509.css.map",
-    "main.d273f9ba.js.map": "/crispy-caschetto-machine/static/js/main.d273f9ba.js.map",
-    "787.95382b35.chunk.js.map": "/crispy-caschetto-machine/static/js/787.95382b35.chunk.js.map"
+    "main.css": "/apollon-3/static/css/main.b2baa509.css",
+    "main.js": "/apollon-3/static/js/main.2788c836.js",
+    "static/js/787.95382b35.chunk.js": "/apollon-3/static/js/787.95382b35.chunk.js",
+    "index.html": "/apollon-3/index.html",
+    "main.b2baa509.css.map": "/apollon-3/static/css/main.b2baa509.css.map",
+    "main.2788c836.js.map": "/apollon-3/static/js/main.2788c836.js.map",
+    "787.95382b35.chunk.js.map": "/apollon-3/static/js/787.95382b35.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.b2baa509.css",
-    "static/js/main.d273f9ba.js"
+    "static/js/main.2788c836.js"
   ]
 }
