@@ -13,6 +13,8 @@ import LoginDialog from "./LoginDialog";
 import {HeadsetStatus} from "./HeadsetStatus";
 import {DeviceInfo} from "@neurosity/sdk/dist/cjs/types/deviceInfo";
 import {NeurosityAdapter} from "../../neurosity-adapter/NeurosityAdapter";
+import {PreviewMeter} from "./PreviewMeter";
+import {PreviewCard} from "./PreviewCard";
 
 export function controllerLoader() {
     return null;
@@ -104,7 +106,9 @@ export default function Controller() {
                         onClick={menuButtonClick}
                     >{dataSource}</Button>
                     <Box sx={{mx: 4}}>
-                        <IconButton onClick={() => {window.open('/#/visualizer', '_blank');}}>
+                        <IconButton onClick={() => {
+                            window.open('/#/visualizer', '_blank');
+                        }}>
                             <PersonalVideo></PersonalVideo>
                         </IconButton>
                     </Box>
@@ -130,17 +134,10 @@ export default function Controller() {
 
             </AppBar>
             <Container maxWidth="lg">
-                <Box sx={{my: 4}}>
-                    <Typography component="h1" variant="h4" gutterBottom>
-                        Controller
-                    </Typography>
-                    <Box sx={{px: 4}}>
-                        <Stack spacing={2} direction="row" sx={{mb: 1}} alignItems="center">
-                            <CameraRear/>
-                            <Slider aria-label="Volume" value={width} onChange={widthChange}/>
-                        </Stack>
-                    </Box>
+                <Box sx={{p:1, m:1}}>
+                    <PreviewCard dataSource={neurosity.dataSource}></PreviewCard>
                 </Box>
+
             </Container>
             <Snackbar
                 open={!!error}

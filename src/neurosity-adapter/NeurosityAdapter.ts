@@ -3,11 +3,15 @@ import {DeviceInfo} from "@neurosity/sdk/dist/cjs/types/deviceInfo";
 import {DeviceStatus} from "@neurosity/sdk/dist/esm/types/status";
 import {Observable, Subject} from "rxjs";
 import {Credentials} from "@neurosity/sdk/dist/cjs/types/credentials";
+import {NeurosityData, NeurosityDataSource} from "./NeurosityDataSource";
 
 
 export class NeurosityAdapter {
     private static _neurosity: Neurosity | null = null;
-    private _neurosity: Neurosity;
+    private readonly _neurosity: Neurosity;
+    private static _dataSource: NeurosityDataSource | null = null;
+    private readonly _dataSource: NeurosityDataSource;
+
     private _loggedIn: boolean;
     private readonly _devices$: Subject<DeviceInfo[]>;
     private readonly _loggedIn$: Subject<boolean>;
@@ -16,10 +20,13 @@ export class NeurosityAdapter {
     constructor() {
         this._loggedIn = false;
         if ( !NeurosityAdapter._neurosity ) {
-            console.log("Created neurosity adapter");
             NeurosityAdapter._neurosity = new Neurosity({autoSelectDevice: false});
         }
         this._neurosity = NeurosityAdapter._neurosity;
+        if ( !NeurosityAdapter._dataSource) {
+            NeurosityAdapter._dataSource = new NeurosityDataSource(this._neurosity);
+        }
+        this._dataSource = NeurosityAdapter._dataSource;
 
         this._devices$ = new Subject<DeviceInfo[]>();
         this._loggedIn$ = new Subject<boolean>();
@@ -30,6 +37,10 @@ export class NeurosityAdapter {
             this._loggedIn$.next(this._loggedIn);
             this.getDevices();
         });
+    }
+
+    get dataSource(): NeurosityDataSource {
+        return this._dataSource;
     }
 
     get devices$(): Observable<DeviceInfo[]> {
