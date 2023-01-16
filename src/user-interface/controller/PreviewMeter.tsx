@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Box, Card} from "@mui/material";
 import {DataSourceNames, KeysOfNeurosityData, NeurosityDataSource} from "../../neurosity-adapter/NeurosityDataSource";
+import {MiniGraph} from "./MiniGraph";
 
 interface PreviewMeterProps {
     dataSource: NeurosityDataSource;
@@ -41,6 +42,6 @@ export function PreviewMeter({dataSource, valueId}: PreviewMeterProps) {
         }}
     >
         <Box>{label}</Box>
-        <Box>{value.toFixed(1)}</Box>
+        <MiniGraph valueId={valueId} dataSource={dataSource}></MiniGraph>
     </Box>
 }

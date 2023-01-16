@@ -11,10 +11,10 @@ interface PreviewCardProps {
 export function PreviewCard({dataSource}: PreviewCardProps) {
 
     return <Card>
-        <Box sx={{display: 'flex', flexDirection: 'row', p: 1, m: 1}}>
+        <Box sx={{display: 'flex', flexWrap: 'wrap', p: 1, m: 1}}>
             {
                 Object.keys(DataSourceNames).map((key) => {
-                    return <PreviewMeter valueId={key as KeysOfNeurosityData} dataSource={dataSource}></PreviewMeter>;
+                    return <PreviewMeter key={key} valueId={key as KeysOfNeurosityData} dataSource={dataSource}></PreviewMeter>;
                 })
             }
         </Box>

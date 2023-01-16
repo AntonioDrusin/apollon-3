@@ -2,18 +2,16 @@ import {
     AppBar,
     Box, Button,
     Container, IconButton, Menu, MenuItem,
-    Slider, Snackbar,
-    Stack,
+    Snackbar,
     Toolbar,
     Typography
 } from "@mui/material";
-import {AccountCircle, CameraRear, PersonalVideo} from "@mui/icons-material";
+import {PersonalVideo} from "@mui/icons-material";
 import React, {useState, useEffect} from "react";
 import LoginDialog from "./LoginDialog";
 import {HeadsetStatus} from "./HeadsetStatus";
 import {DeviceInfo} from "@neurosity/sdk/dist/cjs/types/deviceInfo";
 import {NeurosityAdapter} from "../../neurosity-adapter/NeurosityAdapter";
-import {PreviewMeter} from "./PreviewMeter";
 import {PreviewCard} from "./PreviewCard";
 
 export function controllerLoader() {
