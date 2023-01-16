@@ -78,7 +78,7 @@ export function HeadsetStatus({neurosity, headset}: StatusProps) {
 
 
     return (
-        <Box>
+        <Box hidden={!status}>
             <Box sx={{verticalAlign: "middle"}} component="span">
                 {battery()}
             </Box>

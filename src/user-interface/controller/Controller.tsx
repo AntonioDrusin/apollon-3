@@ -2,7 +2,7 @@ import {
     AppBar,
     Box, Button,
     Container, Menu, MenuItem,
-    Slider,
+    Slider, Snackbar,
     Stack,
     Toolbar,
     Typography
@@ -13,6 +13,7 @@ import LoginDialog, {LoginDialogResult} from "./LoginDialog";
 import {Neurosity} from "@neurosity/sdk";
 import {HeadsetStatus} from "./HeadsetStatus";
 import {DeviceInfo} from "@neurosity/sdk/dist/cjs/types/deviceInfo";
+import { Subscription } from "rxjs";
 
 export function controllerLoader() {
     return null;
@@ -27,6 +28,9 @@ export default function Controller() {
     const [neurosity, setNeurosity] = useState(() => new Neurosity({autoSelectDevice: false}));
     const [headsets, setHeadsets] = useState<DeviceInfo[]>([]);
     const [headset, setHeadset] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
+
+    let brainwavesSubscription: Subscription | null = null;
 
     useEffect(() => {
         if (!neurosity) {
@@ -38,6 +42,7 @@ export default function Controller() {
                 neurosity.getDevices().then((devices) => {
                     setHeadsets(devices);
                 });
+                reconnect();
             } else {
                 setDataSource("Disconnected");
             }
@@ -76,23 +81,37 @@ export default function Controller() {
         handleMenuClose();
     };
 
-    const selectDevice = (deviceId: string) => {
-        console.log("SELECTING " + deviceId);
-        return neurosity.selectDevice((devices) =>
-            devices.find((device) => device.deviceId === deviceId) ||
-            devices[0]
-        ).then((device) => {
-            setHeadset(device.deviceNickname);
-            handleMenuClose();
+    const reconnect = () => {
+        brainwavesSubscription?.unsubscribe();
+        brainwavesSubscription = neurosity.brainwaves("raw").subscribe((brainwaves) => {
+            console.log(brainwaves);
         });
+    };
+
+    const selectDevice = (deviceId: string) => {
+        return neurosity
+            .selectDevice((devices) =>
+                devices.find((device) => device.deviceId === deviceId) ||
+                devices[0]
+            )
+            .then((device) => {
+                setHeadset(device.deviceNickname);
+                handleMenuClose();
+                reconnect();
+            })
+            .catch((error) => setError(error));
     }
 
     const resetState = () => {
         // Maybe disconnect some stuff?
         setHeadset(null);
         setHeadsets([]);
+        setError("Disconnected");
     };
 
+    const errorClose = () => {
+        setError(null);
+    };
 
     const widthChange = (event: Event, newValue: number | number[]) => {
         setWidth(newValue as number);
@@ -127,7 +146,8 @@ export default function Controller() {
                 >
                     {
                         headsets.map((headset) => {
-                            return <MenuItem key={headset.deviceId} onClick={() => selectDevice(headset.deviceId)}>{headset.deviceNickname}</MenuItem>;
+                            return <MenuItem key={headset.deviceId}
+                                             onClick={() => selectDevice(headset.deviceId)}>{headset.deviceNickname}</MenuItem>;
                         })
                     }
                     <MenuItem divider={true} hidden={!headsets || headsets.length === 0} disabled={true}/>
@@ -152,6 +172,12 @@ export default function Controller() {
                     </Box>
                 </Box>
             </Container>
+            <Snackbar
+                open={!!error}
+                autoHideDuration={6000}
+                onClose={errorClose}
+                message={error}
+            />
         </Box>
     );
 }
