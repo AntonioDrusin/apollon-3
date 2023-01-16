@@ -15,7 +15,7 @@ export class NeurosityAdapter {
     private _loggedIn: boolean;
     private readonly _devices$: Subject<DeviceInfo[]>;
     private readonly _loggedIn$: Subject<boolean>;
-    private readonly _selectedDevice$: Subject<DeviceInfo>;
+    private readonly _selectedDevice$: Subject<DeviceInfo | null>;
 
     constructor() {
         this._loggedIn = false;
@@ -30,7 +30,7 @@ export class NeurosityAdapter {
 
         this._devices$ = new Subject<DeviceInfo[]>();
         this._loggedIn$ = new Subject<boolean>();
-        this._selectedDevice$ = new Subject<DeviceInfo>();
+        this._selectedDevice$ = new Subject<DeviceInfo | null>();
 
         this._neurosity.onAuthStateChanged().subscribe((user) => {
             this._loggedIn = !!user;
@@ -51,7 +51,7 @@ export class NeurosityAdapter {
         return this._loggedIn$;
     }
 
-    get selectedDevice$(): Observable<DeviceInfo> {
+    get selectedDevice$(): Observable<DeviceInfo | null> {
         return this._selectedDevice$;
     }
 
@@ -84,6 +84,7 @@ export class NeurosityAdapter {
     public logOut(): void {
         this._neurosity.logout().then(() => {
             this._devices$.next([]);
+            this._selectedDevice$.next(null);
             this._loggedIn$.next(false);
         });
     }

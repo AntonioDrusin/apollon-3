@@ -35,7 +35,7 @@ export default function Controller() {
             setDataSource(loggedIn ? "Connected" : "Disconnected");
         })
         const deviceSub = neurosity.selectedDevice$.subscribe((device) => {
-            setHeadset(device.deviceNickname);
+            setHeadset(device?.deviceNickname ?? null);
         });
 
         return () => {
