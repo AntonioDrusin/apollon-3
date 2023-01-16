@@ -1,7 +1,7 @@
 {
   "name": "cables",
   "version": "0.1.0",
-  "homepage": "https://AntonioDrusin.github.io/crispy-caschetto-machine",
+  "homepage": "https://AntonioDrusin.github.io/apollon-3",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.10.5",
@@ -19,6 +19,7 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.6.1",
     "react-scripts": "5.0.1",
+    "rxjs": "^7.8.0",
     "typescript": "^4.9.4",
     "web-vitals": "^2.1.4"
   },

@@ -2,9 +2,8 @@ import './App.css';
 import {
     createHashRouter, generatePath, RouterProvider,
 } from "react-router-dom";
-import Home, {homeLoader} from "./home/Home"
-import Visualizer, {visualizerLoader} from "./visualizer/Visualizer";
-import Controller, {controllerLoader} from "./controller/Controller";
+import Visualizer, {visualizerLoader} from "./user-interface/visualizer/Visualizer";
+import Controller, {controllerLoader} from "./user-interface//controller/Controller";
 import React from "react";
 import {theme} from "./theme";
 import {CssBaseline, ThemeProvider} from "@mui/material";
@@ -14,11 +13,7 @@ export default App;
 
 const router = createHashRouter([
     {path: "visualizer", element: <Visualizer/>, loader: visualizerLoader},
-    {
-        path: "controller", element: <Controller/>, loader: controllerLoader,
-        children: []
-    },
-    {path: "/", element: <Home/>, loader: homeLoader},
+    {path: "/", element: <Controller/>, loader: controllerLoader},
 ]);
 
 console.log(generatePath("visualizer"));

@@ -1,19 +1,18 @@
 import {
     AppBar,
     Box, Button,
-    Container, Menu, MenuItem,
+    Container, IconButton, Menu, MenuItem,
     Slider, Snackbar,
     Stack,
     Toolbar,
     Typography
 } from "@mui/material";
-import {CameraRear} from "@mui/icons-material";
+import {AccountCircle, CameraRear, PersonalVideo} from "@mui/icons-material";
 import React, {useState, useEffect} from "react";
-import LoginDialog, {LoginDialogResult} from "./LoginDialog";
-import {Neurosity} from "@neurosity/sdk";
+import LoginDialog from "./LoginDialog";
 import {HeadsetStatus} from "./HeadsetStatus";
 import {DeviceInfo} from "@neurosity/sdk/dist/cjs/types/deviceInfo";
-import { Subscription } from "rxjs";
+import {NeurosityAdapter} from "../../neurosity-adapter/NeurosityAdapter";
 
 export function controllerLoader() {
     return null;
@@ -25,31 +24,24 @@ export default function Controller() {
     const [dataSource, setDataSource] = useState(DISCONNECTED)
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const [menuOpen, setMenuOpen] = useState(false);
-    const [neurosity, setNeurosity] = useState(() => new Neurosity({autoSelectDevice: false}));
+    const [neurosity] = useState(() => new NeurosityAdapter());
     const [headsets, setHeadsets] = useState<DeviceInfo[]>([]);
     const [headset, setHeadset] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
 
-    let brainwavesSubscription: Subscription | null = null;
-
     useEffect(() => {
-        if (!neurosity) {
-            return;
-        }
-        const subscription = neurosity.onAuthStateChanged().subscribe((user) => {
-            if (user) {
-                setDataSource("Logged In");
-                neurosity.getDevices().then((devices) => {
-                    setHeadsets(devices);
-                });
-                reconnect();
-            } else {
-                setDataSource("Disconnected");
-            }
+        const devicesSub = neurosity.devices$.subscribe(setHeadsets);
+        const loggedInSub = neurosity.loggedIn$.subscribe((loggedIn) => {
+            setDataSource(loggedIn ? "Connected" : "Disconnected");
+        })
+        const deviceSub = neurosity.selectedDevice$.subscribe((device) => {
+            setHeadset(device.deviceNickname);
         });
 
         return () => {
-            subscription.unsubscribe();
+            devicesSub.unsubscribe();
+            loggedInSub.unsubscribe();
+            deviceSub.unsubscribe();
         };
     }, [neurosity]);
 
@@ -63,7 +55,7 @@ export default function Controller() {
     };
 
     const [dialogOpen, setDialogOpen] = React.useState(false);
-    const closeDialog = (result: LoginDialogResult) => {
+    const closeDialog = () => {
         setDialogOpen(false);
     };
 
@@ -73,41 +65,14 @@ export default function Controller() {
     };
 
     const logOut = () => {
-        neurosity.logout().then(() => {
-            resetState();
-            setNeurosity(new Neurosity({autoSelectDevice: false}));
-        });
-        setHeadsets([]);
+        neurosity.logOut();
         handleMenuClose();
     };
 
-    const reconnect = () => {
-        brainwavesSubscription?.unsubscribe();
-        brainwavesSubscription = neurosity.brainwaves("raw").subscribe((brainwaves) => {
-            console.log(brainwaves);
-        });
-    };
-
     const selectDevice = (deviceId: string) => {
-        return neurosity
-            .selectDevice((devices) =>
-                devices.find((device) => device.deviceId === deviceId) ||
-                devices[0]
-            )
-            .then((device) => {
-                setHeadset(device.deviceNickname);
-                handleMenuClose();
-                reconnect();
-            })
-            .catch((error) => setError(error));
+        neurosity.selectDevice(deviceId);
+        handleMenuClose();
     }
-
-    const resetState = () => {
-        // Maybe disconnect some stuff?
-        setHeadset(null);
-        setHeadsets([]);
-        setError("Disconnected");
-    };
 
     const errorClose = () => {
         setError(null);
@@ -138,11 +103,16 @@ export default function Controller() {
                         variant="outlined"
                         onClick={menuButtonClick}
                     >{dataSource}</Button>
+                    <Box sx={{mx: 4}}>
+                        <IconButton onClick={() => {window.open('/#/visualizer', '_blank');}}>
+                            <PersonalVideo></PersonalVideo>
+                        </IconButton>
+                    </Box>
                 </Toolbar>
                 <Menu
                     anchorEl={anchorEl}
                     open={menuOpen}
-                    onClose={handleMenuClose}
+                    onClose={() => handleMenuClose()}
                 >
                     {
                         headsets.map((headset) => {

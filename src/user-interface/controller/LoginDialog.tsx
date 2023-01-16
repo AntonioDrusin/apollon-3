@@ -10,18 +10,15 @@ import {
     TextField, Typography
 } from "@mui/material";
 import React, {useState} from "react";
-import {Neurosity} from "@neurosity/sdk";
+import {NeurosityAdapter} from "../../neurosity-adapter/NeurosityAdapter";
 
 
 interface LoginDialogProps {
-    onClose?(result: LoginDialogResult): void;
+    onClose?(): void;
 
     open: boolean;
-    neurosity?: Neurosity;
+    neurosity?: NeurosityAdapter;
 
-}
-
-export interface LoginDialogResult {
 }
 
 export default function LoginDialog(props: LoginDialogProps) {
@@ -33,9 +30,9 @@ export default function LoginDialog(props: LoginDialogProps) {
     const onLogin = () => {
         setLoggingIn(true);
 
-        props.neurosity?.login({email, password})
+        props.neurosity?.logIn({email, password})
             .then(() => {
-                close({});
+                close();
             })
             .catch((error) => {
                 setError(error.message);
@@ -45,13 +42,13 @@ export default function LoginDialog(props: LoginDialogProps) {
             });
     }
 
-    function close(result: LoginDialogResult) {
-        props.onClose?.(result)
+    function close() {
+        props.onClose?.()
         setPassword("");
     }
 
     const onCancel = () => {
-        close({});
+        close();
     }
 
     return (
