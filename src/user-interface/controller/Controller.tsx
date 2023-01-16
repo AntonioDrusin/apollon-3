@@ -105,7 +105,7 @@ export default function Controller() {
                     >{dataSource}</Button>
                     <Box sx={{mx: 4}}>
                         <IconButton onClick={() => {
-                            window.open('/#/visualizer', '_blank');
+                            window.open(window.location.pathname + '#/visualizer', '_blank');
                         }}>
                             <PersonalVideo></PersonalVideo>
                         </IconButton>
