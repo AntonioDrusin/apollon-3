@@ -1,7 +1,7 @@
 import {Neurosity} from "@neurosity/sdk";
 import {DeviceInfo} from "@neurosity/sdk/dist/cjs/types/deviceInfo";
 import {DeviceStatus} from "@neurosity/sdk/dist/esm/types/status";
-import {Observable, Subject} from "rxjs";
+import {combineLatest, map, Observable, Subject} from "rxjs";
 import {Credentials} from "@neurosity/sdk/dist/cjs/types/credentials";
 import {NeurosityData, NeurosityDataSource} from "./NeurosityDataSource";
 
@@ -53,7 +53,13 @@ export class NeurosityAdapter {
     }
 
     get status$(): Observable<DeviceStatus> {
-        return this._neurosity.status();
+        return combineLatest([
+            this._neurosity.status(),
+            this._neurosity.streamingState()
+        ]).pipe(map(([status, state]) => {
+                return status;
+            }
+        ));
     }
 
     private getDevices(): void {
