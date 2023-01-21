@@ -19,13 +19,10 @@ export class NeurosityAdapter {
 
     constructor() {
         this._loggedIn = false;
-        if ( !NeurosityAdapter._neurosity ) {
-            NeurosityAdapter._neurosity = new Neurosity({autoSelectDevice: false});
-        }
+        NeurosityAdapter._neurosity = NeurosityAdapter._neurosity ?? new Neurosity({autoSelectDevice: false});
         this._neurosity = NeurosityAdapter._neurosity;
-        if ( !NeurosityAdapter._dataSource) {
-            NeurosityAdapter._dataSource = new NeurosityDataSource(this._neurosity);
-        }
+
+        NeurosityAdapter._dataSource = NeurosityAdapter._dataSource ?? new NeurosityDataSource(this._neurosity);
         this._dataSource = NeurosityAdapter._dataSource;
 
         this._devices$ = new Subject<DeviceInfo[]>();

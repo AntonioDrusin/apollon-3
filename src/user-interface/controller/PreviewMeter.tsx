@@ -1,17 +1,18 @@
 import React, {useEffect, useState} from "react";
 import {Box, Card} from "@mui/material";
-import {DataSourceNames, KeysOfNeurosityData, NeurosityDataSource} from "../../neurosity-adapter/NeurosityDataSource";
+import {DataSourceInfos, KeysOfNeurosityData, NeurosityDataSource} from "../../neurosity-adapter/NeurosityDataSource";
 import {MiniGraph} from "./MiniGraph";
 
 interface PreviewMeterProps {
     dataSource: NeurosityDataSource;
     valueId: KeysOfNeurosityData;
+    color: string;
 }
 
-export function PreviewMeter({dataSource, valueId}: PreviewMeterProps) {
+export function PreviewMeter({dataSource, valueId, color}: PreviewMeterProps) {
     const [value, setValue] = useState<number>(0);
 
-    const label = DataSourceNames[valueId];
+    const label = DataSourceInfos[valueId].name;
 
     useEffect(() => {
         const subscription = dataSource.data$.subscribe((data) => {
@@ -42,6 +43,6 @@ export function PreviewMeter({dataSource, valueId}: PreviewMeterProps) {
         }}
     >
         <Box>{label}</Box>
-        <MiniGraph valueId={valueId} dataSource={dataSource}></MiniGraph>
+        <MiniGraph valueId={valueId} dataSource={dataSource} color={color}></MiniGraph>
     </Box>
 }

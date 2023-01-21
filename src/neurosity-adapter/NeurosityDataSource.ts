@@ -14,14 +14,21 @@ export interface NeurosityData {
 
 export type KeysOfNeurosityData = keyof NeurosityData;
 
-export const DataSourceNames = {
-    alpha: "Alpha Average",
-    beta: "Beta Average",
-    gamma: "Gamma Average",
-    theta: "Theta Average",
-    delta: "Delta Average",
-    focus: "Focus",
-    calm: "Calm",
+export interface OutputInfo {
+    name: string;
+    min: number;
+    max: number;
+    color: string;
+}
+
+export const DataSourceInfos: { [key in keyof NeurosityData]: OutputInfo } = {
+    alpha: {name: "Alpha Average", min: 0, max: 200, color:"#54540c"},
+    beta: {name: "Beta Average", min: 0, max: 200, color:"#225e40"},
+    gamma: {name: "Gamma Average", min: 0, max: 200, color:"#8c642c"},
+    theta: {name: "Theta Average", min: 0, max: 200, color:"#22505e"},
+    delta: {name: "Delta Average", min: 0, max: 200, color:"#7e2133"},
+    focus: {name: "Focus", min: 0, max: 1, color:"#235e1c"},
+    calm: {name: "Calm", min: 0, max: 1, color:"#121d62"},
 }
 
 export class NeurosityDataSource {
@@ -53,14 +60,14 @@ export class NeurosityDataSource {
         this._neurosity.brainwaves("powerByBand").subscribe(
             // The SDK has an incorrect definition of PowerByBand
             (brainwaves: any) => {
-            const powerByBand = (brainwaves.data as PowerByBand);
-            this._currentData.alpha = this.process(powerByBand.alpha);
-            this._currentData.beta = this.process(powerByBand.beta);
-            this._currentData.theta = this.process(powerByBand.theta);
-            this._currentData.delta = this.process(powerByBand.delta);
-            this._currentData.gamma = this.process(powerByBand.gamma);
-            this._data$.next(this._currentData);
-        });
+                const powerByBand = (brainwaves.data as PowerByBand);
+                this._currentData.alpha = this.process(powerByBand.alpha);
+                this._currentData.beta = this.process(powerByBand.beta);
+                this._currentData.theta = this.process(powerByBand.theta);
+                this._currentData.delta = this.process(powerByBand.delta);
+                this._currentData.gamma = this.process(powerByBand.gamma);
+                this._data$.next(this._currentData);
+            });
 
         this._neurosity.calm().subscribe((calm) => {
             this._currentData.calm = calm.probability;
@@ -72,7 +79,7 @@ export class NeurosityDataSource {
     }
 
     process(values: number[]): number {
-        return values.reduce((a, b) => a + b) / 8;
+        return values.reduce((a: number, b: number) => a + b) / 8;
     }
 
 }

@@ -7,9 +7,10 @@ import {KeysOfNeurosityData, NeurosityDataSource} from "../../neurosity-adapter/
 interface MiniGraphProps {
     valueId: string;
     dataSource: NeurosityDataSource;
+    color: string;
 }
 
-export function MiniGraph({valueId, dataSource}: MiniGraphProps) {
+export function MiniGraph({valueId, dataSource, color}: MiniGraphProps) {
     const periodMs = 250;
     const samples = 20;
     const width = 100;
@@ -48,7 +49,7 @@ export function MiniGraph({valueId, dataSource}: MiniGraphProps) {
 
     const draw = (p5: P5) => {
         p5.background(0, 0, 0);
-        p5.fill(53,40,99);
+        p5.fill(color);
         p5.stroke(73,55,138);
         p5.strokeWeight(1);
 

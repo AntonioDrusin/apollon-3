@@ -1,8 +1,8 @@
 import {
     AppBar,
-    Box, Button,
+    Box, Button, Card,
     Container, IconButton, Menu, MenuItem,
-    Snackbar,
+    Snackbar, Tab, Tabs,
     Toolbar,
     Typography
 } from "@mui/material";
@@ -13,6 +13,12 @@ import {HeadsetStatus} from "./HeadsetStatus";
 import {DeviceInfo} from "@neurosity/sdk/dist/cjs/types/deviceInfo";
 import {NeurosityAdapter} from "../../neurosity-adapter/NeurosityAdapter";
 import {PreviewCard} from "./PreviewCard";
+import {DndProvider} from "react-dnd";
+import {HTML5Backend} from "react-dnd-html5-backend"
+import {Visualizers} from "../../visualizers/Register";
+import {VisualizerDirectory, VisualizerInfo} from "../../visualizers/Visualizers";
+import {VisualizerPanel} from "./VisualizerPanel";
+import {PreProcessPanel} from "./PreProcessPanel";
 
 export function controllerLoader() {
     return null;
@@ -28,6 +34,8 @@ export default function Controller() {
     const [headsets, setHeadsets] = useState<DeviceInfo[]>([]);
     const [headset, setHeadset] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [visualizers] = useState( () => new VisualizerDirectory());
+    const [selectedPanel, setSelectedPanel] = useState(0);
 
     useEffect(() => {
         const devicesSub = neurosity.devices$.subscribe(setHeadsets);
@@ -89,6 +97,8 @@ export default function Controller() {
         localStorage.setItem('controls', JSON.stringify(value));
     });
 
+    const onTabChange = (event: React.SyntheticEvent, newValue: any) => setSelectedPanel(newValue);
+
     return (
         <Box>
             <AppBar position="static">
@@ -131,12 +141,36 @@ export default function Controller() {
 
 
             </AppBar>
-            <Container maxWidth="lg">
-                <Box sx={{p:1, m:1}}>
-                    <PreviewCard dataSource={neurosity.dataSource}></PreviewCard>
-                </Box>
-
-            </Container>
+            <DndProvider backend={HTML5Backend}>
+                <Container maxWidth="lg">
+                    <Box sx={{p: 1, m: 1}}>
+                        <PreviewCard dataSource={neurosity.dataSource}></PreviewCard>
+                    </Box>
+                </Container>
+                <Container>
+                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                        <Tabs value={selectedPanel} onChange={onTabChange}>
+                            <Tab key={"preprocessing"} label={"Preprocessing"}></Tab>
+                            {
+                                visualizers.visualizers.map((v: VisualizerInfo) => {
+                                    return <Tab key={v.label} label={v.label}></Tab>;
+                                })
+                            }
+                        </Tabs>
+                    </Box>
+                    <PreProcessPanel value={selectedPanel} index={0}></PreProcessPanel>
+                    {
+                        visualizers.visualizers.map((v: VisualizerInfo, i: number) => {
+                            return <VisualizerPanel
+                                key={v.label}
+                                value={selectedPanel}
+                                index={i+1}
+                                visualizerInfo={v}
+                            ></VisualizerPanel>;
+                        })
+                    }
+                </Container>
+            </DndProvider>
             <Snackbar
                 open={!!error}
                 autoHideDuration={6000}
