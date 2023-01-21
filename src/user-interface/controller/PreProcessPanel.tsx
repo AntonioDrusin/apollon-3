@@ -61,7 +61,6 @@ export function PreProcessOutput({outputInfo, index}: PreProcessOutputProps) {
                 </Select>
             </FormControl>
             </Box>
-
         </Box>
     </Card>
 }

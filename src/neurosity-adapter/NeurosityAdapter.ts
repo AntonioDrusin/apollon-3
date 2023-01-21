@@ -83,6 +83,7 @@ export class NeurosityAdapter {
             this._devices$.next([]);
             this._selectedDevice$.next(null);
             this._loggedIn$.next(false);
+            this._dataSource.resetData();
         });
     }
 }
