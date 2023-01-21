@@ -3,7 +3,6 @@ import {Box, Card} from "@mui/material";
 import {DataSourceInfos, KeysOfNeurosityData, NeurosityDataSource} from "../../neurosity-adapter/NeurosityDataSource";
 import {PreviewMeter} from "./PreviewMeter";
 
-
 interface PreviewCardProps {
     dataSource: NeurosityDataSource;
 }
@@ -11,6 +10,7 @@ interface PreviewCardProps {
 export function PreviewCard({dataSource}: PreviewCardProps) {
 
     return <Card>
+
         <Box sx={{display: 'flex', flexWrap: 'wrap', p: 1, m: 1}}>
             {
                 Object.keys(DataSourceInfos).map((key) => {

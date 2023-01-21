@@ -18,8 +18,8 @@ export function PreProcessPanel({index, value}: PreProcessPanelProps) {
             <Box sx={{display: 'flex', flexWrap: 'wrap'}}>
                 {
                     Object.keys(DataSourceInfos).map((key) => {
-                        return <Box sx={{width:320}}>
-                            <PreProcessOutput key={key} index={key} outputInfo={DataSourceInfos[key as KeysOfNeurosityData]}></PreProcessOutput>
+                        return <Box sx={{width:320}} key={key}>
+                            <PreProcessOutput index={key} outputInfo={DataSourceInfos[key as KeysOfNeurosityData]}></PreProcessOutput>
                         </Box>;
                     })
                 }
@@ -34,7 +34,7 @@ export interface PreProcessOutputProps{
 }
 export function PreProcessOutput({outputInfo, index}: PreProcessOutputProps) {
     const [values, setValues] = useState([outputInfo.min,outputInfo.max]);
-    const [filter, setFilter] = useState(null);
+    const [filter, setFilter] = useState("");
 
     const handleClampSlider = (event: Event, newValue: number | number[]) => {
         setValues(newValue as number[]);
