@@ -82,7 +82,8 @@ function VisualizerInput({info}: VisualizerInputProps) {
         setSelectedInput(event.target.value);
     };
 
-    return (<Card sx={{m: 1, p: 0, width: 550, outlineColor: "#232323", outlineWidth: 2, outlineStyle: "solid"}} ref={drop}>
+    return (
+        <Card sx={{m: 1, p: 0, width: 550, outlineColor: "#232323", outlineWidth: 2, outlineStyle: "solid"}} ref={drop}>
             <Box>
                 <Box sx={{background: "#232323", px: 2, py: 1}}>
                     <Typography>{info.label}</Typography>
@@ -100,8 +101,10 @@ function VisualizerInput({info}: VisualizerInputProps) {
                                 <MenuItem value={"Manual"} key={"manual"}>{"<Manual>"}</MenuItem>
                                 {
                                     Object.keys(DataSourceInfos).map((key) => {
-                                        return <MenuItem
-                                            value={key}>{DataSourceInfos[key as KeysOfNeurosityData].name}</MenuItem>;
+                                        return <MenuItem key={key}
+                                                         value={key}>
+                                            {DataSourceInfos[key as KeysOfNeurosityData].name}
+                                        </MenuItem>;
                                     })
                                 }
                             </Select>

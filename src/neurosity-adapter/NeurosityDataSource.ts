@@ -1,19 +1,8 @@
 import {Neurosity} from "@neurosity/sdk";
 import {PowerByBand} from "@neurosity/sdk/dist/cjs/types/brainwaves";
-import {BehaviorSubject, Observable, Subject} from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
 import {STATUS} from "@neurosity/sdk/dist/esm/types/status";
-
-export interface NeurosityData {
-    alpha: number;
-    beta: number;
-    gamma: number;
-    theta: number;
-    delta: number;
-    focus: number; // From SDK
-    calm: number; // From SDK
-}
-
-export type KeysOfNeurosityData = keyof NeurosityData;
+import {GraphSource} from "./GraphSource";
 
 export interface OutputInfo {
     name: string;
@@ -23,7 +12,11 @@ export interface OutputInfo {
     color: string;
 }
 
-export const DataSourceInfos: { [key in keyof NeurosityData]: OutputInfo } = {
+export const NeurosityDataKeys = ["alpha", "beta", "gamma", "theta", "delta", "focus", "calm"] as const;
+export type KeysOfNeurosityData = typeof NeurosityDataKeys[number];
+export type NeurosityData = { [key in KeysOfNeurosityData]: number };
+
+export const DataSourceInfos: { [key in KeysOfNeurosityData]: OutputInfo } = {
     alpha: {name: "Alpha Average", min: 0, max: 200, default: 20, color: "#54540c"},
     beta: {name: "Beta Average", min: 0, max: 200, default: 20, color: "#225e40"},
     gamma: {name: "Gamma Average", min: 0, max: 200, default: 20, color: "#8c642c"},
@@ -33,7 +26,7 @@ export const DataSourceInfos: { [key in keyof NeurosityData]: OutputInfo } = {
     calm: {name: "Calm", min: 0, max: 1, default: .2, color: "#121d62"},
 }
 
-export class NeurosityDataSource {
+export class NeurosityDataSource implements GraphSource {
     private _neurosity: Neurosity;
     private readonly _data$: BehaviorSubject<NeurosityData>;
     // @ts-ignore
@@ -52,8 +45,8 @@ export class NeurosityDataSource {
     }
 
     private getDefaultData(): NeurosityData {
-        const currentData : any = {};
-        for ( const key in DataSourceInfos) {
+        const currentData: any = {};
+        for (const key in DataSourceInfos) {
             const dataKey = key as KeysOfNeurosityData;
             currentData[dataKey] = DataSourceInfos[dataKey].default;
         }

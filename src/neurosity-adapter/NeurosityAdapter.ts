@@ -3,14 +3,15 @@ import {DeviceInfo} from "@neurosity/sdk/dist/cjs/types/deviceInfo";
 import {DeviceStatus} from "@neurosity/sdk/dist/esm/types/status";
 import {combineLatest, map, Observable, Subject} from "rxjs";
 import {Credentials} from "@neurosity/sdk/dist/cjs/types/credentials";
-import {NeurosityData, NeurosityDataSource} from "./NeurosityDataSource";
+import {NeurosityDataSource} from "./NeurosityDataSource";
+import {NeurosityDataProcessor} from "./NeurosityDataProcessor";
 
 
 export class NeurosityAdapter {
     private static _neurosity: Neurosity | null = null;
     private readonly _neurosity: Neurosity;
     private static _dataSource: NeurosityDataSource | null = null;
-    private readonly _dataSource: NeurosityDataSource;
+    private static _processor: NeurosityDataProcessor;
 
     private _loggedIn: boolean;
     private readonly _devices$: Subject<DeviceInfo[]>;
@@ -21,9 +22,9 @@ export class NeurosityAdapter {
         this._loggedIn = false;
         NeurosityAdapter._neurosity = NeurosityAdapter._neurosity ?? new Neurosity({autoSelectDevice: false});
         this._neurosity = NeurosityAdapter._neurosity;
-
         NeurosityAdapter._dataSource = NeurosityAdapter._dataSource ?? new NeurosityDataSource(this._neurosity);
-        this._dataSource = NeurosityAdapter._dataSource;
+        NeurosityAdapter._processor = NeurosityAdapter._processor ?? new NeurosityDataProcessor(this);
+
 
         this._devices$ = new Subject<DeviceInfo[]>();
         this._loggedIn$ = new Subject<boolean>();
@@ -37,7 +38,11 @@ export class NeurosityAdapter {
     }
 
     get dataSource(): NeurosityDataSource {
-        return this._dataSource;
+        return NeurosityAdapter._dataSource!;
+    }
+
+    get processor(): NeurosityDataProcessor {
+        return NeurosityAdapter._processor!;
     }
 
     get devices$(): Observable<DeviceInfo[]> {
@@ -89,7 +94,7 @@ export class NeurosityAdapter {
             this._devices$.next([]);
             this._selectedDevice$.next(null);
             this._loggedIn$.next(false);
-            this._dataSource.resetData();
+            NeurosityAdapter._dataSource!.resetData();
         });
     }
 }

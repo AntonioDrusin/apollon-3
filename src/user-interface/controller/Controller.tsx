@@ -1,6 +1,6 @@
 import {
     AppBar,
-    Box, Button, Card,
+    Box, Button,
     Container, IconButton, Menu, MenuItem,
     Snackbar, Tab, Tabs,
     Toolbar,
@@ -15,10 +15,9 @@ import {NeurosityAdapter} from "../../neurosity-adapter/NeurosityAdapter";
 import {PreviewCard} from "./PreviewCard";
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend"
-import {Visualizers} from "../../visualizers/Register";
 import {VisualizerDirectory, VisualizerInfo} from "../../visualizers/Visualizers";
 import {VisualizerPanel} from "./VisualizerPanel";
-import {PreProcessPanel} from "./PreProcessPanel";
+import {PreProcessGroup} from "./PreProcessGroup";
 
 export function controllerLoader() {
     return null;
@@ -26,16 +25,16 @@ export function controllerLoader() {
 
 export default function Controller() {
     const DISCONNECTED = "Disconnected";
-    const [width, setWidth] = useState(0)
     const [dataSource, setDataSource] = useState(DISCONNECTED)
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const [menuOpen, setMenuOpen] = useState(false);
-    const [neurosity] = useState(() => new NeurosityAdapter());
     const [headsets, setHeadsets] = useState<DeviceInfo[]>([]);
     const [headset, setHeadset] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [visualizers] = useState( () => new VisualizerDirectory());
     const [selectedPanel, setSelectedPanel] = useState(0);
+
+    const [neurosity] = useState(() => new NeurosityAdapter());
 
     useEffect(() => {
         const devicesSub = neurosity.devices$.subscribe(setHeadsets);
@@ -86,16 +85,7 @@ export default function Controller() {
         setError(null);
     };
 
-    const widthChange = (event: Event, newValue: number | number[]) => {
-        setWidth(newValue as number);
-    };
-
-    useEffect(() => {
-        const value = {
-            width: width,
-        };
-        localStorage.setItem('controls', JSON.stringify(value));
-    });
+    // localStorage.setItem('controls', JSON.stringify(value));
 
     const onTabChange = (event: React.SyntheticEvent, newValue: any) => setSelectedPanel(newValue);
 
@@ -158,7 +148,7 @@ export default function Controller() {
                             }
                         </Tabs>
                     </Box>
-                    <PreProcessPanel value={selectedPanel} index={0}></PreProcessPanel>
+                    <PreProcessGroup value={selectedPanel} index={0} processor={neurosity.processor}></PreProcessGroup>
                     {
                         visualizers.visualizers.map((v: VisualizerInfo, i: number) => {
                             return <VisualizerPanel

@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {Box, Card} from "@mui/material";
+import React from "react";
+import {Box} from "@mui/material";
 import {DataSourceInfos, KeysOfNeurosityData, NeurosityDataSource} from "../../neurosity-adapter/NeurosityDataSource";
 import {MiniGraph} from "./MiniGraph";
 import {useDrag} from "react-dnd";
@@ -11,7 +11,6 @@ interface PreviewMeterProps {
 }
 
 export function PreviewMeter({dataSource, valueId, color}: PreviewMeterProps) {
-    const [value, setValue] = useState<number>(0);
     const label = DataSourceInfos[valueId].name;
 
     const[{opacity}, dragRef] = useDrag(()=> ({
@@ -21,17 +20,6 @@ export function PreviewMeter({dataSource, valueId, color}: PreviewMeterProps) {
             opacity: monitor.isDragging() ? 0.5 : 1
         })
     }), []);
-
-    useEffect(() => {
-        const subscription = dataSource.data$.subscribe((data) => {
-            setValue(data[valueId]);
-        });
-
-        return () => {
-            subscription.unsubscribe();
-        };
-    }, [dataSource]);
-
 
     return <Box ref={dragRef}
         sx={{
@@ -45,13 +33,13 @@ export function PreviewMeter({dataSource, valueId, color}: PreviewMeterProps) {
                 theme.palette.mode === 'dark' ? 'grey.800' : 'grey.300',
             borderRadius: 2,
             fontSize: '0.875rem',
-            fontWeight: '700',
+            fontWeight: '400',
             display: 'flex',
             flexDirection: 'column',
             flexWrap: 'wrap'
         }}
     >
         <Box>{label}</Box>
-        <MiniGraph valueId={valueId} dataSource={dataSource} color={color}></MiniGraph>
+        <MiniGraph width={120} height={32} valueId={valueId} dataSource={dataSource.data$} color={color}></MiniGraph>
     </Box>
 }
