@@ -134,7 +134,7 @@ export default function Controller() {
             <DndProvider backend={HTML5Backend}>
                 <Container maxWidth="lg">
                     <Box sx={{p: 1, m: 1}}>
-                        <PreviewCard dataSource={neurosity.dataSource}></PreviewCard>
+                        <PreviewCard dataSource={neurosity.processor.data$}></PreviewCard>
                     </Box>
                 </Container>
                 <Container>

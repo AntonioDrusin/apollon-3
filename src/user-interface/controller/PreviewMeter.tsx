@@ -1,11 +1,17 @@
 import React from "react";
 import {Box} from "@mui/material";
-import {DataSourceInfos, KeysOfNeurosityData, NeurosityDataSource} from "../../neurosity-adapter/NeurosityDataSource";
+import {
+    DataSourceInfos,
+    KeysOfNeurosityData,
+    NeurosityData
+} from "../../neurosity-adapter/NeurosityDataSource";
 import {MiniGraph} from "./MiniGraph";
 import {useDrag} from "react-dnd";
+import {Observable} from "rxjs";
+import {MultiGraph} from "./MultiGraph";
 
 interface PreviewMeterProps {
-    dataSource: NeurosityDataSource;
+    dataSource: Observable<NeurosityData>;
     valueId: KeysOfNeurosityData;
     color: string;
 }
@@ -40,6 +46,6 @@ export function PreviewMeter({dataSource, valueId, color}: PreviewMeterProps) {
         }}
     >
         <Box>{label}</Box>
-        <MiniGraph width={120} height={32} valueId={valueId} dataSource={dataSource.data$} color={color}></MiniGraph>
+        <MultiGraph valueId={valueId} dataSource={dataSource} color={color} width={120} height={32} minPlot={0} maxPlot={1}></MultiGraph>
     </Box>
 }

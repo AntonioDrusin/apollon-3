@@ -1,10 +1,11 @@
 import React from "react";
 import {Box, Card} from "@mui/material";
-import {DataSourceInfos, KeysOfNeurosityData, NeurosityDataSource} from "../../neurosity-adapter/NeurosityDataSource";
+import {DataSourceInfos, KeysOfNeurosityData, NeurosityData} from "../../neurosity-adapter/NeurosityDataSource";
 import {PreviewMeter} from "./PreviewMeter";
+import {Observable} from "rxjs";
 
 interface PreviewCardProps {
-    dataSource: NeurosityDataSource;
+    dataSource: Observable<NeurosityData>;
 }
 
 export function PreviewCard({dataSource}: PreviewCardProps) {
