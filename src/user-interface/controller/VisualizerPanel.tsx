@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
     Box,
     Card,
@@ -12,59 +12,71 @@ import {
 } from "@mui/material";
 import {InputInfo, VisualizerInfo} from "../../visualizers/Visualizers";
 import {DataSourceInfos, KeysOfNeurosityData} from "../../neurosity-adapter/NeurosityDataSource";
-import {ConnectedTv, Screenshot} from "@mui/icons-material";
+import {ConnectedTv} from "@mui/icons-material";
 import {useDrop} from "react-dnd";
+import {ParameterLink, ParameterMap} from "../../link/ScreenLink";
 
 export interface VisualizerPanelProps {
-    value: number;
-    index: number;
     visualizerInfo: VisualizerInfo;
+    live: boolean;
+    map: ParameterMap;
+
+    onLive(key: string): void;
+
+    onParameterChange(map: ParameterMap): void;
 }
 
-export function VisualizerPanel({value, index, visualizerInfo}: VisualizerPanelProps) {
-
-    const [live, setLive] = useState(null);
+export function VisualizerPanel({visualizerInfo, live, map, onLive, onParameterChange}: VisualizerPanelProps) {
 
     const handleLive = (event: any, newDevices: any) => {
-        setLive(newDevices);
+        onLive(visualizerInfo.label);
     };
 
-    return (<div
-        role="tabpanel"
-        id={`simple-tabpanel-${index}`}
-    >
-        {value === index && (
-            <Box>
-                <Box sx={{p: 3}}>
-                    <ToggleButtonGroup value={live} onChange={handleLive}>
-                        <ToggleButton value="tv">
-                            <ConnectedTv/> <Box sx={{m: 1}}>Go Live</Box>
-                        </ToggleButton>
-                    </ToggleButtonGroup>
-                </Box>
-                <Box sx={{display: 'flex', flexWrap: 'wrap'}}>
-                    {
-                        visualizerInfo.inputs.map((info) => {
-                            return <VisualizerInput key={info.label + "-viz"} info={info}></VisualizerInput>;
-                        })
-                    }
-                </Box>
-            </Box>
+    const handleParameterChange = (index: number, link: ParameterLink) => {
+        map.links[index] = link;
+        onParameterChange(map);
+    };
+
+    const liveTv = live ? ["tv"] : [null];
+
+    return <Box>
+        <Box sx={{p: 3}}>
+            <ToggleButtonGroup value={liveTv} onChange={handleLive}>
+                <ToggleButton value="tv">
+                    <ConnectedTv/> <Box sx={{m: 1}}>Go Live</Box>
+                </ToggleButton>
+            </ToggleButtonGroup>
+        </Box>
+        {( map &&
+        <Box sx={{display: 'flex', flexWrap: 'wrap'}}>
+            {
+                visualizerInfo.inputs.map((info, index) => {
+                    return <VisualizerInput
+                        key={info.label + "-viz"}
+                        info={info}
+                        onParameterChange={(link) => handleParameterChange(index, link)}
+                        link={map.links[index]}
+                    ></VisualizerInput>;
+                })
+            }
+        </Box>
         )}
-    </div>)
+    </Box>;
 }
 
 export interface VisualizerInputProps {
     info: InputInfo;
+    link: ParameterLink;
+    onParameterChange(link: ParameterLink): void;
 }
 
-interface DropResult {
-    name: string
-}
 
-function VisualizerInput({info}: VisualizerInputProps) {
-    const [selectedInput, setSelectedInput] = useState<string>("Manual");
-    const [{canDrop, isOver}, drop] = useDrop(() => ({
+function VisualizerInput({info, link, onParameterChange}: VisualizerInputProps) {
+    const MANUAL = "Manual";
+    const [selectedInput, setSelectedInput] = useState<string>(MANUAL);
+    const [manualValue, setManualValue] = useState<number>(0);
+
+    const [, drop] = useDrop(() => ({
         accept: "card",
         collect: (monitor) => ({
             isOver: monitor.isOver(),
@@ -78,8 +90,29 @@ function VisualizerInput({info}: VisualizerInputProps) {
         },
     }))
 
+    useEffect(() => {
+        setSelectedInput(link.outputKey ?? MANUAL);
+    }, [link]);
+
+    useEffect(() => {
+        let input: KeysOfNeurosityData | null;
+
+        input = selectedInput === MANUAL
+            ? null
+            : selectedInput as KeysOfNeurosityData;
+
+        onParameterChange({
+            manualValue: manualValue || 0,
+            outputKey: input
+        })
+    }, [manualValue, selectedInput, onParameterChange]);
+
     const handleChange = (event: any) => {
         setSelectedInput(event.target.value);
+    };
+
+    const handleManualSignalChange = (event: any) => {
+        setManualValue(event.target.value);
     };
 
     return (
@@ -98,10 +131,10 @@ function VisualizerInput({info}: VisualizerInputProps) {
                                     label="Output"
                                     onChange={handleChange}
                             >
-                                <MenuItem value={"Manual"} key={"manual"}>{"<Manual>"}</MenuItem>
+                                <MenuItem value={MANUAL} key={MANUAL + "-key"}>{"<Manual>"}</MenuItem>
                                 {
                                     Object.keys(DataSourceInfos).map((key) => {
-                                        return <MenuItem key={key}
+                                        return <MenuItem key={key + "-key"}
                                                          value={key}>
                                             {DataSourceInfos[key as KeysOfNeurosityData].name}
                                         </MenuItem>;
@@ -111,9 +144,9 @@ function VisualizerInput({info}: VisualizerInputProps) {
                         </FormControl>
                     </Box>
                     <Box sx={{m: 1, p: 1, width: 320}}>
-                        <Slider min={info.min} max={info.max} disabled={selectedInput !== "Manual"}></Slider>
+                        <Slider value={manualValue} onChange={handleManualSignalChange} step={0.01} min={0} max={1.0}
+                                disabled={selectedInput !== MANUAL}></Slider>
                     </Box>
-
                 </Box>
             </Box>
         </Card>

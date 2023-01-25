@@ -15,8 +15,7 @@ interface MiniGraphProps {
 export function MiniGraph({valueId, dataSource, color, width, height}: MiniGraphProps) {
     const periodMs = 16.3;
     const samples = 450;
-    const margin = 10;
-    const rightTextDelta = 20;
+    const margin = 8;
     let value = useRef(0)
 
     const [values] = useState<number[]>(() => {
@@ -52,7 +51,7 @@ export function MiniGraph({valueId, dataSource, color, width, height}: MiniGraph
         p5.stroke(73,55,138);
         p5.strokeWeight(1);
 
-        const min = Math.min.apply(null, values);;
+        const min = Math.min.apply(null, values);
         const max = Math.max.apply(null, values);
         const yScale = height / max;
         const xScale = width / (samples-1);
@@ -66,11 +65,12 @@ export function MiniGraph({valueId, dataSource, color, width, height}: MiniGraph
         p5.fill(208,199,240);
         p5.noStroke();
 
-        p5.text(max.toFixed(1), 0, margin);
-        p5.text(min.toFixed(1), 0, height-4);
+        p5.text(max.toFixed(1), margin, 12);
+        p5.text(min.toFixed(1), margin, height-4);
 
         p5.fill(208,240,199);
-        p5.text(values[samples-1].toFixed(1), width-rightTextDelta, margin);
+        const textWidth = p5.textWidth(values[samples-1].toFixed(1));
+        p5.text(values[samples-1].toFixed(1), width-textWidth-margin, 12);
     };
 
     return <Sketch setup={setup} draw={draw}></Sketch>

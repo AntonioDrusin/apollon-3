@@ -5,28 +5,24 @@ import {PreProcessOutput} from "./PreProcessOutput";
 import {NeurosityDataProcessor} from "../../neurosity-adapter/NeurosityDataProcessor";
 
 export interface PreProcessPanelProps {
-    value: number;
-    index: number;
     processor: NeurosityDataProcessor;
 }
 
 
-export function PreProcessGroup({index, value, processor}: PreProcessPanelProps) {
+export function PreProcessGroup({processor}: PreProcessPanelProps) {
 
-    return <div
-        role="tabpanel"
-        id={`simple-tabpanel-${index}`}
-    >
-        {value === index && (
+    return <Box>
+        {
             <Box sx={{display: 'flex', flexWrap: 'wrap'}}>
                 {
                     NeurosityDataKeys.map((key) => {
-                        return <Box sx={{width:320}} key={key}>
-                            <PreProcessOutput processor={processor} dataKey={key} key={key} outputInfo={DataSourceInfos[key as KeysOfNeurosityData]}></PreProcessOutput>
+                        return <Box sx={{width: 240}} key={key}>
+                            <PreProcessOutput processor={processor} dataKey={key} key={key}
+                                              outputInfo={DataSourceInfos[key as KeysOfNeurosityData]}></PreProcessOutput>
                         </Box>;
                     })
                 }
             </Box>
-        )}
-    </div>
+        }
+    </Box>
 }

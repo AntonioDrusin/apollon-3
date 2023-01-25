@@ -30,7 +30,6 @@ export function PreProcessOutput({outputInfo, dataKey, processor}: PreProcessOut
             lowClamp,
             highClamp
         });
-        console.log(`low: ${lowClamp} high: ${highClamp}`);
     }
 
     const handleClampLow = (event: any) => {
@@ -49,8 +48,8 @@ export function PreProcessOutput({outputInfo, dataKey, processor}: PreProcessOut
             <Typography>{outputInfo.name}</Typography>
         </Box>
         <Box sx={{m: 1, p: 0}}>
-            <Card sx={{m: 1, width: 240, height: 60}}>
-                <MiniGraph valueId={dataKey} dataSource={processor.preData$} color={outputInfo.color} width={240}
+            <Card sx={{m: 1, width: 160, height: 60}}>
+                <MiniGraph valueId={dataKey} dataSource={processor.preData$} color={outputInfo.color} width={160}
                            height={60}></MiniGraph>
             </Card>
             <Box sx={{display: 'flex',
@@ -76,8 +75,8 @@ export function PreProcessOutput({outputInfo, dataKey, processor}: PreProcessOut
                     </Select>
                 </FormControl>
             </Box>
-            <Card sx={{m: 1, width: 240, height: 60}}>
-                <MultiGraph width={240} height={60}
+            <Card sx={{m: 1, width: 160, height: 60}}>
+                <MultiGraph width={160} height={60}
                             key={outputInfo.name}
                             color={outputInfo.color}
                             minPlot={0}

@@ -18,6 +18,8 @@ import {HTML5Backend} from "react-dnd-html5-backend"
 import {VisualizerDirectory, VisualizerInfo} from "../../visualizers/Visualizers";
 import {VisualizerPanel} from "./VisualizerPanel";
 import {PreProcessGroup} from "./PreProcessGroup";
+import {TabPanel} from "./TabPanel";
+import {ParameterMap, ParameterMaps, ScreenLink} from "../../link/ScreenLink";
 
 export function controllerLoader() {
     return null;
@@ -31,8 +33,11 @@ export default function Controller() {
     const [headsets, setHeadsets] = useState<DeviceInfo[]>([]);
     const [headset, setHeadset] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
-    const [visualizers] = useState( () => new VisualizerDirectory());
+    const [visualizers] = useState(() => new VisualizerDirectory());
     const [selectedPanel, setSelectedPanel] = useState(0);
+    const [liveVisualizer, setLiveVisualizer] = useState<string | null>(null);
+    const [screenLink] = useState(() => ScreenLink.instance());
+    const [maps, setMaps] = useState<ParameterMaps>();
 
     const [neurosity] = useState(() => new NeurosityAdapter());
 
@@ -52,6 +57,9 @@ export default function Controller() {
         };
     }, [neurosity]);
 
+    useEffect(() => {
+        setMaps(screenLink.getMaps());
+    }, [screenLink]);
 
     const menuButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -81,11 +89,27 @@ export default function Controller() {
         handleMenuClose();
     }
 
+    const handleLiveChange = (key: string) => {
+        if (key !== liveVisualizer) {
+            setLiveVisualizer(key);
+        } else setLiveVisualizer(null);
+    }
+
     const errorClose = () => {
         setError(null);
     };
 
-    // localStorage.setItem('controls', JSON.stringify(value));
+    const handleParameterChange = (key: string, map: ParameterMap) => {
+        console.log("Handle param change");
+        if (maps) {
+            const newMaps: ParameterMaps = maps;
+            newMaps[key] = map;
+            setMaps(newMaps);
+            // If I use an effect of maps to set this, it no longer refreshes.
+            // If I make a clone, then it goes in an infinite loop
+            screenLink.setMaps(newMaps);
+        }
+    }
 
     const onTabChange = (event: React.SyntheticEvent, newValue: any) => setSelectedPanel(newValue);
 
@@ -132,13 +156,13 @@ export default function Controller() {
 
             </AppBar>
             <DndProvider backend={HTML5Backend}>
-                <Container maxWidth="lg">
+                <Container maxWidth="xl">
                     <Box sx={{p: 1, m: 1}}>
                         <PreviewCard dataSource={neurosity.processor.data$}></PreviewCard>
                     </Box>
                 </Container>
-                <Container>
-                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Container maxWidth="xl">
+                    <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
                         <Tabs value={selectedPanel} onChange={onTabChange}>
                             <Tab key={"preprocessing"} label={"Preprocessing"}></Tab>
                             {
@@ -148,15 +172,22 @@ export default function Controller() {
                             }
                         </Tabs>
                     </Box>
-                    <PreProcessGroup value={selectedPanel} index={0} processor={neurosity.processor}></PreProcessGroup>
-                    {
+                    <TabPanel value={selectedPanel} index={0}>
+                        <PreProcessGroup processor={neurosity.processor}></PreProcessGroup>
+                    </TabPanel>
+
+                    {maps &&
                         visualizers.visualizers.map((v: VisualizerInfo, i: number) => {
-                            return <VisualizerPanel
-                                key={v.label}
-                                value={selectedPanel}
-                                index={i+1}
-                                visualizerInfo={v}
-                            ></VisualizerPanel>;
+                            return <TabPanel key={v.label + 'panel'} value={selectedPanel} index={i + 1}>
+                                <VisualizerPanel
+                                    key={v.label + 'vizpanel'}
+                                    visualizerInfo={v}
+                                    live={v.label === liveVisualizer}
+                                    onLive={handleLiveChange}
+                                    onParameterChange={(map: ParameterMap) => handleParameterChange(v.label, map)}
+                                    map={maps[v.label]}
+                                ></VisualizerPanel>
+                            </TabPanel>;
                         })
                     }
                 </Container>

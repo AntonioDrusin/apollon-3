@@ -16,7 +16,6 @@ const router = createHashRouter([
     {path: "/", element: <Controller/>, loader: controllerLoader},
 ]);
 
-console.log(generatePath("visualizer"));
 
 function App() {
     return (
