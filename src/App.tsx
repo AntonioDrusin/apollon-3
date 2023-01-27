@@ -1,6 +1,6 @@
 import './App.css';
 import {
-    createHashRouter, generatePath, RouterProvider,
+    createHashRouter, RouterProvider,
 } from "react-router-dom";
 import Visualizer, {visualizerLoader} from "./user-interface/visualizer/Visualizer";
 import Controller, {controllerLoader} from "./user-interface//controller/Controller";

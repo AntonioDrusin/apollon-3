@@ -1,7 +1,8 @@
 import {KeysOfNeurosityData} from "../neurosity-adapter/NeurosityDataSource";
 import {VisualizerDirectory} from "../visualizers/Visualizers";
+import {NeurosityDataProcessor} from "../neurosity-adapter/NeurosityDataProcessor";
 
-export interface LinkData {
+export interface InputData {
     visualizerLabel: string;
     parameters: number[];
 }
@@ -17,28 +18,26 @@ export interface ParameterLink {
     outputKey: KeysOfNeurosityData | null;
 }
 
-export class ScreenLink {
+export class ScreenLinkTransmitter {
 
-    private static _me: ScreenLink;
     private _maps: { [k: string]: ParameterMap };
+    private _dataProcessor: NeurosityDataProcessor;
 
-    constructor() {
+    constructor(dataProcessor: NeurosityDataProcessor) {
         const visualizers = new VisualizerDirectory();
-        const maps : ParameterMaps = {};
-        visualizers.visualizers.forEach((v) =>{
-            maps[v.label]= {
-                links: v.inputs.map(i=> { return {
-                    manualValue: 0,
-                    outputKey: null,
-                };})
+        const maps: ParameterMaps = {};
+        visualizers.visualizers.forEach((v) => {
+            maps[v.label] = {
+                links: v.inputs.map(i => {
+                    return {
+                        manualValue: 0,
+                        outputKey: null,
+                    };
+                })
             }
         });
         this._maps = maps;
-    }
-
-    static instance(): ScreenLink {
-        if (!ScreenLink._me) ScreenLink._me = new ScreenLink();
-        return ScreenLink._me;
+        this._dataProcessor = dataProcessor;
     }
 
     public getMap(visualizerKey: string): ParameterMap {
@@ -49,8 +48,6 @@ export class ScreenLink {
         return this._maps;
     }
 
-    public noop(): void {}
-
     public setMaps(maps: ParameterMaps): void {
         this._maps = maps;
     }
@@ -58,12 +55,19 @@ export class ScreenLink {
     private readonly LocalStorageKey: string = "LocalStorage.ScreenLink.LinkData";
 
     // The local storage stuff maybe goes somewhere else
-    public putData(data: LinkData) {
+    private putData(data: InputData) {
         localStorage.setItem(this.LocalStorageKey, JSON.stringify(data));
     }
 
-    public getData(): LinkData | null {
-        const text = localStorage.getItem(this.LocalStorageKey);
-        return text ? JSON.parse(text) : null;
+}
+
+
+export class ScreenLinkReceiver {
+    public getData(): InputData {
+        return {
+            parameters: [],
+            visualizerLabel: "visualizer"
+        };
     }
+
 }

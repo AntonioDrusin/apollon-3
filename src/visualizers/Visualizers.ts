@@ -17,13 +17,13 @@ export interface InputInfo {
 
 export class VisualizerDirectory {
 
-    _info: Map<string,VisualizerInfo>;
+    _info: Map<string, VisualizerInfo>;
 
     constructor() {
         const __FIELD_VISUALIZERS_METADATA_KEY = "Field.Visualizers.Metadata.Key";
         this._info = new Map<string, VisualizerInfo>();
         let property: keyof typeof Visualizers;
-        for ( property in Visualizers) {
+        for (property in Visualizers) {
             const info = Reflect.getMetadata(__FIELD_VISUALIZERS_METADATA_KEY, Visualizers[property]) as VisualizerInfo;
             info.class = Visualizers[property];
             this._info.set(info.label, info);
@@ -31,9 +31,9 @@ export class VisualizerDirectory {
 
     }
 
-    public get visualizers():  VisualizerInfo[] {
+    public get visualizers(): VisualizerInfo[] {
         const all: VisualizerInfo[] = [];
-        this._info.forEach((v,k) => all.push(v));
+        this._info.forEach((v) => all.push(v));
         return all
     }
 }

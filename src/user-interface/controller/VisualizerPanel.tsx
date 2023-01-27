@@ -28,7 +28,7 @@ export interface VisualizerPanelProps {
 
 export function VisualizerPanel({visualizerInfo, live, map, onLive, onParameterChange}: VisualizerPanelProps) {
 
-    const handleLive = (event: any, newDevices: any) => {
+    const handleLive = () => {
         onLive(visualizerInfo.label);
     };
 
@@ -47,19 +47,19 @@ export function VisualizerPanel({visualizerInfo, live, map, onLive, onParameterC
                 </ToggleButton>
             </ToggleButtonGroup>
         </Box>
-        {( map &&
-        <Box sx={{display: 'flex', flexWrap: 'wrap'}}>
-            {
-                visualizerInfo.inputs.map((info, index) => {
-                    return <VisualizerInput
-                        key={info.label + "-viz"}
-                        info={info}
-                        onParameterChange={(link) => handleParameterChange(index, link)}
-                        link={map.links[index]}
-                    ></VisualizerInput>;
-                })
-            }
-        </Box>
+        {(map &&
+            <Box sx={{display: 'flex', flexWrap: 'wrap'}}>
+                {
+                    visualizerInfo.inputs.map((info, index) => {
+                        return <VisualizerInput
+                            key={info.label + "-viz"}
+                            info={info}
+                            onParameterChange={(link) => handleParameterChange(index, link)}
+                            link={map.links[index]}
+                        ></VisualizerInput>;
+                    })
+                }
+            </Box>
         )}
     </Box>;
 }
@@ -67,6 +67,7 @@ export function VisualizerPanel({visualizerInfo, live, map, onLive, onParameterC
 export interface VisualizerInputProps {
     info: InputInfo;
     link: ParameterLink;
+
     onParameterChange(link: ParameterLink): void;
 }
 

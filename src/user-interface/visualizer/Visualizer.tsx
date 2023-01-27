@@ -1,10 +1,9 @@
-import "./Visualizer.css"
-
-import React, {useEffect, useState} from "react"
-import {LinkData, ScreenLink} from "../../link/ScreenLink";
+import React, {useEffect, useMemo, useState} from "react"
+import {InputData} from "../../link/ScreenLink";
 import {VisualizerCanvas} from "./VisualizerCanvas";
-import {BehaviorSubject, Observable, Subject} from "rxjs";
+import {Subject} from "rxjs";
 import {Box} from "@mui/material";
+import {Register} from "../../neurosity-adapter/Register";
 
 export function visualizerLoader() {
     return null;
@@ -13,13 +12,13 @@ export function visualizerLoader() {
 const FramePeriod = 1000 / 60;
 
 export default function Visualizer() {
-    const [link] = useState<ScreenLink>(() => ScreenLink.instance());
+    const receiver = useMemo(() => Register.screenLinkReceiver, []);
+    const data$ = useMemo(() => new Subject<InputData>(), []);
     const [visualizerKey, setVisualizerKey] = useState<string>();
-    const [data$] = useState<Subject<LinkData>>( () => new Subject<LinkData>());
 
     useEffect(() => {
         const interval = setInterval(() => {
-            const data = link.getData();
+            const data = receiver.getData();
             if (data != null) {
                 if (data.visualizerLabel !== visualizerKey) {
                     setVisualizerKey(data.visualizerLabel);

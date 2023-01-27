@@ -9,16 +9,13 @@ import {
     Stack,
     TextField, Typography
 } from "@mui/material";
-import React, {useState} from "react";
-import {NeurosityAdapter} from "../../neurosity-adapter/NeurosityAdapter";
+import React, {useMemo, useState} from "react";
+import {Register} from "../../neurosity-adapter/Register";
 
 
 interface LoginDialogProps {
     onClose?(): void;
-
     open: boolean;
-    neurosity?: NeurosityAdapter;
-
 }
 
 export default function LoginDialog(props: LoginDialogProps) {
@@ -26,11 +23,12 @@ export default function LoginDialog(props: LoginDialogProps) {
     const [email, setEmail] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [loggingIn, setLoggingIn] = useState<boolean>(false);
+    const neurosity = useMemo(() => Register.neurosityAdapter, []);
 
     const onLogin = () => {
         setLoggingIn(true);
 
-        props.neurosity?.logIn({email, password})
+        neurosity.logIn({email, password})
             .then(() => {
                 close();
             })

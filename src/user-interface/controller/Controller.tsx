@@ -7,11 +7,10 @@ import {
     Typography
 } from "@mui/material";
 import {PersonalVideo} from "@mui/icons-material";
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useMemo} from "react";
 import LoginDialog from "./LoginDialog";
 import {HeadsetStatus} from "./HeadsetStatus";
 import {DeviceInfo} from "@neurosity/sdk/dist/cjs/types/deviceInfo";
-import {NeurosityAdapter} from "../../neurosity-adapter/NeurosityAdapter";
 import {PreviewCard} from "./PreviewCard";
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend"
@@ -19,7 +18,8 @@ import {VisualizerDirectory, VisualizerInfo} from "../../visualizers/Visualizers
 import {VisualizerPanel} from "./VisualizerPanel";
 import {PreProcessGroup} from "./PreProcessGroup";
 import {TabPanel} from "./TabPanel";
-import {ParameterMap, ParameterMaps, ScreenLink} from "../../link/ScreenLink";
+import {ParameterMap, ParameterMaps} from "../../link/ScreenLink";
+import {Register} from "../../neurosity-adapter/Register";
 
 export function controllerLoader() {
     return null;
@@ -36,17 +36,19 @@ export default function Controller() {
     const [visualizers] = useState(() => new VisualizerDirectory());
     const [selectedPanel, setSelectedPanel] = useState(0);
     const [liveVisualizer, setLiveVisualizer] = useState<string | null>(null);
-    const [screenLink] = useState(() => ScreenLink.instance());
+    const [screenLink] = useState(() => Register.screenLink);
     const [maps, setMaps] = useState<ParameterMaps>();
 
-    const [neurosity] = useState(() => new NeurosityAdapter());
+    const neurosityAdapter = useMemo(() => Register.neurosityAdapter, []);
+    const dataProcessor = useMemo(() => Register.dataProcessor, []);
+
 
     useEffect(() => {
-        const devicesSub = neurosity.devices$.subscribe(setHeadsets);
-        const loggedInSub = neurosity.loggedIn$.subscribe((loggedIn) => {
+        const devicesSub = neurosityAdapter.devices$.subscribe(setHeadsets);
+        const loggedInSub = neurosityAdapter.loggedIn$.subscribe((loggedIn) => {
             setDataSource(loggedIn ? "Connected" : "Disconnected");
         })
-        const deviceSub = neurosity.selectedDevice$.subscribe((device) => {
+        const deviceSub = neurosityAdapter.selectedDevice$.subscribe((device) => {
             setHeadset(device?.deviceNickname ?? null);
         });
 
@@ -55,7 +57,7 @@ export default function Controller() {
             loggedInSub.unsubscribe();
             deviceSub.unsubscribe();
         };
-    }, [neurosity]);
+    }, [neurosityAdapter]);
 
     useEffect(() => {
         setMaps(screenLink.getMaps());
@@ -80,12 +82,12 @@ export default function Controller() {
     };
 
     const logOut = () => {
-        neurosity.logOut();
+        neurosityAdapter.logOut();
         handleMenuClose();
     };
 
     const selectDevice = (deviceId: string) => {
-        neurosity.selectDevice(deviceId);
+        neurosityAdapter.selectDevice(deviceId);
         handleMenuClose();
     }
 
@@ -121,7 +123,7 @@ export default function Controller() {
                         Apollon 3
                     </Typography>
                     <Box sx={{mx: 4}}>
-                        <HeadsetStatus neurosity={neurosity} headset={headset}></HeadsetStatus>
+                        <HeadsetStatus headset={headset}></HeadsetStatus>
                     </Box>
                     <Button
                         variant="outlined"
@@ -151,14 +153,14 @@ export default function Controller() {
                     <MenuItem onClick={logOut}>Log out</MenuItem>
                 </Menu>
 
-                <LoginDialog open={dialogOpen} onClose={closeDialog} neurosity={neurosity}></LoginDialog>
+                <LoginDialog open={dialogOpen} onClose={closeDialog} ></LoginDialog>
 
 
             </AppBar>
             <DndProvider backend={HTML5Backend}>
                 <Container maxWidth="xl">
                     <Box sx={{p: 1, m: 1}}>
-                        <PreviewCard dataSource={neurosity.processor.data$}></PreviewCard>
+                        <PreviewCard dataSource={dataProcessor.data$}></PreviewCard>
                     </Box>
                 </Container>
                 <Container maxWidth="xl">
@@ -173,14 +175,14 @@ export default function Controller() {
                         </Tabs>
                     </Box>
                     <TabPanel value={selectedPanel} index={0}>
-                        <PreProcessGroup processor={neurosity.processor}></PreProcessGroup>
+                        <PreProcessGroup processor={dataProcessor}></PreProcessGroup>
                     </TabPanel>
 
                     {maps &&
                         visualizers.visualizers.map((v: VisualizerInfo, i: number) => {
                             return <TabPanel key={v.label + 'panel'} value={selectedPanel} index={i + 1}>
                                 <VisualizerPanel
-                                    key={v.label + 'vizpanel'}
+                                    key={v.label + 'visualization-panel'}
                                     visualizerInfo={v}
                                     live={v.label === liveVisualizer}
                                     onLive={handleLiveChange}

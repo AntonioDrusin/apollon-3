@@ -1,18 +1,18 @@
 import React, {useEffect, useRef} from "react";
 import Sketch from "react-p5";
-import {LinkData} from "../../link/ScreenLink";
+import {InputData} from "../../link/ScreenLink";
 import P5 from "p5";
 import {Observable} from "rxjs";
 
 interface VisualizerCanvasProps {
-    data$: Observable<LinkData>;
+    data$: Observable<InputData>;
 }
 
-export function VisualizerCanvas ({data$}: VisualizerCanvasProps) {
+export function VisualizerCanvas({data$}: VisualizerCanvasProps) {
 
-    let value = useRef<LinkData>();
+    let value = useRef<InputData>();
 
-    const setup=(p5: P5, canvasParentRef: Element) => {
+    const setup = (p5: P5, canvasParentRef: Element) => {
         p5.createCanvas(p5.windowWidth, p5.windowHeight).parent(canvasParentRef)
     }
 
@@ -21,7 +21,7 @@ export function VisualizerCanvas ({data$}: VisualizerCanvasProps) {
     }
 
     useEffect(() => {
-        const sub = data$.subscribe((data: LinkData) => {
+        const sub = data$.subscribe((data: InputData) => {
                 value.current = data;
             }
         );

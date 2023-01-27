@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {DeviceStatus} from "@neurosity/sdk/dist/esm/types/status";
 import Typography from "@mui/material/Typography";
 import {Box} from "@mui/material";
@@ -8,7 +8,7 @@ import {
     BatteryCharging80, BatteryCharging90, BatteryChargingFull,
     BatteryFull
 } from "@mui/icons-material";
-import {NeurosityAdapter} from "../../neurosity-adapter/NeurosityAdapter";
+import {Register} from "../../neurosity-adapter/Register";
 
 const statesLabels = {
     booting: "Starting OS...",
@@ -19,13 +19,13 @@ const statesLabels = {
 };
 
 export interface StatusProps {
-    neurosity: NeurosityAdapter;
     headset: string | null;
 }
 
-export function HeadsetStatus({neurosity, headset}: StatusProps) {
+export function HeadsetStatus({headset}: StatusProps) {
 
     const [status, setStatus] = useState<DeviceStatus | null>(null);
+    const neurosity = useMemo(() => Register.neurosityAdapter, []);
 
     useEffect(() => {
         const subscription = neurosity.status$.subscribe((status) => {

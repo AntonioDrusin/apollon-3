@@ -8,23 +8,20 @@ import {NeurosityDataProcessor} from "./NeurosityDataProcessor";
 
 
 export class NeurosityAdapter {
-    private static _neurosity: Neurosity | null = null;
     private readonly _neurosity: Neurosity;
-    private static _dataSource: NeurosityDataSource | null = null;
-    private static _processor: NeurosityDataProcessor;
 
     private _loggedIn: boolean;
     private readonly _devices$: Subject<DeviceInfo[]>;
     private readonly _loggedIn$: Subject<boolean>;
     private readonly _selectedDevice$: Subject<DeviceInfo | null>;
+    private _dataSource: NeurosityDataSource;
+    private _processor: NeurosityDataProcessor;
 
-    constructor() {
+    constructor(neurosity: Neurosity, dataSource: NeurosityDataSource, dataProcessor: NeurosityDataProcessor) {
         this._loggedIn = false;
-        NeurosityAdapter._neurosity = NeurosityAdapter._neurosity ?? new Neurosity({autoSelectDevice: false});
-        this._neurosity = NeurosityAdapter._neurosity;
-        NeurosityAdapter._dataSource = NeurosityAdapter._dataSource ?? new NeurosityDataSource(this._neurosity);
-        NeurosityAdapter._processor = NeurosityAdapter._processor ?? new NeurosityDataProcessor(this);
-
+        this._neurosity = neurosity;
+        this._dataSource = dataSource;
+        this._processor = dataProcessor;
 
         this._devices$ = new Subject<DeviceInfo[]>();
         this._loggedIn$ = new Subject<boolean>();
@@ -35,14 +32,6 @@ export class NeurosityAdapter {
             this._loggedIn$.next(this._loggedIn);
             this.getDevices();
         });
-    }
-
-    get dataSource(): NeurosityDataSource {
-        return NeurosityAdapter._dataSource!;
-    }
-
-    get processor(): NeurosityDataProcessor {
-        return NeurosityAdapter._processor!;
     }
 
     get devices$(): Observable<DeviceInfo[]> {
@@ -94,7 +83,7 @@ export class NeurosityAdapter {
             this._devices$.next([]);
             this._selectedDevice$.next(null);
             this._loggedIn$.next(false);
-            NeurosityAdapter._dataSource!.resetData();
+            this._dataSource.resetData();
         });
     }
 }
