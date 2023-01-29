@@ -1,12 +1,12 @@
-import './App.css';
+import "./App.css";
 import {
     createHashRouter, RouterProvider,
 } from "react-router-dom";
 import Visualizer, {visualizerLoader} from "./user-interface/visualizer/Visualizer";
 import Controller, {controllerLoader} from "./user-interface//controller/Controller";
-import React from "react";
-import {theme} from "./theme";
-import {CssBaseline, ThemeProvider} from "@mui/material";
+import React, {useState} from "react";
+import {CssBaseline, Theme, ThemeProvider} from "@mui/material";
+import {AllThemes} from "./user-interface/Themes";
 
 export default App;
 
@@ -17,11 +17,29 @@ const router = createHashRouter([
 ]);
 
 
+export const getThemeByName = (name: string): Theme => {
+    return AllThemes[name].theme;
+};
+
+
+interface ThemeContextValue {
+    themeName: string,
+    setThemeName: React.Dispatch<React.SetStateAction<string>>
+}
+
+export const ThemeContext =  React.createContext({} as ThemeContextValue);
+
+
 function App() {
+    const [themeName, setThemeName] = useState("dark");
+    const theme = getThemeByName(themeName);
+
     return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline/>
-            <RouterProvider router={router}/>
-        </ThemeProvider>
+        <ThemeContext.Provider value={{themeName, setThemeName}}>
+            <ThemeProvider theme={theme}>
+                <CssBaseline/>
+                <RouterProvider router={router}/>
+            </ThemeProvider>
+        </ThemeContext.Provider>
     );
 }

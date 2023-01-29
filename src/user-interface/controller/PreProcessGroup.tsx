@@ -13,7 +13,7 @@ export function PreProcessGroup({processor}: PreProcessPanelProps) {
 
     return <Box>
         {
-            <Box sx={{display: 'flex', flexWrap: 'wrap'}}>
+            <Box sx={{display: "flex", flexWrap: "wrap"}}>
                 {
                     NeurosityDataKeys.map((key) => {
                         return <Box sx={{width: 240}} key={key}>

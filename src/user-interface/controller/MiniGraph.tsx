@@ -1,8 +1,9 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useContext, useEffect, useRef, useState} from "react";
 import Sketch from "react-p5";
 import type P5 from "p5";
 import {KeysOfNeurosityData, NeurosityData} from "../../neurosity-adapter/NeurosityDataSource";
 import {Observable} from "rxjs";
+import {getThemeByName, ThemeContext} from "../../App";
 
 interface MiniGraphProps {
     valueId: string;
@@ -17,6 +18,9 @@ export function MiniGraph({valueId, dataSource, color, width, height}: MiniGraph
     const samples = 450;
     const margin = 8;
     let value = useRef(0)
+    const themeContext = useContext(ThemeContext);
+    const theme = getThemeByName(themeContext.themeName);
+
 
     const [values] = useState<number[]>(() => {
         let ary = new Array(samples);
@@ -46,9 +50,10 @@ export function MiniGraph({valueId, dataSource, color, width, height}: MiniGraph
     }
 
     const draw = (p5: P5) => {
-        p5.background(0, 0, 0);
-        p5.fill(color);
-        p5.stroke(73, 55, 138);
+        p5.background(theme.palette.background.default);
+
+        p5.stroke(theme.palette.primary.main);
+        p5.fill(theme.palette.background.paper);
         p5.strokeWeight(1);
 
         const min = Math.min.apply(null, values);
@@ -57,18 +62,18 @@ export function MiniGraph({valueId, dataSource, color, width, height}: MiniGraph
         const xScale = width / (samples - 1);
 
         p5.beginShape();
-        p5.vertex(0, height);
+        // p5.vertex(0, height);
         values.forEach((value, index) => p5.vertex(index * xScale, height - value * yScale));
-        p5.vertex(width, height);
-        p5.endShape('close');
+        // p5.vertex(width, height);
+        p5.endShape();
 
-        p5.fill(208, 199, 240);
+        p5.fill(theme.palette.primary.main);
         p5.noStroke();
 
         p5.text(max.toFixed(1), margin, 12);
         p5.text(min.toFixed(1), margin, height - 4);
 
-        p5.fill(208, 240, 199);
+        p5.fill(theme.palette.secondary.main);
         const textWidth = p5.textWidth(values[samples - 1].toFixed(1));
         p5.text(values[samples - 1].toFixed(1), width - textWidth - margin, 12);
     };

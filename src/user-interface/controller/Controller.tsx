@@ -7,7 +7,7 @@ import {
     Typography
 } from "@mui/material";
 import {PersonalVideo} from "@mui/icons-material";
-import React, {useState, useEffect, useMemo} from "react";
+import React, {useState, useEffect, useMemo, useContext} from "react";
 import LoginDialog from "./LoginDialog";
 import {HeadsetStatus} from "./HeadsetStatus";
 import {DeviceInfo} from "@neurosity/sdk/dist/cjs/types/deviceInfo";
@@ -20,6 +20,8 @@ import {PreProcessGroup} from "./PreProcessGroup";
 import {TabPanel} from "./TabPanel";
 import {ParameterMap, ParameterMaps} from "../../link/ScreenLink";
 import {Register} from "../../neurosity-adapter/Register";
+import {ThemeContext} from "../../App";
+import MainMenu from "../MainMenu";
 
 export function controllerLoader() {
     return null;
@@ -119,6 +121,7 @@ export default function Controller() {
         <Box>
             <AppBar position="static">
                 <Toolbar>
+                    <MainMenu></MainMenu>
                     <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
                         Apollon 3
                     </Typography>
@@ -128,15 +131,17 @@ export default function Controller() {
                     <Button
                         variant="outlined"
                         onClick={menuButtonClick}
+                        color="inherit"
                     >{dataSource}</Button>
                     <Box sx={{mx: 4}}>
                         <IconButton onClick={() => {
-                            window.open(window.location.pathname + '#/visualizer', '_blank');
+                            window.open(window.location.pathname + "#/visualizer", "_blank");
                         }}>
                             <PersonalVideo></PersonalVideo>
                         </IconButton>
                     </Box>
                 </Toolbar>
+
                 <Menu
                     anchorEl={anchorEl}
                     open={menuOpen}
@@ -154,8 +159,6 @@ export default function Controller() {
                 </Menu>
 
                 <LoginDialog open={dialogOpen} onClose={closeDialog} ></LoginDialog>
-
-
             </AppBar>
             <DndProvider backend={HTML5Backend}>
                 <Container maxWidth="xl">
@@ -164,7 +167,7 @@ export default function Controller() {
                     </Box>
                 </Container>
                 <Container maxWidth="xl">
-                    <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
+                    <Box sx={{borderBottom: 1, borderColor: "divider"}}>
                         <Tabs value={selectedPanel} onChange={onTabChange}>
                             <Tab key={"preprocessing"} label={"Preprocessing"}></Tab>
                             {
@@ -180,9 +183,9 @@ export default function Controller() {
 
                     {maps &&
                         visualizers.visualizers.map((v: VisualizerInfo, i: number) => {
-                            return <TabPanel key={v.label + 'panel'} value={selectedPanel} index={i + 1}>
+                            return <TabPanel key={v.label + "panel"} value={selectedPanel} index={i + 1}>
                                 <VisualizerPanel
-                                    key={v.label + 'visualization-panel'}
+                                    key={v.label + "visualization-panel"}
                                     visualizerInfo={v}
                                     live={v.label === liveVisualizer}
                                     onLive={handleLiveChange}
@@ -200,6 +203,7 @@ export default function Controller() {
                 onClose={errorClose}
                 message={error}
             />
+
         </Box>
     );
 }

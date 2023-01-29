@@ -1,8 +1,9 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useContext, useEffect, useRef, useState} from "react";
 import Sketch from "react-p5";
 import type P5 from "p5";
 import {KeysOfNeurosityData, NeurosityData} from "../../neurosity-adapter/NeurosityDataSource";
 import {Observable} from "rxjs";
+import {getThemeByName, ThemeContext} from "../../App";
 
 interface MultiGraphProps {
     valueId: string;
@@ -18,6 +19,10 @@ export function MultiGraph({valueId, dataSource, color, width, height, minPlot, 
     const periodMs = 16.3;
     const samples = 450;
     let value = useRef(0)
+
+    const themeContext = useContext(ThemeContext);
+    const theme = getThemeByName(themeContext.themeName);
+
 
     const [values] = useState(() => {
         let ary = new Array(samples);
@@ -47,9 +52,12 @@ export function MultiGraph({valueId, dataSource, color, width, height, minPlot, 
     }
 
     const draw = (p5: P5) => {
-        p5.background(0, 0, 0);
-        p5.fill(color);
-        p5.stroke(73, 55, 138);
+        p5.background(theme.palette.background.default);
+
+        const fillColor = p5.lerpColor(p5.color(color), p5.color(theme.palette.background.default), 0.33);
+        p5.fill(fillColor);
+        const strokeColor = p5.lerpColor(p5.color(color),p5.color(255,255,255), 0.33);
+        p5.stroke(strokeColor);
         p5.strokeWeight(1);
 
 //        const min = Math.min.apply(null, values);
@@ -61,7 +69,7 @@ export function MultiGraph({valueId, dataSource, color, width, height, minPlot, 
         p5.vertex(0, height);
         values.forEach((value, index) => p5.vertex(index * xScale, height - (value - minPlot) * yScale));
         p5.vertex(width, height);
-        p5.endShape('close');
+        p5.endShape("close");
 
         p5.fill(208, 199, 240);
         p5.noStroke();

@@ -31,17 +31,18 @@ export function PreviewMeter({dataSource, valueId, color}: PreviewMeterProps) {
                     p: 1,
                     m: 1,
                     opacity: opacity,
-                    color: (theme) => (theme.palette.mode === 'dark' ? 'grey.300' : 'grey.800'),
-                    border: '1px solid',
+                    color: (theme) => (theme.palette.mode === "dark" ? "grey.300" : "grey.800"),
+                    border: "1px solid",
                     borderColor: (theme) =>
-                        theme.palette.mode === 'dark' ? 'grey.800' : 'grey.300',
-                    backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#101010' : 'grey.100'),
+                        theme.palette.mode === "dark" ? "grey.800" : "grey.300",
+                    // backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#101010" : "grey.100"),
+                    backGroundColor: color,
                     borderRadius: 2,
-                    fontSize: '0.875rem',
-                    fontWeight: '400',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    flexWrap: 'wrap'
+                    fontSize: "0.875rem",
+                    fontWeight: "400",
+                    display: "flex",
+                    flexDirection: "column",
+                    flexWrap: "wrap"
                 }}
     >
         <Box>{label}</Box>

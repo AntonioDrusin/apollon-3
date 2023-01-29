@@ -48,25 +48,25 @@ export function PreProcessOutput({outputInfo, dataKey, processor}: PreProcessOut
             <Typography>{outputInfo.name}</Typography>
         </Box>
         <Box sx={{m: 1, p: 0}}>
-            <Card sx={{m: 1, width: 160, height: 60}}>
+            <Card sx={{m: 1, width: 160, height: 60 }}>
                 <MiniGraph valueId={dataKey} dataSource={processor.preData$} color={outputInfo.color} width={160}
                            height={60}></MiniGraph>
             </Card>
-            <Box sx={{display: 'flex',
-                flexDirection: 'row',
+            <Box sx={{display: "flex",
+                flexDirection: "row",
 
             }}>
                 <TextField sx={{m:1}} id="clampLow" label="Low" variant="outlined" value={clampLowString}
                            onChange={handleClampLow}
-                           inputProps={{inputMode: 'numeric', pattern: '[0-9\.]*'}}/>
+                           inputProps={{inputMode: "numeric", pattern: "[0-9.]*"}}/>
                 <TextField sx={{m:1}} id="clampHigh" label="High" variant="outlined" value={clampHighString}
                            onChange={handleClampHigh}
-                           inputProps={{inputMode: 'numeric', pattern: '[0-9\.]*'}}/>
+                           inputProps={{inputMode: "numeric", pattern: "[0-9.]*"}}/>
             </Box>
             <Box sx={{mr:2}}>
                 <FormControl sx={{m:1}} fullWidth>
-                    <InputLabel id={'input-' + dataKey}>Filtering</InputLabel>
-                    <Select labelId={'input-' + dataKey} value={filter} label="Filtering" onChange={handleFilterChange}>
+                    <InputLabel id={"input-" + dataKey}>Filtering</InputLabel>
+                    <Select labelId={"input-" + dataKey} value={filter} label="Filtering" onChange={handleFilterChange}>
                         <MenuItem value={"0"}>No Filter</MenuItem>
                         <MenuItem value={"8"}>8 average</MenuItem>
                         <MenuItem value={"16"}>16 average</MenuItem>

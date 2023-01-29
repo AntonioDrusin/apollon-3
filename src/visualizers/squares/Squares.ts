@@ -32,6 +32,6 @@ export class Squares implements Visualizer {
         g.vertex(mul * x, mul * y);
         y = y - this.rightSide;
         g.vertex(mul * x, mul * y);
-        g.endShape('close');
+        g.endShape("close");
     }
 }

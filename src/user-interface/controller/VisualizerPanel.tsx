@@ -48,7 +48,7 @@ export function VisualizerPanel({visualizerInfo, live, map, onLive, onParameterC
             </ToggleButtonGroup>
         </Box>
         {(map &&
-            <Box sx={{display: 'flex', flexWrap: 'wrap'}}>
+            <Box sx={{display: "flex", flexWrap: "wrap"}}>
                 {
                     visualizerInfo.inputs.map((info, index) => {
                         return <VisualizerInput
@@ -123,12 +123,12 @@ function VisualizerInput({info, link, onParameterChange}: VisualizerInputProps) 
                     <Typography>{info.label}</Typography>
                 </Box>
 
-                <Box sx={{display: 'flex', flexWrap: 'wrap', p: 1, m: 1}}>
+                <Box sx={{display: "flex", flexWrap: "wrap", p: 1, m: 1}}>
                     <Box sx={{minWidth: 220}}>
                         <FormControl fullWidth>
-                            <InputLabel id={'input-' + info.label}>Output</InputLabel>
+                            <InputLabel id={"input-" + info.label}>Output</InputLabel>
                             <Select value={selectedInput}
-                                    labelId={'input-' + info.label}
+                                    labelId={"input-" + info.label}
                                     label="Output"
                                     onChange={handleChange}
                             >
