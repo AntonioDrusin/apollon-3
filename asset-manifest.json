@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/apollon-3/static/css/main.b2baa509.css",
-    "main.js": "/apollon-3/static/js/main.a1e889f0.js",
+    "main.css": "/apollon-3/static/css/main.e6c13ad2.css",
+    "main.js": "/apollon-3/static/js/main.7f49e31f.js",
     "static/js/787.95382b35.chunk.js": "/apollon-3/static/js/787.95382b35.chunk.js",
     "index.html": "/apollon-3/index.html",
-    "main.b2baa509.css.map": "/apollon-3/static/css/main.b2baa509.css.map",
-    "main.a1e889f0.js.map": "/apollon-3/static/js/main.a1e889f0.js.map",
+    "main.e6c13ad2.css.map": "/apollon-3/static/css/main.e6c13ad2.css.map",
+    "main.7f49e31f.js.map": "/apollon-3/static/js/main.7f49e31f.js.map",
     "787.95382b35.chunk.js.map": "/apollon-3/static/js/787.95382b35.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.b2baa509.css",
-    "static/js/main.a1e889f0.js"
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.7f49e31f.js"
   ]
 }
