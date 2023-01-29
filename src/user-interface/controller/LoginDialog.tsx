@@ -10,7 +10,7 @@ import {
     TextField, Typography
 } from "@mui/material";
 import React, {useMemo, useState} from "react";
-import {Register} from "../../neurosity-adapter/Register";
+import {Register} from "../../Register";
 
 
 interface LoginDialogProps {

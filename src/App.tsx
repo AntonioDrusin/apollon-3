@@ -2,7 +2,7 @@ import "./App.css";
 import {
     createHashRouter, RouterProvider,
 } from "react-router-dom";
-import Visualizer, {visualizerLoader} from "./user-interface/visualizer/Visualizer";
+import VisualizerArea, {visualizerLoader} from "./user-interface/visualizer/VisualizerArea";
 import Controller, {controllerLoader} from "./user-interface//controller/Controller";
 import React, {useState} from "react";
 import {CssBaseline, Theme, ThemeProvider} from "@mui/material";
@@ -12,7 +12,7 @@ export default App;
 
 
 const router = createHashRouter([
-    {path: "visualizer", element: <Visualizer/>, loader: visualizerLoader},
+    {path: "visualizer", element: <VisualizerArea/>, loader: visualizerLoader},
     {path: "/", element: <Controller/>, loader: controllerLoader},
 ]);
 

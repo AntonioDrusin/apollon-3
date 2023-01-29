@@ -1,5 +1,5 @@
 import Graphics from "p5";
-import {numberInput, Visualizer, visualizer} from "../Visualizers";
+import {numberInput, Visualizer, visualizer} from "../VisualizerDirectory";
 
 @visualizer("Squares", "2d")
 export class Squares implements Visualizer {

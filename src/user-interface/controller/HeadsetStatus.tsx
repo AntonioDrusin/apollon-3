@@ -8,7 +8,7 @@ import {
     BatteryCharging80, BatteryCharging90, BatteryChargingFull,
     BatteryFull
 } from "@mui/icons-material";
-import {Register} from "../../neurosity-adapter/Register";
+import {Register} from "../../Register";
 
 const statesLabels = {
     booting: "Starting OS...",

@@ -10,7 +10,7 @@ import {
     ToggleButtonGroup,
     Typography
 } from "@mui/material";
-import {InputInfo, VisualizerInfo} from "../../visualizers/Visualizers";
+import {InputInfo, VisualizerInfo} from "../../visualizers/VisualizerDirectory";
 import {DataSourceInfos, KeysOfNeurosityData} from "../../neurosity-adapter/NeurosityDataSource";
 import {ConnectedTv} from "@mui/icons-material";
 import {useDrop} from "react-dnd";

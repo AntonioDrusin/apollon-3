@@ -38,7 +38,7 @@ export default function ThemeDialog({open, onClose}: ThemeDialogProps) {
             <RadioGroup value={themeContext.themeName} onChange={handleThemeChange}>
                 {
                     Object.keys(AllThemes).map((t) => {
-                        return <FormControlLabel value={t} control={<Radio/>} label={AllThemes[t].name}></FormControlLabel>
+                        return <FormControlLabel key={t} value={t} control={<Radio/>} label={AllThemes[t].name}></FormControlLabel>
                     })
                 }
             </RadioGroup>

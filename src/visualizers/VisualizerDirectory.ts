@@ -1,9 +1,9 @@
 import Graphics from "p5";
 import "reflect-metadata";
-import {Visualizers} from "./Register";
+import {VisualizersMap} from "./VisualizersMap";
 
 export interface VisualizerInfo {
-    class: any;
+    Constructor: any;
     label: string;
     p5mode: string;
     inputs: InputInfo[];
@@ -13,6 +13,7 @@ export interface InputInfo {
     label: string;
     min: number;
     max: number;
+    propertyKey: string;
 }
 
 export class VisualizerDirectory {
@@ -22,10 +23,10 @@ export class VisualizerDirectory {
     constructor() {
         const __FIELD_VISUALIZERS_METADATA_KEY = "Field.Visualizers.Metadata.Key";
         this._info = new Map<string, VisualizerInfo>();
-        let property: keyof typeof Visualizers;
-        for (property in Visualizers) {
-            const info = Reflect.getMetadata(__FIELD_VISUALIZERS_METADATA_KEY, Visualizers[property]) as VisualizerInfo;
-            info.class = Visualizers[property];
+        let property: keyof typeof VisualizersMap;
+        for (property in VisualizersMap) {
+            const info = Reflect.getMetadata(__FIELD_VISUALIZERS_METADATA_KEY, VisualizersMap[property]) as VisualizerInfo;
+            info.Constructor = VisualizersMap[property];
             this._info.set(info.label, info);
         }
 
@@ -52,7 +53,7 @@ export function numberInput(label: string, from: number, to: number) {
         const __FIELD_VISUALIZERS_METADATA_KEY = "Field.Visualizers.Metadata.Key";
         const metaData = Reflect.getMetadata(__FIELD_VISUALIZERS_METADATA_KEY, target.constructor) || {};
         metaData.inputs ||= [];
-        metaData.inputs.push({label, from, to});
+        metaData.inputs.push({label, min: from, max: to, propertyKey} as InputInfo);
         Reflect.defineMetadata(__FIELD_VISUALIZERS_METADATA_KEY, metaData, target.constructor);
     }
 }

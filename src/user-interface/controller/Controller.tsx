@@ -7,20 +7,19 @@ import {
     Typography
 } from "@mui/material";
 import {PersonalVideo} from "@mui/icons-material";
-import React, {useState, useEffect, useMemo, useContext} from "react";
+import React, {useState, useEffect, useMemo} from "react";
 import LoginDialog from "./LoginDialog";
 import {HeadsetStatus} from "./HeadsetStatus";
 import {DeviceInfo} from "@neurosity/sdk/dist/cjs/types/deviceInfo";
 import {PreviewCard} from "./PreviewCard";
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend"
-import {VisualizerDirectory, VisualizerInfo} from "../../visualizers/Visualizers";
+import {VisualizerDirectory, VisualizerInfo} from "../../visualizers/VisualizerDirectory";
 import {VisualizerPanel} from "./VisualizerPanel";
 import {PreProcessGroup} from "./PreProcessGroup";
 import {TabPanel} from "./TabPanel";
 import {ParameterMap, ParameterMaps} from "../../link/ScreenLink";
-import {Register} from "../../neurosity-adapter/Register";
-import {ThemeContext} from "../../App";
+import {Register} from "../../Register";
 import MainMenu from "../MainMenu";
 
 export function controllerLoader() {
@@ -98,6 +97,10 @@ export default function Controller() {
             setLiveVisualizer(key);
         } else setLiveVisualizer(null);
     }
+
+    useEffect(()=> {
+        screenLink.setVisualizer(liveVisualizer);
+    }, [screenLink, liveVisualizer]);
 
     const errorClose = () => {
         setError(null);

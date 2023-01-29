@@ -1,8 +1,9 @@
-import {NeurosityAdapter} from "./NeurosityAdapter";
-import {NeurosityDataProcessor} from "./NeurosityDataProcessor";
-import {ScreenLinkTransmitter, ScreenLinkReceiver} from "../link/ScreenLink";
 import {Neurosity} from "@neurosity/sdk";
-import {NeurosityDataSource} from "./NeurosityDataSource";
+import {NeurosityAdapter} from "./neurosity-adapter/NeurosityAdapter";
+import {NeurosityDataProcessor} from "./neurosity-adapter/NeurosityDataProcessor";
+import {NeurosityDataSource} from "./neurosity-adapter/NeurosityDataSource";
+import {ScreenLinkTransmitter} from "./link/ScreenLinkTransmitter";
+import {ScreenLinkReceiver} from "./link/ScreenLinkReceiver";
 
 export class Register {
     private static _neurosityAdapter: NeurosityAdapter;
