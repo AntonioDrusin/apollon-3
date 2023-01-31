@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {
     Box,
     Card,
@@ -12,9 +12,10 @@ import {
 } from "@mui/material";
 import {InputInfo, VisualizerInfo} from "../../visualizers/VisualizerDirectory";
 import {DataSourceInfos, KeysOfNeurosityData} from "../../neurosity-adapter/NeurosityDataSource";
-import {ConnectedTv} from "@mui/icons-material";
+import {Brightness1, ConnectedTv} from "@mui/icons-material";
 import {useDrop} from "react-dnd";
 import {ParameterLink, ParameterMap} from "../../link/ScreenLink";
+import {getThemeByName, ThemeContext} from "../../App";
 
 export interface VisualizerPanelProps {
     visualizerInfo: VisualizerInfo;
@@ -116,16 +117,20 @@ function VisualizerInput({info, link, onParameterChange}: VisualizerInputProps) 
         setManualValue(event.target.value);
     };
 
+    const themeContext = useContext(ThemeContext);
+    const theme = getThemeByName(themeContext.themeName);
+
     return (
-        <Card sx={{m: 1, p: 0, width: 550, outlineColor: "#232323", outlineWidth: 2, outlineStyle: "solid"}} ref={drop}>
+        <Card sx={{m: 1, p: 0, width: 550}} ref={drop}>
             <Box>
-                <Box sx={{background: "#232323", px: 2, py: 1}}>
+                <Box sx={{px: 2, py: 1}}>
                     <Typography>{info.label}</Typography>
                 </Box>
 
                 <Box sx={{display: "flex", flexWrap: "wrap", p: 1, m: 1}}>
                     <Box sx={{minWidth: 220}}>
-                        <FormControl fullWidth>
+                        <Box sx={{width: 16, height: 16, borderRadius: 8, backgroundColor: DataSourceInfos[selectedInput as KeysOfNeurosityData]?.color ?? "#101010"  }}></Box>
+                        <FormControl fullWidth component="span">
                             <InputLabel id={"input-" + info.label}>Output</InputLabel>
                             <Select value={selectedInput}
                                     labelId={"input-" + info.label}

@@ -14,8 +14,8 @@ interface MiniGraphProps {
 }
 
 export function MiniGraph({valueId, dataSource, color, width, height}: MiniGraphProps) {
-    const periodMs = 1000/16.3;
-    const samples = 450;
+    const periodMs = 1000/120;
+    const samples = width;
     const margin = 8;
     let value = useRef(0)
     const themeContext = useContext(ThemeContext);
