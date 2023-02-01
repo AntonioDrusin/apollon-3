@@ -57,12 +57,12 @@ export function MiniGraph({valueId, dataSource, color, width, height}: MiniGraph
 
         const min = Math.min.apply(null, values);
         const max = Math.max.apply(null, values);
-        const yScale = height / max;
+        const yScale = height /(max-min);
         const xScale = width / (samples - 1);
 
         p5.beginShape();
         // p5.vertex(0, height);
-        values.forEach((value, index) => p5.vertex(index * xScale, height - value * yScale));
+        values.forEach((value, index) => p5.vertex(index * xScale, height - ((value-min) * yScale)));
         // p5.vertex(width, height);
         p5.endShape();
 

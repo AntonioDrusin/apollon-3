@@ -4,6 +4,7 @@ import {NeurosityDataProcessor} from "./neurosity-adapter/NeurosityDataProcessor
 import {NeurosityDataSource} from "./neurosity-adapter/NeurosityDataSource";
 import {ScreenLinkTransmitter} from "./link/ScreenLinkTransmitter";
 import {ScreenLinkReceiver} from "./link/ScreenLinkReceiver";
+import {Settings} from "./services/Settings";
 
 export class Register {
     private static _neurosityAdapter: NeurosityAdapter;
@@ -12,6 +13,7 @@ export class Register {
     private static _screenLink: ScreenLinkTransmitter;
     private static _screenLinkReceiver: ScreenLinkReceiver;
     private static _neurosity: Neurosity;
+    private static _settings: Settings;
 
     public static get neurosity(): Neurosity {
         if (!Register._neurosity) {
@@ -32,7 +34,8 @@ export class Register {
             Register._neurosityAdapter = new NeurosityAdapter(
                 Register.neurosity,
                 Register.neurosityDataSource,
-                Register.dataProcessor
+                Register.dataProcessor,
+                Register.settings,
             );
         }
         return Register._neurosityAdapter;
@@ -57,6 +60,13 @@ export class Register {
             Register._screenLinkReceiver = new ScreenLinkReceiver();
         }
         return Register._screenLinkReceiver;
+    }
+
+    public static get settings(): Settings {
+        if (!Register._settings) {
+            Register._settings = new Settings();
+        }
+        return Register._settings;
     }
 
 

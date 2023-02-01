@@ -1,10 +1,11 @@
 import {Neurosity} from "@neurosity/sdk";
 import {DeviceInfo} from "@neurosity/sdk/dist/cjs/types/deviceInfo";
 import {DeviceStatus} from "@neurosity/sdk/dist/esm/types/status";
-import {combineLatest, map, Observable, Subject} from "rxjs";
+import {BehaviorSubject, combineLatest, map, Observable, Subject} from "rxjs";
 import {Credentials} from "@neurosity/sdk/dist/cjs/types/credentials";
 import {NeurosityDataSource} from "./NeurosityDataSource";
 import {NeurosityDataProcessor} from "./NeurosityDataProcessor";
+import {Settings} from "../services/Settings";
 
 
 export class NeurosityAdapter {
@@ -13,11 +14,12 @@ export class NeurosityAdapter {
     private _loggedIn: boolean;
     private readonly _devices$: Subject<DeviceInfo[]>;
     private readonly _loggedIn$: Subject<boolean>;
-    private readonly _selectedDevice$: Subject<DeviceInfo | null>;
+    private readonly _selectedDevice$: BehaviorSubject<DeviceInfo | null>;
     private _dataSource: NeurosityDataSource;
     private _processor: NeurosityDataProcessor;
+    private _settings: Settings;
 
-    constructor(neurosity: Neurosity, dataSource: NeurosityDataSource, dataProcessor: NeurosityDataProcessor) {
+    constructor(neurosity: Neurosity, dataSource: NeurosityDataSource, dataProcessor: NeurosityDataProcessor, settings: Settings) {
         this._loggedIn = false;
         this._neurosity = neurosity;
         this._dataSource = dataSource;
@@ -25,7 +27,9 @@ export class NeurosityAdapter {
 
         this._devices$ = new Subject<DeviceInfo[]>();
         this._loggedIn$ = new Subject<boolean>();
-        this._selectedDevice$ = new Subject<DeviceInfo | null>();
+        this._selectedDevice$ = new BehaviorSubject<DeviceInfo | null>(null);
+
+        this._settings = settings;
 
         this._neurosity.onAuthStateChanged().subscribe((user) => {
             this._loggedIn = !!user;
@@ -47,20 +51,22 @@ export class NeurosityAdapter {
     }
 
     get status$(): Observable<DeviceStatus> {
-        return combineLatest([
-            this._neurosity.status(),
-            this._neurosity.streamingState()
-        ]).pipe(map(([status, state]) => {
-                return status;
-            }
-        ));
+        return this._neurosity.status();
     }
 
     private getDevices(): void {
         if (!this._loggedIn) return;
         this._neurosity.getDevices().then((devices) => {
             this._devices$.next(devices);
+            this.restoreSavedDevice(devices);
         });
+    }
+
+    private restoreSavedDevice(devices: DeviceInfo[]) {
+        const savedDeviceId = this._settings.getProp("deviceId");
+        const selectedDevice = devices.find((d) => d.deviceId === savedDeviceId);
+        if (selectedDevice) this.selectDevice(selectedDevice.deviceId);
+
     }
 
     public selectDevice(deviceId: string): void {
@@ -71,6 +77,7 @@ export class NeurosityAdapter {
             )
             .then((device) => {
                 this._selectedDevice$.next(device);
+                this._settings.setProp("deviceId", deviceId);
             });
     }
 

@@ -107,7 +107,6 @@ export default function Controller() {
     };
 
     const handleParameterChange = (key: string, map: ParameterMap) => {
-        console.log("Handle param change");
         if (maps) {
             const newMaps: ParameterMaps = maps;
             newMaps[key] = map;
@@ -140,7 +139,7 @@ export default function Controller() {
                         <IconButton onClick={() => {
                             window.open(window.location.pathname + "#/visualizer", "_blank");
                         }}>
-                            <PersonalVideo></PersonalVideo>
+                            <PersonalVideo color="inherit"></PersonalVideo>
                         </IconButton>
                     </Box>
                 </Toolbar>

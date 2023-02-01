@@ -20,7 +20,7 @@ export class NeurosityDataProcessor implements GraphSource {
         this._dataSource = dataSource;
 
         this._processors = NeurosityDataKeys.reduce((o: any, key) => {
-            o[key] = new InputProcessor();
+            o[key] = new InputProcessor(key);
             return o;
         }, {}) as any;
 

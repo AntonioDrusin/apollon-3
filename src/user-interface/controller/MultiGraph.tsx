@@ -23,7 +23,6 @@ export function MultiGraph({valueId, dataSource, color, width, height, minPlot, 
     const themeContext = useContext(ThemeContext);
     const theme = getThemeByName(themeContext.themeName);
 
-
     const [values] = useState(() => {
         let ary = new Array(samples);
         ary.fill(0);

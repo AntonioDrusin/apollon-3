@@ -46,7 +46,7 @@ export function PreviewMeter({dataSource, valueId, color}: PreviewMeterProps) {
                 }}
     >
         <Box>{label}</Box>
-        <MultiGraph valueId={valueId} dataSource={dataSource} color={color} width={120} height={32} minPlot={0}
+        <MultiGraph key={"mg-"+label} valueId={valueId} dataSource={dataSource} color={color} width={120} height={32} minPlot={0}
                     maxPlot={1}></MultiGraph>
     </Box>
 }

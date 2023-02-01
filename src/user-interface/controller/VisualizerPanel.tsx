@@ -85,7 +85,7 @@ function VisualizerInput({info, link, onParameterChange}: VisualizerInputProps) 
             canDrop: monitor.canDrop(),
             what: monitor.getItem(),
         }),
-        drop: (item: any, monitor: any) => {
+        drop: (item: any) => {
             if (item) {
                 setSelectedInput(item.key);
             }
@@ -121,15 +121,20 @@ function VisualizerInput({info, link, onParameterChange}: VisualizerInputProps) 
     const theme = getThemeByName(themeContext.themeName);
 
     return (
-        <Card sx={{m: 1, p: 0, width: 550}} ref={drop}>
+        <Card sx={{m: 1, p: 0, width: 340}} ref={drop}>
             <Box>
                 <Box sx={{px: 2, py: 1}}>
                     <Typography>{info.label}</Typography>
                 </Box>
 
                 <Box sx={{display: "flex", flexWrap: "wrap", p: 1, m: 1}}>
+                    <Box
+                        sx={{width: 54, height: 54, mx: 1, p: 1,
+                            borderRadius: 27,
+                            backgroundColor: DataSourceInfos[selectedInput as KeysOfNeurosityData]?.color ?? theme.palette.background.default
+                    }}>
+                    </Box>
                     <Box sx={{minWidth: 220}}>
-                        <Box sx={{width: 16, height: 16, borderRadius: 8, backgroundColor: DataSourceInfos[selectedInput as KeysOfNeurosityData]?.color ?? "#101010"  }}></Box>
                         <FormControl fullWidth component="span">
                             <InputLabel id={"input-" + info.label}>Output</InputLabel>
                             <Select value={selectedInput}

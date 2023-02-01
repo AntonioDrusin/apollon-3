@@ -26,6 +26,7 @@ export default function MainMenu() {
 
     return <Box sx={{mx: 4}}>
         <IconButton
+            color="inherit"
             onClick={menuButtonClick}
         >
             <MenuBook></MenuBook>

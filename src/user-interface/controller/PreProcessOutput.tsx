@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Box, Card, FormControl, InputLabel, MenuItem, Select, TextField, Typography} from "@mui/material";
 import {KeysOfNeurosityData, OutputInfo} from "../../neurosity-adapter/NeurosityDataSource";
 import {MultiGraph} from "./MultiGraph";
@@ -15,6 +15,16 @@ export function PreProcessOutput({outputInfo, dataKey, processor}: PreProcessOut
     const [clampLowString, setClampLowString] = useState<string>(outputInfo.min.toString());
     const [clampHighString, setClampHighString] = useState<string>(outputInfo.max.toString());
     const [filter, setFilter] = useState("0");
+    const [ready, setReady] = useState(false);
+
+    useEffect(() => {
+        const inputProcessor = processor.getInputProcessor(dataKey);
+        const parameters = inputProcessor.getParameters();
+        setFilter(parameters.firLength.toString());
+        setClampLowString(parameters.lowClamp.toString());
+        setClampHighString(parameters.highClamp.toString());
+        setReady(true);
+    }, [processor, dataKey]);
 
     const handleFilterChange = (event: any) => {
         setFilter(event.target.value);
@@ -43,7 +53,7 @@ export function PreProcessOutput({outputInfo, dataKey, processor}: PreProcessOut
         setClamp(clampLowString, s);
     }
 
-    return <Card sx={{m: 3, p: 0, outlineColor: outputInfo.color, outlineWidth: 2, outlineStyle: "solid"}}>
+    return ready ? ( <Card sx={{m: 3, p: 0, outlineColor: outputInfo.color, outlineWidth: 2, outlineStyle: "solid"}}>
         <Box sx={{background: outputInfo.color, px: 2, py: 1}}>
             <Typography>{outputInfo.name}</Typography>
         </Box>
@@ -85,5 +95,5 @@ export function PreProcessOutput({outputInfo, dataKey, processor}: PreProcessOut
                             dataSource={processor.data$}></MultiGraph>
             </Card>
         </Box>
-    </Card>
+    </Card>) : null;
 }

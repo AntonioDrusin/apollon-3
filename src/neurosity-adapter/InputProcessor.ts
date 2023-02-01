@@ -1,16 +1,28 @@
 import {InputProcessorParameters, PartialInputProcessorParameters} from "./NeurosityDataProcessor";
+import {Settings} from "../services/Settings";
+import {Register} from "../Register";
 
 export class InputProcessor {
     _parameters: InputProcessorParameters;
     _fir: number[];
+    _settings: Settings;
+    private readonly _settingsKey: string;
 
-    constructor() {
-        this._parameters = {firLength: 0, highClamp: 1, lowClamp: 0};
+    constructor(key: string) {
+        this._settings = Register.settings;
+        this._settingsKey = `InputProcessor[${key}]`;
         this._fir = [];
+        const params = this._settings.getProp<InputProcessorParameters>(this._settingsKey);
+        this._parameters = params ?? {firLength: 0, highClamp: 1, lowClamp: 0};
     }
 
     public setParameters(value: PartialInputProcessorParameters) {
         this._parameters = {...this._parameters, ...value};
+        this._settings.setProp(this._settingsKey, this._parameters);
+    }
+
+    public getParameters(): InputProcessorParameters {
+        return this._parameters;
     }
 
     // Must return a value between 0 and 1
@@ -30,7 +42,7 @@ export class InputProcessor {
             let divider = 0;
             let total = 0;
 
-            this._fir.map((v, i) => {
+            this._fir.forEach((v, i) => {
                 total += v * i;
                 divider += i;
             });
