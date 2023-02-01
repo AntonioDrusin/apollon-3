@@ -8,7 +8,7 @@ interface TabPanelProps {
 }
 
 export function TabPanel(props: TabPanelProps) {
-    const { children, value, index, ...other } = props;
+    const {children, value, index, ...other} = props;
 
     return (
         <div
@@ -18,11 +18,9 @@ export function TabPanel(props: TabPanelProps) {
             aria-labelledby={`simple-tab-${index}`}
             {...other}
         >
-            {value === index && (
-                <Box>
-                    {children}
-                </Box>
-            )}
+            <Box>
+                {children}
+            </Box>
         </div>
     );
 }

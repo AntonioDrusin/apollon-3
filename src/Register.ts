@@ -50,7 +50,7 @@ export class Register {
 
     public static get screenLink(): ScreenLinkTransmitter {
         if (!Register._screenLink) {
-            Register._screenLink = new ScreenLinkTransmitter(Register.dataProcessor);
+            Register._screenLink = new ScreenLinkTransmitter(Register.dataProcessor, Register.settings);
         }
         return Register._screenLink;
     }

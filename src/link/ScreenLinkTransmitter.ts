@@ -1,27 +1,35 @@
 import {NeurosityDataProcessor} from "../neurosity-adapter/NeurosityDataProcessor";
 import {VisualizerDirectory} from "../visualizers/VisualizerDirectory";
 import {NeurosityData} from "../neurosity-adapter/NeurosityDataSource";
-import {__BROADCAST_CHANNEL_NAME__, InputData, ParameterMap, ParameterMaps} from "./ScreenLink";
+import {__BROADCAST_CHANNEL_NAME__, InputData, ParameterMaps} from "./ScreenLink";
+import {Settings} from "../services/Settings";
 
 export class ScreenLinkTransmitter {
 
-    private _maps: { [k: string]: ParameterMap };
+    private _maps: ParameterMaps;
     private _dataProcessor: NeurosityDataProcessor;
     private _channel: BroadcastChannel;
     private _visualizer: string | null;
+    private _settings: Settings;
+    private readonly _storageKey = "parameterMaps";
+    private readonly _visualizerStorageKey = "selectedVisualizer";
 
-    constructor(dataProcessor: NeurosityDataProcessor) {
+
+    constructor(dataProcessor: NeurosityDataProcessor, settings: Settings) {
         const visualizers = new VisualizerDirectory();
         const maps: ParameterMaps = {};
+        this._settings = settings;
+        const loadedMaps = this._settings.getProp<ParameterMaps>(this._storageKey);
         visualizers.visualizers.forEach((v) => {
-            maps[v.label] = {
+            // Deal with the fact that we have saved may not match the new visualizers we have
+            maps[v.label] = loadedMaps?.[v.label] ?? {
                 links: v.inputs.map(i => {
                     return {
                         manualValue: 0,
                         outputKey: null,
                     };
                 })
-            }
+            };
         });
         this._maps = maps;
         this._dataProcessor = dataProcessor;
@@ -30,7 +38,9 @@ export class ScreenLinkTransmitter {
             const message = this.mapData(data);
             this._channel.postMessage(message);
         });
-        this._visualizer = null;
+
+        const loadedVisualizer = this._settings.getProp<string>(this._visualizerStorageKey);
+        this._visualizer = loadedVisualizer && maps[loadedVisualizer] ? loadedVisualizer : null;
     }
 
     private mapData(data: NeurosityData): InputData {
@@ -50,11 +60,18 @@ export class ScreenLinkTransmitter {
         return this._maps;
     }
 
+    public getVisualizer(): string | null {
+        return this._visualizer;
+    }
+
+
     public setMaps(maps: ParameterMaps): void {
         this._maps = maps;
+        this._settings.setProp(this._storageKey, this._maps);
     }
 
     public setVisualizer(visualizerKey: string | null) {
         this._visualizer = visualizerKey;
+        this._settings.setProp(this._visualizerStorageKey, this._visualizer);
     }
 }

@@ -15,7 +15,7 @@ export function PreProcessOutput({outputInfo, dataKey, processor}: PreProcessOut
     const [clampLowString, setClampLowString] = useState<string>(outputInfo.min.toString());
     const [clampHighString, setClampHighString] = useState<string>(outputInfo.max.toString());
     const [filter, setFilter] = useState("0");
-    const [ready, setReady] = useState(false);
+    const [loading, setLoading]  = useState(true);
 
     useEffect(() => {
         const inputProcessor = processor.getInputProcessor(dataKey);
@@ -23,7 +23,7 @@ export function PreProcessOutput({outputInfo, dataKey, processor}: PreProcessOut
         setFilter(parameters.firLength.toString());
         setClampLowString(parameters.lowClamp.toString());
         setClampHighString(parameters.highClamp.toString());
-        setReady(true);
+        setLoading(false);
     }, [processor, dataKey]);
 
     const handleFilterChange = (event: any) => {
@@ -53,7 +53,7 @@ export function PreProcessOutput({outputInfo, dataKey, processor}: PreProcessOut
         setClamp(clampLowString, s);
     }
 
-    return ready ? ( <Card sx={{m: 3, p: 0, outlineColor: outputInfo.color, outlineWidth: 2, outlineStyle: "solid"}}>
+    return loading ? null : ( <Card sx={{m: 3, p: 0, outlineColor: outputInfo.color, outlineWidth: 2, outlineStyle: "solid"}}>
         <Box sx={{background: outputInfo.color, px: 2, py: 1}}>
             <Typography>{outputInfo.name}</Typography>
         </Box>
@@ -95,5 +95,5 @@ export function PreProcessOutput({outputInfo, dataKey, processor}: PreProcessOut
                             dataSource={processor.data$}></MultiGraph>
             </Card>
         </Box>
-    </Card>) : null;
+    </Card>);
 }

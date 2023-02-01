@@ -42,7 +42,7 @@ export default function Controller() {
 
     const neurosityAdapter = useMemo(() => Register.neurosityAdapter, []);
     const dataProcessor = useMemo(() => Register.dataProcessor, []);
-
+    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         const devicesSub = neurosityAdapter.devices$.subscribe(setHeadsets);
@@ -99,12 +99,20 @@ export default function Controller() {
     }
 
     useEffect(()=> {
-        screenLink.setVisualizer(liveVisualizer);
+        if ( !loading ) {
+            screenLink.setVisualizer(liveVisualizer);
+        }
     }, [screenLink, liveVisualizer]);
 
     const errorClose = () => {
         setError(null);
     };
+
+    useEffect(() => {
+        setMaps(screenLink.getMaps());
+        setLiveVisualizer(screenLink.getVisualizer());
+        setLoading(false);
+    }, [screenLink]);
 
     const handleParameterChange = (key: string, map: ParameterMap) => {
         if (maps) {
@@ -119,7 +127,7 @@ export default function Controller() {
 
     const onTabChange = (event: React.SyntheticEvent, newValue: any) => setSelectedPanel(newValue);
 
-    return (
+    return loading ? null : (
         <Box>
             <AppBar position="static">
                 <Toolbar>

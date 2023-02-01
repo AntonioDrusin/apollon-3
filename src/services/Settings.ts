@@ -1,9 +1,15 @@
 export class Settings {
-    public setProp(name: string, data: Object): void {
-        localStorage.setItem(name, JSON.stringify(data));
+    public setProp(name: string, data: Object | null): void {
+        localStorage.setItem(name, data ? JSON.stringify(data) : "");
+
     }
     public getProp<T>(name: string): T | null {
         const item = localStorage.getItem(name);
-        return item ? JSON.parse(item) : null;
+        try {
+            return item && item !== "" ? JSON.parse(item) : null;
+        }
+        catch (e) {
+            return null;
+        }
     }
 }
