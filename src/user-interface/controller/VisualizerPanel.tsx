@@ -1,7 +1,7 @@
 import React from "react";
 import {Box, ToggleButton, ToggleButtonGroup} from "@mui/material";
 import {VisualizerInfo} from "../../visualizers/VisualizerDirectory";
-import {ConnectedTv} from "@mui/icons-material";
+import {ConnectedTv, PlayArrow} from "@mui/icons-material";
 import {ParameterLink, ParameterMap} from "../../link/ScreenLink";
 import {VisualizerInput} from "./VisualizerInput";
 
@@ -32,7 +32,7 @@ export function VisualizerPanel({visualizerInfo, live, map, onLive, onParameterC
         <Box sx={{p: 3}}>
             <ToggleButtonGroup value={liveTv} onChange={handleLive}>
                 <ToggleButton value="tv">
-                    <ConnectedTv/> <Box sx={{m: 1}}>Go Live</Box>
+                    <PlayArrow/>
                 </ToggleButton>
             </ToggleButtonGroup>
         </Box>
