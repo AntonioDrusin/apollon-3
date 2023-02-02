@@ -7,9 +7,9 @@ export interface InputProcessorParameters {
     firLength: number;
     lowClamp: number;
     highClamp: number;
+    autoscaling: boolean;
+    autoscalingPeriodSeconds: number;
 }
-
-export type PartialInputProcessorParameters = Partial<InputProcessorParameters>;
 
 export class NeurosityDataProcessor implements GraphSource {
     private readonly _dataSource: NeurosityDataSource;
