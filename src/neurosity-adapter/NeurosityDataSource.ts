@@ -17,13 +17,13 @@ export type KeysOfNeurosityData = typeof NeurosityDataKeys[number];
 export type NeurosityData = { [key in KeysOfNeurosityData]: number };
 
 export const DataSourceInfos: { [key in KeysOfNeurosityData]: OutputInfo } = {
-    alpha: {name: "Alpha Average", min: 0, max: 200, default: 20, color: "#54540c"},
-    beta: {name: "Beta Average", min: 0, max: 200, default: 20, color: "#225e40"},
-    gamma: {name: "Gamma Average", min: 0, max: 200, default: 20, color: "#8c642c"},
-    theta: {name: "Theta Average", min: 0, max: 200, default: 20, color: "#22505e"},
-    delta: {name: "Delta Average", min: 0, max: 200, default: 20, color: "#7e2133"},
-    focus: {name: "Focus", min: 0, max: 1, default: .2, color: "#235e1c"},
-    calm: {name: "Calm", min: 0, max: 1, default: .2, color: "#121d62"},
+    alpha: {name: "Alpha Average", min: 0, max: 200, default: 20, color: "#da62a1"},
+    beta: {name: "Beta Average", min: 0, max: 200, default: 20, color: "#178ec5"},
+    gamma: {name: "Gamma Average", min: 0, max: 200, default: 20, color: "#00cbb9"},
+    theta: {name: "Theta Average", min: 0, max: 200, default: 20, color: "#ffd493"},
+    delta: {name: "Delta Average", min: 0, max: 200, default: 20, color: "#3ff3a8"},
+    focus: {name: "Focus", min: 0, max: 1, default: .2, color: "#3bb9f1"},
+    calm: {name: "Calm", min: 0, max: 1, default: .2, color: "#acafff"},
 }
 
 export class NeurosityDataSource implements GraphSource {
