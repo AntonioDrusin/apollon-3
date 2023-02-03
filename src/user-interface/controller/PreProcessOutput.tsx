@@ -34,11 +34,11 @@ export function PreProcessOutput({outputInfo, dataKey, processor}: PreProcessOut
         const inputProcessor = processor.getInputProcessor(dataKey);
         const parameters = inputProcessor.getParameters();
 
-        setFilter(parameters.firLength.toString());
-        setClampLowString(parameters.lowClamp.toString());
-        setClampHighString(parameters.highClamp.toString());
+        setFilter(parameters.firLength?.toString() || "0");
+        setClampLowString(parameters.lowClamp?.toString() || "0");
+        setClampHighString(parameters.highClamp?.toString() || "1");
         setAutoscaling(parameters.autoscaling);
-        setAutoscalingSeconds(parameters.autoscalingPeriodSeconds.toString());
+        setAutoscalingSeconds(parameters.autoscalingPeriodSeconds?.toString() || "1");
         setLoading(false);
     }, [processor, dataKey]);
 
