@@ -40,17 +40,19 @@ export function VisualizerInput({info, link, onParameterChange}: VisualizerInput
     }, [link]);
 
     useEffect(() => {
-        let input: KeysOfNeurosityData | null;
+        if ( !loading ) {
+            let input: KeysOfNeurosityData | null;
 
-        input = selectedInput === MANUAL
-            ? null
-            : selectedInput as KeysOfNeurosityData;
+            input = selectedInput === MANUAL
+                ? null
+                : selectedInput as KeysOfNeurosityData;
 
-        onParameterChange({
-            manualValue: manualValue || 0,
-            outputKey: input
-        })
-    }, [manualValue, selectedInput, onParameterChange]);
+            onParameterChange({
+                manualValue: manualValue || 0,
+                outputKey: input
+            })
+        }
+    }, [loading, manualValue, selectedInput, onParameterChange]);
 
     const handleChange = (event: any) => {
         setSelectedInput(event.target.value);

@@ -33,6 +33,7 @@ export function PreProcessOutput({outputInfo, dataKey, processor}: PreProcessOut
     useEffect(() => {
         const inputProcessor = processor.getInputProcessor(dataKey);
         const parameters = inputProcessor.getParameters();
+
         setFilter(parameters.firLength.toString());
         setClampLowString(parameters.lowClamp.toString());
         setClampHighString(parameters.highClamp.toString());
@@ -43,18 +44,20 @@ export function PreProcessOutput({outputInfo, dataKey, processor}: PreProcessOut
 
 
     useEffect(() => {
-        let lowClamp = parseFloat(clampLowString) || outputInfo.min;
-        let highClamp = parseFloat(clampHighString) || outputInfo.max;
-        let autoscalingPeriodSeconds = parseFloat(autoscalingSeconds) || 1;
-        let firLength = parseFloat(filter) || 0;
-        processor.getInputProcessor(dataKey).setParameters({
-            autoscaling,
-            autoscalingPeriodSeconds,
-            lowClamp,
-            highClamp,
-            firLength
-        });
-    }, [outputInfo, dataKey, processor, clampLowString, clampHighString, autoscaling, autoscalingSeconds, filter]);
+        if ( !loading ) {
+            let lowClamp = parseFloat(clampLowString) || outputInfo.min;
+            let highClamp = parseFloat(clampHighString) || outputInfo.max;
+            let autoscalingPeriodSeconds = parseFloat(autoscalingSeconds) || 1;
+            let firLength = parseFloat(filter) || 0;
+            processor.getInputProcessor(dataKey).setParameters({
+                autoscaling,
+                autoscalingPeriodSeconds,
+                lowClamp,
+                highClamp,
+                firLength
+            });
+        }
+    }, [loading, outputInfo, dataKey, processor, clampLowString, clampHighString, autoscaling, autoscalingSeconds, filter]);
 
 
     const handleFilterChange = (event: any) => {
