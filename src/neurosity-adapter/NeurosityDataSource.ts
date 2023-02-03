@@ -11,7 +11,20 @@ export interface OutputInfo {
     color: string;
 }
 
-export const NeurosityDataKeys = ["alpha", "beta", "gamma", "theta", "delta", "focus", "calm"] as const;
+// https://docs.neurosity.co/docs/api/brainwaves/
+const CP3 = 0;
+const C3 = 1;
+const F5 = 2;
+const PO3 = 3;
+const PO4 = 4;
+const F6 = 5;
+const C4 = 6;
+const CP4 = 7;
+
+export const NeurosityDataKeys = [
+    "alpha", "beta", "gamma", "theta", "delta", "focus", "calm",
+    "valence", "vigilance", "engagement", "workload"
+] as const;
 export type KeysOfNeurosityData = typeof NeurosityDataKeys[number];
 
 export type NeurosityData = { [key in KeysOfNeurosityData]: number };
@@ -25,6 +38,10 @@ export const DataSourceInfos: { [key in KeysOfNeurosityData]: OutputInfo } = {
     delta: {name: "Delta Average", min: 0, max: 200, color: "#3ff3a8"},
     focus: {name: "Focus", min: 0, max: 1, color: "#3bb9f1"},
     calm: {name: "Calm", min: 0, max: 1, color: "#acafff"},
+    valence: {name: "Valence", min: 0, max: 1, color: "#1caf7f"},
+    vigilance: {name: "Vigilance", min: 0, max: 1, color: "#2caf9f"},
+    engagement: {name: "Engagement", min: 0, max: 1, color: "#3cafaf"},
+    workload: {name: "Workload", min: 0, max: 1, color: "#4cafff"},
 }
 
 export class NeurosityDataSource implements GraphSource {
@@ -51,11 +68,11 @@ export class NeurosityDataSource implements GraphSource {
         return this._data$;
     }
 
-    private sendData() : void {
+    private sendData(): void {
         if (!this._hasData) {
-            this._hasData = NeurosityDataKeys.every( (k) => this._currentData[k] );
+            this._hasData = NeurosityDataKeys.every((k) => this._currentData[k]);
         }
-        if ( this._hasData ) {
+        if (this._hasData) {
             this._data$.next(this._currentData as NeurosityData);
         }
     }
@@ -64,12 +81,29 @@ export class NeurosityDataSource implements GraphSource {
         this._neurosity.brainwaves("powerByBand").subscribe(
             // The SDK has an incorrect definition of PowerByBand
             (brainwaves: any) => {
-                const powerByBand = (brainwaves.data as PowerByBand);
-                this._currentData.alpha = this.process(powerByBand.alpha);
-                this._currentData.beta = this.process(powerByBand.beta);
-                this._currentData.theta = this.process(powerByBand.theta);
-                this._currentData.delta = this.process(powerByBand.delta);
-                this._currentData.gamma = this.process(powerByBand.gamma);
+                const data = (brainwaves.data as PowerByBand);
+
+                // Averages
+                this._currentData.alpha = this.avg(data.alpha);
+                this._currentData.beta = this.avg(data.beta);
+                this._currentData.theta = this.avg(data.theta);
+                this._currentData.delta = this.avg(data.delta);
+                this._currentData.gamma = this.avg(data.gamma);
+
+                this._currentData.engagement =
+                    this.savg(data.alpha, [PO3, PO4])
+                    / this.savg(data.theta, [C3, C4])
+
+                this._currentData.valence =
+                    (data.alpha[PO3] + data.alpha[F5])
+                    / (data.alpha[PO4] + data.alpha[F6]);
+
+                this._currentData.workload =
+                    (this.savg(data.delta, [F5,F6]) + this.savg(data.theta,[F5,F6]))
+                    / this.savg(data.alpha, [PO3, PO4]);
+
+                this._currentData.vigilance = this._currentData.beta / this._currentData.theta;
+
                 this.sendData();
             });
 
@@ -90,8 +124,15 @@ export class NeurosityDataSource implements GraphSource {
         });
     }
 
-    process(values: number[]): number {
-        return values.reduce((a: number, b: number) => a + b) / 8;
+    // returns the average of an array
+    avg(values: number[]): number {
+        return values.reduce((a: number, b: number) => a + b) / values.length;
     }
+
+    // returns average of specified channels
+    savg(values: number[], channels: number[]): number {
+        return this.avg(channels.map((c) => values[c]));
+    }
+
 
 }
