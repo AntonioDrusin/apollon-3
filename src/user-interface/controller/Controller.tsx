@@ -15,7 +15,7 @@ import {PreviewCard} from "./PreviewCard";
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend"
 import {VisualizerDirectory, VisualizerInfo} from "../../visualizers/VisualizerDirectory";
-import {VisualizerPanel} from "./VisualizerPanel";
+import {InputSettingsGroup} from "./InputSettingsGroup";
 import {PreProcessGroup} from "./PreProcessGroup";
 import {TabPanel} from "./TabPanel";
 import {ParameterMap, ParameterMaps} from "../../link/ScreenLink";
@@ -194,14 +194,14 @@ export default function Controller() {
                     {maps &&
                         visualizers.visualizers.map((v: VisualizerInfo, i: number) => {
                             return <TabPanel key={v.label + "panel"} value={selectedPanel} index={i + 1}>
-                                <VisualizerPanel
+                                <InputSettingsGroup
                                     key={v.label + "visualization-panel"}
                                     visualizerInfo={v}
                                     live={v.label === liveVisualizer}
                                     onLive={handleLiveChange}
                                     onParameterChange={(map: ParameterMap) => handleParameterChange(v.label, map)}
                                     map={maps[v.label]}
-                                ></VisualizerPanel>
+                                ></InputSettingsGroup>
                             </TabPanel>;
                         })
                     }

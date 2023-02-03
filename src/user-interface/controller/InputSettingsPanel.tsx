@@ -14,11 +14,14 @@ export interface VisualizerInputProps {
 }
 
 
-export function VisualizerInput({info, link, onParameterChange}: VisualizerInputProps) {
+export function InputSettingsPanel({info, link, onParameterChange}: VisualizerInputProps) {
     const MANUAL = "Manual";
     const [selectedInput, setSelectedInput] = useState<string>(MANUAL);
     const [manualValue, setManualValue] = useState<number>(0);
     const [loading, setLoading] = useState(true);
+    const themeContext = useContext(ThemeContext);
+    const theme = getThemeByName(themeContext.themeName);
+
 
     const [, drop] = useDrop(() => ({
         accept: "card",
@@ -62,15 +65,15 @@ export function VisualizerInput({info, link, onParameterChange}: VisualizerInput
         setManualValue(event.target.value);
     };
 
-    const themeContext = useContext(ThemeContext);
-    const theme = getThemeByName(themeContext.themeName);
-
     return loading ? null : (
-        <Card sx={{m: 1, p: 0, width: 340}} ref={drop}>
+        <Card sx={{m: 3, p: 0,
+            outlineColor: theme.palette.primary.dark,
+            outlineWidth: 2, outlineStyle: "solid",
+            width: 340}} ref={drop}>
+            <Box sx={{px: 2, py: 1, backgroundColor: theme.palette.primary.dark}}>
+                <Typography>{info.label}</Typography>
+            </Box>
             <Box>
-                <Box sx={{px: 2, py: 1}}>
-                    <Typography>{info.label}</Typography>
-                </Box>
 
                 <Box sx={{display: "flex", flexWrap: "wrap", p: 1, m: 1}}>
                     <Box

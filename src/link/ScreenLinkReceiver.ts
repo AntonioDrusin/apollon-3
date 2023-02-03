@@ -5,8 +5,8 @@ export class ScreenLinkReceiver {
     private _channel: BroadcastChannel;
     private _data: InputData;
     private _directory: VisualizerDirectory;
-    private _visualizersMap: { [k: string]: VisualizerInfo };
-    private _currentLabel: string | null;
+    private readonly _visualizersMap: { [k: string]: VisualizerInfo };
+    private readonly _currentLabel: string | null;
     private _current: Visualizer | null;
 
     constructor() {

@@ -1,7 +1,7 @@
 import React from "react";
 import {Box} from "@mui/material";
 import {DataSourceInfos, KeysOfNeurosityData, NeurosityDataKeys} from "../../neurosity-adapter/NeurosityDataSource";
-import {PreProcessOutput} from "./PreProcessOutput";
+import {PreProcessPanel} from "./PreProcessPanel";
 import {NeurosityDataProcessor} from "../../neurosity-adapter/NeurosityDataProcessor";
 
 export interface PreProcessPanelProps {
@@ -17,8 +17,8 @@ export function PreProcessGroup({processor}: PreProcessPanelProps) {
                 {
                     NeurosityDataKeys.map((key) => {
                         return <Box sx={{width: 240}} key={key}>
-                            <PreProcessOutput processor={processor} dataKey={key} key={key}
-                                              outputInfo={DataSourceInfos[key as KeysOfNeurosityData]}></PreProcessOutput>
+                            <PreProcessPanel processor={processor} dataKey={key} key={key}
+                                             outputInfo={DataSourceInfos[key as KeysOfNeurosityData]}></PreProcessPanel>
                         </Box>;
                     })
                 }

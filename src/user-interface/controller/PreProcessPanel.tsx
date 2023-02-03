@@ -22,7 +22,7 @@ export interface PreProcessOutputProps {
     processor: NeurosityDataProcessor;
 }
 
-export function PreProcessOutput({outputInfo, dataKey, processor}: PreProcessOutputProps) {
+export function PreProcessPanel({outputInfo, dataKey, processor}: PreProcessOutputProps) {
     const [clampLowString, setClampLowString] = useState<string>(outputInfo.min.toString());
     const [clampHighString, setClampHighString] = useState<string>(outputInfo.max.toString());
     const [filter, setFilter] = useState("0");

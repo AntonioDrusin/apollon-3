@@ -3,7 +3,7 @@ import {Box, ToggleButton, ToggleButtonGroup} from "@mui/material";
 import {VisualizerInfo} from "../../visualizers/VisualizerDirectory";
 import {Pause, PlayArrow} from "@mui/icons-material";
 import {ParameterLink, ParameterMap} from "../../link/ScreenLink";
-import {VisualizerInput} from "./VisualizerInput";
+import {InputSettingsPanel} from "./InputSettingsPanel";
 
 export interface VisualizerPanelProps {
     visualizerInfo: VisualizerInfo;
@@ -14,7 +14,7 @@ export interface VisualizerPanelProps {
 }
 
 
-export function VisualizerPanel({visualizerInfo, live, map, onLive, onParameterChange}: VisualizerPanelProps) {
+export function InputSettingsGroup({visualizerInfo, live, map, onLive, onParameterChange}: VisualizerPanelProps) {
 
     const [toggles, setToggles] = useState<string[]>([]);
 
@@ -66,12 +66,12 @@ export function VisualizerPanel({visualizerInfo, live, map, onLive, onParameterC
             <Box sx={{display: "flex", flexWrap: "wrap"}}>
                 {
                     visualizerInfo.inputs.map((info, index) => {
-                        return <VisualizerInput
+                        return <InputSettingsPanel
                             key={info.label + "-viz"}
                             info={info}
                             onParameterChange={(link) => handleParameterChange(index, link)}
                             link={map.links[index]}
-                        ></VisualizerInput>;
+                        ></InputSettingsPanel>;
                     })
                 }
             </Box>
