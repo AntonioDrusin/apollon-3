@@ -15,12 +15,15 @@ import {PreviewCard} from "./PreviewCard";
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend"
 import {VisualizerDirectory, VisualizerInfo} from "../../visualizers/VisualizerDirectory";
-import {InputSettingsGroup} from "./InputSettingsGroup";
 import {PreProcessGroup} from "./PreProcessGroup";
 import {TabPanel} from "./TabPanel";
 import {ParameterMap, ParameterMaps} from "../../link/ScreenLink";
 import {Register} from "../../Register";
 import MainMenu from "../MainMenu";
+import {InputSettingsGroup} from "./InputSettingsGroup";
+import {LayoutContext} from "./LayoutContext";
+import RecordingBar from "./RecordingBar";
+import MultiSnackBar from "./MultiSnackBar";
 
 export function controllerLoader() {
     return null;
@@ -33,16 +36,18 @@ export default function Controller() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [headsets, setHeadsets] = useState<DeviceInfo[]>([]);
     const [headset, setHeadset] = useState<string | null>(null);
-    const [error, setError] = useState<string | null>(null);
     const [visualizers] = useState(() => new VisualizerDirectory());
     const [selectedPanel, setSelectedPanel] = useState(0);
     const [liveVisualizer, setLiveVisualizer] = useState<string | null>(null);
     const [screenLink] = useState(() => Register.screenLink);
     const [maps, setMaps] = useState<ParameterMaps>();
+    const [recordingBar, setRecordingBar] = useState(false);
 
     const neurosityAdapter = useMemo(() => Register.neurosityAdapter, []);
     const dataProcessor = useMemo(() => Register.dataProcessor, []);
     const [loading, setLoading] = useState<boolean>(true);
+    const [snackMessage, setSnackMessage] = useState<string>();
+
 
     useEffect(() => {
         const devicesSub = neurosityAdapter.devices$.subscribe(setHeadsets);
@@ -98,15 +103,12 @@ export default function Controller() {
         } else setLiveVisualizer(null);
     }
 
-    useEffect(()=> {
-        if ( !loading ) {
+    useEffect(() => {
+        if (!loading) {
             screenLink.setVisualizer(liveVisualizer);
         }
-    }, [screenLink, liveVisualizer]);
+    }, [loading, screenLink, liveVisualizer]);
 
-    const errorClose = () => {
-        setError(null);
-    };
 
     useEffect(() => {
         setMaps(screenLink.getMaps());
@@ -129,6 +131,7 @@ export default function Controller() {
 
     return loading ? null : (
         <Box>
+            <LayoutContext.Provider value={{recordingBar, setRecordingBar, setSnackMessage}}>
             <AppBar position="static">
                 <Toolbar>
                     <MainMenu></MainMenu>
@@ -168,14 +171,15 @@ export default function Controller() {
                     <MenuItem onClick={logOut}>Log out</MenuItem>
                 </Menu>
 
-                <LoginDialog open={dialogOpen} onClose={closeDialog} ></LoginDialog>
+                <LoginDialog open={dialogOpen} onClose={closeDialog}></LoginDialog>
             </AppBar>
             <DndProvider backend={HTML5Backend}>
-                <Container maxWidth="xl">
+                <Container maxWidth="xl" >
                     <Box sx={{p: 1, m: 1}}>
                         <PreviewCard dataSource={dataProcessor.data$}></PreviewCard>
                     </Box>
                 </Container>
+                <RecordingBar hidden={!recordingBar}></RecordingBar>
                 <Container maxWidth="xl">
                     <Box sx={{borderBottom: 1, borderColor: "divider"}}>
                         <Tabs value={selectedPanel} onChange={onTabChange}>
@@ -187,6 +191,7 @@ export default function Controller() {
                             }
                         </Tabs>
                     </Box>
+
                     <TabPanel value={selectedPanel} index={0}>
                         <PreProcessGroup processor={dataProcessor}></PreProcessGroup>
                     </TabPanel>
@@ -202,18 +207,14 @@ export default function Controller() {
                                     onParameterChange={(map: ParameterMap) => handleParameterChange(v.label, map)}
                                     map={maps[v.label]}
                                 ></InputSettingsGroup>
-                            </TabPanel>;
+                            </TabPanel>
+                                ;
                         })
                     }
                 </Container>
             </DndProvider>
-            <Snackbar
-                open={!!error}
-                autoHideDuration={6000}
-                onClose={errorClose}
-                message={error}
-            />
-
+            <MultiSnackBar message={snackMessage}></MultiSnackBar>
+            </LayoutContext.Provider>
         </Box>
     );
 }

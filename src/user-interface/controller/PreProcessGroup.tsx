@@ -11,18 +11,15 @@ export interface PreProcessPanelProps {
 
 export function PreProcessGroup({processor}: PreProcessPanelProps) {
 
-    return <Box>
+    return <Box sx={{display: "flex", flexWrap: "wrap"}}>
         {
-            <Box sx={{display: "flex", flexWrap: "wrap"}}>
-                {
-                    NeurosityDataKeys.map((key) => {
-                        return <Box sx={{width: 240}} key={key}>
-                            <PreProcessPanel processor={processor} dataKey={key} key={key}
-                                             outputInfo={DataSourceInfos[key as KeysOfNeurosityData]}></PreProcessPanel>
-                        </Box>;
-                    })
-                }
-            </Box>
+            NeurosityDataKeys.map((key) => {
+                return <Box sx={{width: 240}} key={key}>
+                    <PreProcessPanel processor={processor} dataKey={key} key={key}
+                                     outputInfo={DataSourceInfos[key as KeysOfNeurosityData]}></PreProcessPanel>
+                </Box>;
+            })
         }
     </Box>
+
 }

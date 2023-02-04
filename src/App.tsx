@@ -29,7 +29,6 @@ interface ThemeContextValue {
 
 export const ThemeContext =  React.createContext({} as ThemeContextValue);
 
-
 function App() {
     const [themeName, setThemeName] = useState("dark");
     const theme = getThemeByName(themeName);
