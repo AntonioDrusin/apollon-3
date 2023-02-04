@@ -4,15 +4,6 @@ import {createTheme, Theme} from "@mui/material";
 // https://mui.com/material-ui/customization/color/#playground
 
 export const AllThemes: { [key in string]: { name: string, theme: Theme } } = {
-    "alex": {
-        name: "Alessandro Theme 1",
-        theme: createTheme({
-            palette: {
-                mode: "light",
-
-            }
-        }),
-    },
     "dark": {
         name: "Dark",
         theme: createTheme({
@@ -20,5 +11,34 @@ export const AllThemes: { [key in string]: { name: string, theme: Theme } } = {
                 mode: "dark",
             }
         })
-    }
+    },
+    "green": {
+        name: "Green Fields",
+        theme: createTheme({
+            palette: {
+                primary: {
+                    main: '#26a69a',
+                },
+                secondary: {
+                    main: '#5e35b1',
+                },
+                mode: "dark",
+            }
+        }),
+    },
+    "fire": {
+        name: "Fire",
+        theme: createTheme({
+            palette: {
+                primary: {
+                    main: '#ef5350',
+                },
+                secondary: {
+                    main: '#c0ca33',
+                },
+                mode: "dark"
+            }
+        }),
+    },
+
 };
