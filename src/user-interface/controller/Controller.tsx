@@ -25,6 +25,7 @@ import {LayoutContext} from "./LayoutContext";
 import RecordingBar from "./RecordingBar";
 import MultiSnackBar from "./MultiSnackBar";
 import ConnectionMenu from "./ConnectionMenu";
+import FilePlaybackStatus from "./FilePlaybackStatus";
 
 export function controllerLoader() {
     return null;
@@ -37,7 +38,7 @@ export default function Controller() {
     const [liveVisualizer, setLiveVisualizer] = useState<string | null>(null);
     const [screenLink] = useState(() => Register.screenLink);
     const [maps, setMaps] = useState<ParameterMaps>();
-    const [recordingBar, setRecordingBar] = useState(true);
+    const [recordingBar, setRecordingBar] = useState(false);
 
     const neurosityAdapter = useMemo(() => Register.neurosityAdapter, []);
     const dataProcessor = useMemo(() => Register.dataProcessor, []);
@@ -121,6 +122,8 @@ export default function Controller() {
                         <PreviewCard dataSource={dataProcessor.data$}></PreviewCard>
                     </Box>
                 </Container>
+
+                <FilePlaybackStatus hidden={false}></FilePlaybackStatus>
                 <RecordingBar hidden={!recordingBar}></RecordingBar>
                 <Container maxWidth="xl">
                     <Box sx={{borderBottom: 1, borderColor: "divider"}}>

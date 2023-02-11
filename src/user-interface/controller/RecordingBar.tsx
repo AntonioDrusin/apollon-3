@@ -78,7 +78,7 @@ export default function RecordingBar({hidden}: RecordingBarProps) {
     const humanSize = recording ? humanFileSize(size || 0) : "";
 
     return <Box hidden={hidden}><Container maxWidth="xl">
-        <Card sx={{p: 1}}>
+        <Card sx={{p: 1, m: 1}}>
             <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}}>
                 <ToggleButton sx={{mx: 1}}
                               value="recording"
