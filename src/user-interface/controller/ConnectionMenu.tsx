@@ -71,6 +71,8 @@ export default function ConnectionMenu() {
                 })
             }
             <MenuItem divider={true} hidden={!headsets || headsets.length === 0} disabled={true}/>
+            <MenuItem >Load Recording</MenuItem>
+            <MenuItem divider={true} disabled={true}/>
             <MenuItem onClick={openDialog}>Login</MenuItem>
             <MenuItem onClick={logOut}>Log out</MenuItem>
         </Menu>
