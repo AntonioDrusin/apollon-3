@@ -1,19 +1,23 @@
 import {Neurosity} from "@neurosity/sdk";
 import {NeurosityAdapter} from "./neurosity-adapter/NeurosityAdapter";
 import {NeurosityDataProcessor} from "./neurosity-adapter/NeurosityDataProcessor";
-import {NeurosityDataSource} from "./neurosity-adapter/NeurosityDataSource";
+import {OutputDataSource} from "./neurosity-adapter/OutputDataSource";
 import {ScreenLinkTransmitter} from "./link/ScreenLinkTransmitter";
 import {ScreenLinkReceiver} from "./link/ScreenLinkReceiver";
 import {Settings} from "./services/Settings";
+import {NeurosityDataWrapper} from "./neurosity-adapter/NeurosityDataWrapper";
+import {NeurosityDataPersister} from "./neurosity-adapter/NeurosityDataPersister";
 
 export class Register {
     private static _neurosityAdapter: NeurosityAdapter;
-    private static _neurosityDataSource: NeurosityDataSource;
+    private static _outputDataSource: OutputDataSource;
     private static _dataProcessor: NeurosityDataProcessor;
     private static _screenLink: ScreenLinkTransmitter;
     private static _screenLinkReceiver: ScreenLinkReceiver;
     private static _neurosity: Neurosity;
     private static _settings: Settings;
+    private static _neurosityDataWrapper: NeurosityDataWrapper;
+    private static _neurosityDataPersister: NeurosityDataPersister;
 
     public static get neurosity(): Neurosity {
         if (!Register._neurosity) {
@@ -22,19 +26,18 @@ export class Register {
         return Register._neurosity;
     }
 
-    public static get neurosityDataSource(): NeurosityDataSource {
-        if (!Register._neurosityDataSource) {
-            Register._neurosityDataSource = new NeurosityDataSource(Register.neurosity);
+    public static get outputDataSource(): OutputDataSource {
+        if (!Register._outputDataSource) {
+            Register._outputDataSource = new OutputDataSource(Register.neurosityDataWrapper);
         }
-        return Register._neurosityDataSource;
+        return Register._outputDataSource;
     }
 
     public static get neurosityAdapter(): NeurosityAdapter {
         if (!Register._neurosityAdapter) {
             Register._neurosityAdapter = new NeurosityAdapter(
                 Register.neurosity,
-                Register.neurosityDataSource,
-                Register.dataProcessor,
+                Register.outputDataSource,
                 Register.settings,
             );
         }
@@ -43,7 +46,7 @@ export class Register {
 
     public static get dataProcessor(): NeurosityDataProcessor {
         if (!Register._dataProcessor) {
-            Register._dataProcessor = new NeurosityDataProcessor(Register.neurosityDataSource);
+            Register._dataProcessor = new NeurosityDataProcessor(Register.outputDataSource);
         }
         return Register._dataProcessor;
     }
@@ -69,5 +72,18 @@ export class Register {
         return Register._settings;
     }
 
+    public static get neurosityDataWrapper(): NeurosityDataWrapper {
+        if (!Register._neurosityDataWrapper) {
+            Register._neurosityDataWrapper = new NeurosityDataWrapper(Register.neurosity);
+        }
+        return Register._neurosityDataWrapper;
+    }
+
+    public static get neurosityDataPersister(): NeurosityDataPersister {
+        if (!Register._neurosityDataPersister) {
+            Register._neurosityDataPersister = new NeurosityDataPersister(Register.neurosityDataWrapper);
+        }
+        return Register._neurosityDataPersister;
+    }
 
 }

@@ -1,6 +1,6 @@
 import {NeurosityDataProcessor} from "../neurosity-adapter/NeurosityDataProcessor";
 import {VisualizerDirectory} from "../visualizers/VisualizerDirectory";
-import {NeurosityData} from "../neurosity-adapter/NeurosityDataSource";
+import {NeurosityData} from "../neurosity-adapter/OutputDataSource";
 import {__BROADCAST_CHANNEL_NAME__, InputData, ParameterMaps} from "./ScreenLink";
 import {Settings} from "../services/Settings";
 

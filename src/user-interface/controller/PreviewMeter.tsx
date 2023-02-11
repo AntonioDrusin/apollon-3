@@ -4,7 +4,7 @@ import {
     DataSourceInfos,
     KeysOfNeurosityData,
     NeurosityData
-} from "../../neurosity-adapter/NeurosityDataSource";
+} from "../../neurosity-adapter/OutputDataSource";
 import {useDrag} from "react-dnd";
 import {Observable} from "rxjs";
 import {MultiGraph} from "./MultiGraph";

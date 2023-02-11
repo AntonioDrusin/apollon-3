@@ -1,6 +1,6 @@
 import React from "react";
 import {Box, Card} from "@mui/material";
-import {DataSourceInfos, KeysOfNeurosityData, NeurosityData} from "../../neurosity-adapter/NeurosityDataSource";
+import {DataSourceInfos, KeysOfNeurosityData, NeurosityData} from "../../neurosity-adapter/OutputDataSource";
 import {PreviewMeter} from "./PreviewMeter";
 import {Observable} from "rxjs";
 

@@ -41,7 +41,7 @@ export default function Controller() {
     const [liveVisualizer, setLiveVisualizer] = useState<string | null>(null);
     const [screenLink] = useState(() => Register.screenLink);
     const [maps, setMaps] = useState<ParameterMaps>();
-    const [recordingBar, setRecordingBar] = useState(false);
+    const [recordingBar, setRecordingBar] = useState(true);
 
     const neurosityAdapter = useMemo(() => Register.neurosityAdapter, []);
     const dataProcessor = useMemo(() => Register.dataProcessor, []);

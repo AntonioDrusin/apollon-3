@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from "react";
 import {useDrop} from "react-dnd";
-import {DataSourceInfos, KeysOfNeurosityData} from "../../neurosity-adapter/NeurosityDataSource";
+import {DataSourceInfos, KeysOfNeurosityData} from "../../neurosity-adapter/OutputDataSource";
 import {getThemeByName, ThemeContext} from "../../App";
 import {Box, Card, FormControl, InputLabel, MenuItem, Select, Slider, Typography} from "@mui/material";
 import {InputInfo} from "../../visualizers/VisualizerDirectory";

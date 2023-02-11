@@ -1,6 +1,6 @@
 import React from "react";
 import {Box} from "@mui/material";
-import {DataSourceInfos, KeysOfNeurosityData, NeurosityDataKeys} from "../../neurosity-adapter/NeurosityDataSource";
+import {DataSourceInfos, KeysOfNeurosityData, NeurosityDataKeys} from "../../neurosity-adapter/OutputDataSource";
 import {PreProcessPanel} from "./PreProcessPanel";
 import {NeurosityDataProcessor} from "../../neurosity-adapter/NeurosityDataProcessor";
 

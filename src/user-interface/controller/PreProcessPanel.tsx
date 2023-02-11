@@ -11,7 +11,7 @@ import {
     TextField,
     Typography
 } from "@mui/material";
-import {KeysOfNeurosityData, OutputInfo} from "../../neurosity-adapter/NeurosityDataSource";
+import {KeysOfNeurosityData, OutputInfo} from "../../neurosity-adapter/OutputDataSource";
 import {MultiGraph} from "./MultiGraph";
 import {NeurosityDataProcessor} from "../../neurosity-adapter/NeurosityDataProcessor";
 import {MiniGraph} from "./MiniGraph";
@@ -103,7 +103,7 @@ export function PreProcessPanel({outputInfo, dataKey, processor}: PreProcessOutp
 
                     {autoscaling ? (
                         <Box>
-                            <TextField sx={{m: 1}} id="autoscalingSeconds" label="Seconds" variant="outlined"
+                            <TextField sx={{m: 1}} id={"autoscalingSeconds-"+dataKey} label="Seconds" variant="outlined"
                                        value={autoscalingSeconds}
                                        onChange={handleAutoscalingSeconds}
                                        inputProps={{inputMode: "numeric", pattern: "[0-9.]*"}}/>
@@ -113,11 +113,11 @@ export function PreProcessPanel({outputInfo, dataKey, processor}: PreProcessOutp
                             display: "flex",
                             flexDirection: "row",
                         }}>
-                            <TextField sx={{m: 1}} id="clampLow" label="Low" variant="outlined"
+                            <TextField sx={{m: 1}} id={"clampLow-"+dataKey} label="Low" variant="outlined"
                                        value={clampLowString}
                                        onChange={handleClampLow}
                                        inputProps={{inputMode: "numeric", pattern: "[0-9.]*"}}/>
-                            <TextField sx={{m: 1}} id="clampHigh" label="High" variant="outlined"
+                            <TextField sx={{m: 1}} id={"clampHigh-"+dataKey} label="High" variant="outlined"
                                        value={clampHighString}
                                        onChange={handleClampHigh}
                                        inputProps={{inputMode: "numeric", pattern: "[0-9.]*"}}/>

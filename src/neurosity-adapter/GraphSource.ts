@@ -1,5 +1,5 @@
 import {Observable} from "rxjs";
-import {NeurosityData} from "./NeurosityDataSource";
+import {NeurosityData} from "./OutputDataSource";
 
 export interface GraphSource {
     get data$(): Observable<NeurosityData | null>;

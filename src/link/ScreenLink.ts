@@ -1,4 +1,4 @@
-import {KeysOfNeurosityData} from "../neurosity-adapter/NeurosityDataSource";
+import {KeysOfNeurosityData} from "../neurosity-adapter/OutputDataSource";
 
 export interface InputData {
     visualizerLabel: string | null;

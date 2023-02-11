@@ -1,8 +1,8 @@
-import {Neurosity} from "@neurosity/sdk";
 import {PowerByBand} from "@neurosity/sdk/dist/cjs/types/brainwaves";
 import {Observable, Subject} from "rxjs";
 import {STATUS} from "@neurosity/sdk/dist/esm/types/status";
 import {GraphSource} from "./GraphSource";
+import {NeurosityDataWrapper} from "./NeurosityDataWrapper";
 
 export interface OutputInfo {
     name: string;
@@ -44,14 +44,14 @@ export const DataSourceInfos: { [key in KeysOfNeurosityData]: OutputInfo } = {
     workload: {name: "Workload", min: 0, max: 1, color: "#4cafff"},
 }
 
-export class NeurosityDataSource implements GraphSource {
-    private _neurosity: Neurosity;
+export class OutputDataSource implements GraphSource {
+    private _neurosity: NeurosityDataWrapper;
     private readonly _data$: Subject<NeurosityData>;
     // @ts-ignore
     private _currentData: PartialNeurosityData;
     private _hasData: boolean;
 
-    constructor(neurosity: Neurosity) {
+    constructor(neurosity: NeurosityDataWrapper) {
         this._neurosity = neurosity;
         this._hasData = false;
         this._currentData = {};
@@ -77,8 +77,8 @@ export class NeurosityDataSource implements GraphSource {
         }
     }
 
-    subscribe(): void {
-        this._neurosity.brainwaves("powerByBand").subscribe(
+    private subscribe(): void {
+        this._neurosity.powerByBand$().subscribe(
             // The SDK has an incorrect definition of PowerByBand
             (brainwaves: any) => {
                 const data = (brainwaves.data as PowerByBand);
@@ -107,17 +107,17 @@ export class NeurosityDataSource implements GraphSource {
                 this.sendData();
             });
 
-        this._neurosity.calm().subscribe((calm) => {
+        this._neurosity.calm$().subscribe((calm) => {
             this._currentData.calm = calm.probability;
             this.sendData();
         });
 
-        this._neurosity.focus().subscribe((focus) => {
+        this._neurosity.focus$().subscribe((focus) => {
             this._currentData.focus = focus.probability;
             this.sendData();
         });
 
-        this._neurosity.status().subscribe((status) => {
+        this._neurosity.status$().subscribe((status) => {
             if (status.state !== STATUS.ONLINE) {
                 this.resetData()
             }
@@ -125,12 +125,12 @@ export class NeurosityDataSource implements GraphSource {
     }
 
     // returns the average of an array
-    avg(values: number[]): number {
+    private avg(values: number[]): number {
         return values.reduce((a: number, b: number) => a + b) / values.length;
     }
 
     // returns average of specified channels
-    savg(values: number[], channels: number[]): number {
+    private savg(values: number[], channels: number[]): number {
         return this.avg(channels.map((c) => values[c]));
     }
 

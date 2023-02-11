@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useRef, useState} from "react";
 import Sketch from "react-p5";
 import type P5 from "p5";
-import {KeysOfNeurosityData, NeurosityData} from "../../neurosity-adapter/NeurosityDataSource";
+import {KeysOfNeurosityData, NeurosityData} from "../../neurosity-adapter/OutputDataSource";
 import {Observable} from "rxjs";
 import {getThemeByName, ThemeContext} from "../../App";
 
