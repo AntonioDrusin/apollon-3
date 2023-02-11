@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {Box, ToggleButton, ToggleButtonGroup} from "@mui/material";
-import {VisualizerInfo} from "../../visualizers/VisualizerDirectory";
-import {Pause, PlayArrow} from "@mui/icons-material";
-import {ParameterLink, ParameterMap} from "../../link/ScreenLink";
+import {VisualizerInfo} from "../../../visualizers/VisualizerDirectory";
+import {PlayArrow} from "@mui/icons-material";
+import {ParameterLink, ParameterMap} from "../../../link/ScreenLink";
 import {InputSettingsPanel} from "./InputSettingsPanel";
 
 export interface VisualizerPanelProps {

@@ -7,7 +7,7 @@ import {
 } from "../../neurosity-adapter/OutputDataSource";
 import {useDrag} from "react-dnd";
 import {Observable} from "rxjs";
-import {MultiGraph} from "./MultiGraph";
+import {MultiGraph} from "./Graphs/MultiGraph";
 
 interface PreviewMeterProps {
     dataSource: Observable<NeurosityData>;

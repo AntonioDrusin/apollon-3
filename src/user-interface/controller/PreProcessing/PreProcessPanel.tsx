@@ -11,10 +11,10 @@ import {
     TextField,
     Typography
 } from "@mui/material";
-import {KeysOfNeurosityData, OutputInfo} from "../../neurosity-adapter/OutputDataSource";
-import {MultiGraph} from "./MultiGraph";
-import {NeurosityDataProcessor} from "../../neurosity-adapter/NeurosityDataProcessor";
-import {MiniGraph} from "./MiniGraph";
+import {KeysOfNeurosityData, OutputInfo} from "../../../neurosity-adapter/OutputDataSource";
+import {MultiGraph} from "../Graphs/MultiGraph";
+import {NeurosityDataProcessor} from "../../../neurosity-adapter/NeurosityDataProcessor";
+import {MiniGraph} from "../Graphs/MiniGraph";
 
 export interface PreProcessOutputProps {
     outputInfo: OutputInfo;
