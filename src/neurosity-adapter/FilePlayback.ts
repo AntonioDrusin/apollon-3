@@ -112,27 +112,24 @@ export class FilePlayback implements INeurosityDataSource {
 
         this._playbackStatus$.next({
             play: true,
-            locationMilliseconds: this._durationMilliseconds,
+            locationMilliseconds: 0,
         });
 
         while (!this._paused) {
             const start = this._data[this._current].timestamp;
             this.next();
 
-            // Only visualize location for powerByBand to avoid showing the jitter
-            // across signals
-            if (this._data[this._current].powerByBand) {
-                const newLocation = Math.floor((start - this._beginningTimeStamp));
-                if (newLocation !== this._currentLocationMilliseconds) {
-                    this._currentLocationMilliseconds = newLocation;
-                    this._playbackStatus$.next({
-                        play: true,
-                        locationMilliseconds: this._currentLocationMilliseconds,
-                    });
-                }
-            }
-
             if (this._paused) return;
+
+            // Send update
+            const newLocation = (start - this._beginningTimeStamp);
+            if ( Math.floor(newLocation / 500) !== Math.floor(this._currentLocationMilliseconds / 50) ) {
+                this._currentLocationMilliseconds = newLocation;
+                this._playbackStatus$.next({
+                    play: true,
+                    locationMilliseconds: this._currentLocationMilliseconds,
+                });
+            }
 
             const end = this._data[this._current].timestamp
             await delay(end - start);
