@@ -15,11 +15,7 @@ import {Register} from "../../Register";
 import moment from "moment";
 import {humanFileSize} from "../../services/HumanFileSize";
 
-export interface RecordingBarProps {
-    hidden: boolean;
-};
-
-export default function RecordingBar({hidden}: RecordingBarProps) {
+export default function RecordingBar() {
     const [recording, setRecording] = useState(false);
     const [label, setLabel] = useState("");
     const [size, setSize] = useState<number>();
@@ -27,7 +23,7 @@ export default function RecordingBar({hidden}: RecordingBarProps) {
     const [name, setName] = useState<string>();
 
     const layoutContext = useContext(LayoutContext);
-    const dataPersister = useMemo(() => Register.neurosityDataPersister, []);
+    const dataPersister = useMemo(() => Register.neurosityFileWriter, []);
 
     const handleLabeling = () => {
         const tag = label || new Date().toLocaleString();
@@ -77,7 +73,7 @@ export default function RecordingBar({hidden}: RecordingBarProps) {
     const humanTime = recording ? moment.duration(timeLength || 0).humanize() : "";
     const humanSize = recording ? humanFileSize(size || 0) : "";
 
-    return <Box hidden={hidden}><Container maxWidth="xl">
+    return <Box hidden={!layoutContext.recordingBar}><Container maxWidth="xl">
         <Card sx={{p: 1, m: 1}}>
             <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}}>
                 <ToggleButton sx={{mx: 1}}

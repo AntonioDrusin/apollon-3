@@ -6,7 +6,8 @@ import {ScreenLinkTransmitter} from "./link/ScreenLinkTransmitter";
 import {ScreenLinkReceiver} from "./link/ScreenLinkReceiver";
 import {Settings} from "./services/Settings";
 import {NeurosityDataWrapper} from "./neurosity-adapter/NeurosityDataWrapper";
-import {NeurosityDataPersister} from "./neurosity-adapter/NeurosityDataPersister";
+import {NeurosityFileWriter} from "./neurosity-adapter/NeurosityFileWriter";
+import {NeurosityFileReader} from "./neurosity-adapter/NeurosityFileReader";
 
 export class Register {
     private static _neurosityAdapter: NeurosityAdapter;
@@ -17,7 +18,8 @@ export class Register {
     private static _neurosity: Neurosity;
     private static _settings: Settings;
     private static _neurosityDataWrapper: NeurosityDataWrapper;
-    private static _neurosityDataPersister: NeurosityDataPersister;
+    private static _neurosityFileWriter: NeurosityFileWriter;
+    private static _neurosityFileReader: NeurosityFileReader;
 
     public static get neurosity(): Neurosity {
         if (!Register._neurosity) {
@@ -28,7 +30,7 @@ export class Register {
 
     public static get outputDataSource(): OutputDataSource {
         if (!Register._outputDataSource) {
-            Register._outputDataSource = new OutputDataSource(Register.neurosityDataWrapper);
+            Register._outputDataSource = new OutputDataSource(Register.neurosity, Register.neurosityDataWrapper);
         }
         return Register._outputDataSource;
     }
@@ -79,11 +81,18 @@ export class Register {
         return Register._neurosityDataWrapper;
     }
 
-    public static get neurosityDataPersister(): NeurosityDataPersister {
-        if (!Register._neurosityDataPersister) {
-            Register._neurosityDataPersister = new NeurosityDataPersister(Register.neurosityDataWrapper);
+    public static get neurosityFileWriter(): NeurosityFileWriter {
+        if (!Register._neurosityFileWriter) {
+            Register._neurosityFileWriter = new NeurosityFileWriter(Register.neurosityDataWrapper);
         }
-        return Register._neurosityDataPersister;
+        return Register._neurosityFileWriter;
+    }
+
+    public static get neurosityFileReader(): NeurosityFileReader {
+        if (!Register._neurosityFileReader) {
+            Register._neurosityFileReader = new NeurosityFileReader(Register.neurosityDataWrapper);
+        }
+        return Register._neurosityFileReader;
     }
 
 }

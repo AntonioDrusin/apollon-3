@@ -3,6 +3,7 @@ import {Observable, Subject} from "rxjs";
 import {STATUS} from "@neurosity/sdk/dist/esm/types/status";
 import {GraphSource} from "./GraphSource";
 import {NeurosityDataWrapper} from "./NeurosityDataWrapper";
+import {Neurosity} from "@neurosity/sdk";
 
 export interface OutputInfo {
     name: string;
@@ -45,14 +46,16 @@ export const DataSourceInfos: { [key in KeysOfNeurosityData]: OutputInfo } = {
 }
 
 export class OutputDataSource implements GraphSource {
-    private _neurosity: NeurosityDataWrapper;
+    private _neurosityData: NeurosityDataWrapper;
     private readonly _data$: Subject<NeurosityData>;
     // @ts-ignore
     private _currentData: PartialNeurosityData;
     private _hasData: boolean;
+    private _neurosity: Neurosity;
 
-    constructor(neurosity: NeurosityDataWrapper) {
+    constructor(neurosity: Neurosity, neurosityData: NeurosityDataWrapper) {
         this._neurosity = neurosity;
+        this._neurosityData = neurosityData;
         this._hasData = false;
         this._currentData = {};
         this._data$ = new Subject<NeurosityData>();
@@ -78,7 +81,7 @@ export class OutputDataSource implements GraphSource {
     }
 
     private subscribe(): void {
-        this._neurosity.powerByBand$().subscribe(
+        this._neurosityData.powerByBand$.subscribe(
             // The SDK has an incorrect definition of PowerByBand
             (brainwaves: any) => {
                 const data = (brainwaves.data as PowerByBand);
@@ -107,17 +110,17 @@ export class OutputDataSource implements GraphSource {
                 this.sendData();
             });
 
-        this._neurosity.calm$().subscribe((calm) => {
+        this._neurosityData.calm$.subscribe((calm) => {
             this._currentData.calm = calm.probability;
             this.sendData();
         });
 
-        this._neurosity.focus$().subscribe((focus) => {
+        this._neurosityData.focus$.subscribe((focus) => {
             this._currentData.focus = focus.probability;
             this.sendData();
         });
 
-        this._neurosity.status$().subscribe((status) => {
+        this._neurosity.status().subscribe((status) => {
             if (status.state !== STATUS.ONLINE) {
                 this.resetData()
             }

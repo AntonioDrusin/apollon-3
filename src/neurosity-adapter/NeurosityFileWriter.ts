@@ -1,37 +1,6 @@
 import {NeurosityDataWrapper} from "./NeurosityDataWrapper";
 import {from, Observable, Subject, Subscription} from "rxjs";
-import {Field, Message, OneOf, Type} from "protobufjs";
-
-@Type.d("PowerBandsRecord_v1")
-class PowerBandsRecord extends Message<PowerBandsRecord> {
-    @Field.d(1, "float", "repeated")
-    public gamma!: number[];
-    @Field.d(2, "float", "repeated")
-    public beta!: number[];
-    @Field.d(3, "float", "repeated")
-    public alpha!: number[];
-    @Field.d(4, "float", "repeated")
-    public theta!: number[];
-    @Field.d(5, "float", "repeated")
-    public delta!: number[];
-}
-
-
-@Type.d("NeurosityRecord_v1")
-class NeurosityRecord extends Message<NeurosityRecord> {
-    @Field.d(1, "int64")
-    public timeStamp!: number;
-    @OneOf.d("powerBands", "calm", "focus", "tag")
-    public messageType!: string;
-    @Field.d(2, PowerBandsRecord)
-    public powerBands?: PowerBandsRecord;
-    @Field.d(3, "string")
-    public tag?: string;
-    @Field.d(4, "float")
-    public focus?: number;
-    @Field.d(5, "float")
-    public calm?: number;
-}
+import {NeurosityFileVersionRecord, NeurosityRecord, PowerBandsRecord} from "./NeurosityRecord";
 
 export interface DataPersisterStatus {
     currentFileLength: number;
@@ -40,8 +9,7 @@ export interface DataPersisterStatus {
     recordingFileName: string;
 }
 
-
-export class NeurosityDataPersister {
+export class NeurosityFileWriter {
     private _neurosityDataWrapper: NeurosityDataWrapper;
     private _subscriptions: Subscription[] = [];
     private _writable?: FileSystemWritableFileStream;
@@ -68,21 +36,23 @@ export class NeurosityDataPersister {
             this._size = 0;
             this._name = file.name;
 
+            await this.writeHeader();
+
             this._subscriptions.forEach((s) => s.unsubscribe());
             this._subscriptions = [
-                this._neurosityDataWrapper.powerByBand$().subscribe((data) => {
+                this._neurosityDataWrapper.powerByBand$.subscribe((data) => {
                     return this.writeRecord({
                         messageType: "powerBands",
                         powerBands: {...data}
                     });
                 }),
-                this._neurosityDataWrapper.calm$().subscribe((data) => {
+                this._neurosityDataWrapper.calm$.subscribe((data) => {
                     return this.writeRecord({
                         messageType: "calm",
                         calm: data.probability
                     });
                 }),
-                this._neurosityDataWrapper.focus$().subscribe((data) => {
+                this._neurosityDataWrapper.focus$.subscribe((data) => {
                     return this.writeRecord({
                         messageType: "focus",
                         focus: data.probability
@@ -102,18 +72,42 @@ export class NeurosityDataPersister {
         return false;
     }
 
+    private async writeHeader() {
+        if ( this._writable ) {
+            const record = new NeurosityFileVersionRecord();
+            record.majorVersion = 1;
+            record.minorVersion = 0;
+            record.identifier = "Neurosity";
+
+            let writer = NeurosityFileVersionRecord.encodeDelimited(record);
+            let buffer = writer.finish();
+            this._size = (this._size || 0) + buffer.length;
+            await this._writable.write({data: buffer, type: "write"});
+        }
+    }
+
     private writeRecord(source: any) {
         if (this._writable) {
             const time: Date = new Date();
-            const record = NeurosityRecord.fromObject(source);
-            let writer = NeurosityRecord.encodeDelimited({...record, timeStamp: time.getTime()});
+            const record = new NeurosityRecord();
+
+            record.tag = source.tag;
+            record.powerBands = source.powerBands
+                ? PowerBandsRecord.fromObject(source.powerBands.data)
+                : undefined;
+            record.calm = source.calm;
+            record.focus = source.focus;
+            record.messageType = source.messageType;
+            record.timestamp = time.getTime();
+
+            let writer = NeurosityRecord.encodeDelimited(record);
             let buffer = writer.finish();
             this._size = (this._size || 0) + buffer.length;
 
             this._lastWriteTime ||= new Date(0);
 
-            let flushDelta = (time.getTime() - this._lastWriteTime!.getTime()) / 1000;
-            if (flushDelta > 1) {
+            let updateDelta = (time.getTime() - this._lastWriteTime!.getTime()) / 1000;
+            if (updateDelta > 1) {
                 this._lastWriteTime = time;
                 this._persisterDataSource.next({
                     lastSaveTime: time,

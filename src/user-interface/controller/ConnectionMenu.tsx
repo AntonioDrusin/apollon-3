@@ -1,8 +1,9 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useContext, useEffect, useMemo, useState} from "react";
 import {Box, Button, Container, Menu, MenuItem} from "@mui/material";
 import {DeviceInfo} from "@neurosity/sdk/dist/cjs/types/deviceInfo";
 import {Register} from "../../Register";
 import LoginDialog from "./LoginDialog";
+import {LayoutContext} from "./LayoutContext";
 
 
 export default function ConnectionMenu() {
@@ -13,7 +14,9 @@ export default function ConnectionMenu() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [dataSource, setDataSource] = useState(DISCONNECTED)
     const neurosityAdapter = useMemo(() => Register.neurosityAdapter, []);
-    const [dialogOpen, setDialogOpen] = React.useState(false);
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const fileReader = useMemo(() => Register.neurosityFileReader, []);
+    const layoutContext = useContext(LayoutContext);
 
     useEffect(() => {
         const devicesSub = neurosityAdapter.devices$.subscribe(setHeadsets);
@@ -53,6 +56,13 @@ export default function ConnectionMenu() {
         handleMenuClose();
     };
 
+    const loadRecording = async () => {
+        if ( await fileReader.loadFile() ) {
+            layoutContext.setSnackMessage("File loaded");
+        }
+        handleMenuClose();
+    };
+
     return <Box>
         <Button
             variant="outlined"
@@ -71,7 +81,7 @@ export default function ConnectionMenu() {
                 })
             }
             <MenuItem divider={true} hidden={!headsets || headsets.length === 0} disabled={true}/>
-            <MenuItem >Load Recording</MenuItem>
+            <MenuItem onClick={loadRecording}>Load Recording</MenuItem>
             <MenuItem divider={true} disabled={true}/>
             <MenuItem onClick={openDialog}>Login</MenuItem>
             <MenuItem onClick={logOut}>Log out</MenuItem>

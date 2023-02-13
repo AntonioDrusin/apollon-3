@@ -25,7 +25,7 @@ import {LayoutContext} from "./LayoutContext";
 import RecordingBar from "./RecordingBar";
 import MultiSnackBar from "./MultiSnackBar";
 import ConnectionMenu from "./ConnectionMenu";
-import FilePlaybackStatus from "./FilePlaybackStatus";
+import FilePlaybackBar from "./FilePlaybackBar";
 
 export function controllerLoader() {
     return null;
@@ -123,8 +123,8 @@ export default function Controller() {
                     </Box>
                 </Container>
 
-                <FilePlaybackStatus hidden={false}></FilePlaybackStatus>
-                <RecordingBar hidden={!recordingBar}></RecordingBar>
+                <FilePlaybackBar></FilePlaybackBar>
+                <RecordingBar></RecordingBar>
                 <Container maxWidth="xl">
                     <Box sx={{borderBottom: 1, borderColor: "divider"}}>
                         <Tabs value={selectedPanel} onChange={onTabChange}>
