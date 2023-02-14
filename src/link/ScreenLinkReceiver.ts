@@ -41,8 +41,7 @@ export class ScreenLinkReceiver {
         if (data.visualizerLabel) {
             const info = this._visualizersMap[data.visualizerLabel];
             info.inputs.forEach((input, index) => {
-                const value = input.min + (input.max - input.min) * data.parameters[index];
-                visualizer[input.propertyKey] = value;
+                visualizer[input.propertyKey] = input.min + (input.max - input.min) * data.parameters[index];
             })
         }
     }

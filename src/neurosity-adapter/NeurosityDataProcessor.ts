@@ -25,7 +25,7 @@ export class NeurosityDataProcessor implements GraphSource {
         }, {}) as any;
 
         const timer = interval(1000 / 60);
-        const source = timer.pipe(withLatestFrom(this._dataSource.data$), map(([timer, data]) => {
+        const source = timer.pipe(withLatestFrom(this._dataSource.data$), map(([_, data]) => {
             const newData: any = {};
             NeurosityDataKeys.forEach((key) => {
                 newData[key] = this._processors[key].next(data[key])

@@ -51,7 +51,7 @@ export function MiniGraph({valueId, dataSource, color, width, height}: MiniGraph
     const draw = (p5: P5) => {
         p5.background(theme.palette.background.default);
 
-        p5.stroke(theme.palette.primary.main);
+        p5.stroke(color);
         p5.fill(theme.palette.background.paper);
         p5.strokeWeight(1);
 

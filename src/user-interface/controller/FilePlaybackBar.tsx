@@ -2,15 +2,11 @@ import React, {useContext, useEffect, useMemo, useState} from "react";
 import {
     Autocomplete,
     Box,
-    Button,
     Card,
     Container,
-    FormControl,
     IconButton,
-    InputLabel,
-    MenuItem,
-    Select,
-    Slider, TextField
+    Slider,
+    TextField,
 } from "@mui/material";
 import {PlayArrow, Pause, Eject} from "@mui/icons-material";
 import {Register} from "../../Register";

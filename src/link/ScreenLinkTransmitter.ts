@@ -23,11 +23,9 @@ export class ScreenLinkTransmitter {
         visualizers.visualizers.forEach((v) => {
             // Deal with the fact that we have saved may not match the new visualizers we have
             maps[v.label] = loadedMaps?.[v.label] ?? {
-                links: v.inputs.map(i => {
-                    return {
-                        manualValue: 0,
-                        outputKey: null,
-                    };
+                links: Array(v.inputs.length).fill({
+                    manualValue: 0,
+                    outputKey: null,
                 })
             };
         });
