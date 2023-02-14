@@ -8,6 +8,7 @@ import {NeurosityFileVersionRecord, NeurosityRecord} from "./NeurosityRecord";
 
 export interface FileTag {
     timeStamp: number;
+    locationMilliseconds: number;
     label: string;
     index: number;
 }
@@ -93,7 +94,8 @@ export class FilePlayback implements INeurosityDataSource {
                     this._tags.push({
                         index,
                         label: value.tag,
-                        timeStamp: value.timestamp
+                        timeStamp: value.timestamp,
+                        locationMilliseconds: value.timestamp - beginning
                     });
                 }
 
@@ -219,13 +221,17 @@ export class FilePlayback implements INeurosityDataSource {
         return this._durationMilliseconds;
     }
 
-    public setPositionSeconds(second: number) {
-        const secondsIndex = Math.floor(second);
-        if ( this._seconds[secondsIndex] ) {
-            this._current = this._seconds[secondsIndex];
+    public setPositionSeconds(seconds: number) {
+        const index = Math.floor(seconds);
+        if ( this._seconds[index] ) {
+            this.setPositionIndex(this._seconds[index]);
         }
+    }
+
+    public setPositionIndex(index: number) {
+        this._current = index;
         if (this._paused) {
-            this._currentLocationMilliseconds = this._data[secondsIndex].timestamp;
+            this._currentLocationMilliseconds = this._data[index].timestamp - this._beginningTimeStamp;
             this.sendCurrentPausedPosition();
         }
     }

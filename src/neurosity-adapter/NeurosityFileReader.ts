@@ -66,6 +66,10 @@ export class NeurosityFileReader {
         this._playback?.setPositionSeconds(second);
     }
 
+    public setPositionIndex(index: number) {
+        this._playback?.setPositionIndex(index);
+    }
+
     public eject() {
         this._neurosityDataWrapper.setDataSourceToLive();
         this._playback?.pause();
