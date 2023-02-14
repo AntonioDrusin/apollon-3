@@ -1,26 +1,25 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {IconButton, Snackbar} from "@mui/material";
 import {Close} from "@mui/icons-material";
+import {SnackBarContext} from "./ContextProvider/Context";
 
 export interface SnackbarMessage {
     message: string;
     key: number;
 }
 
-export interface MultiSnackBarProps {
-    message: string | undefined;
-}
 
-export default function MultiSnackBar({message}: MultiSnackBarProps) {
+export default function MultiSnackBar() {
     const [snackPack, setSnackPack] = useState<readonly SnackbarMessage[]>([]);
     const [open, setOpen] = useState(false);
     const [messageInfo, setMessageInfo] = useState<SnackbarMessage | undefined>(undefined,);
+    const context = useContext(SnackBarContext);
 
     useEffect(() => {
-        if (message) {
-            setSnackPack((prev) => [...prev, {message, key: new Date().getTime()}]);
+        if (context.snackMessage) {
+            setSnackPack((prev) => [...prev, {message: context.snackMessage!, key: new Date().getTime()}]);
         }
-    }, [message]);
+    }, [context.snackMessage]);
 
     useEffect(() => {
         if (snackPack.length && !messageInfo) {

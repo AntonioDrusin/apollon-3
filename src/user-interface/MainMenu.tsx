@@ -2,14 +2,14 @@ import {Box, IconButton, Menu, MenuItem} from "@mui/material";
 import React, {useContext, useState} from "react";
 import {MenuBook} from "@mui/icons-material";
 import ThemeDialog from "./ThemeDialog";
-import {LayoutContext} from "./controller/LayoutContext";
+import {RecordingBarContext} from "./controller/ContextProvider/Context";
 
 export default function MainMenu() {
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const [menuOpen, setMenuOpen] = useState(false);
     const [themeDialogOpen, setThemeDialogOpen] = useState(false);
 
-    const layoutContext = useContext(LayoutContext);
+    const recordingBar = useContext(RecordingBarContext);
 
     const handleMenuClose = () => {
         setMenuOpen(false);
@@ -29,7 +29,7 @@ export default function MainMenu() {
 
     const switchRecordingBar = () => {
         setMenuOpen(false);
-        layoutContext.setRecordingBar(true);
+        recordingBar.setRecordingBar(true);
     }
 
     return <Box sx={{mx: 4}}>

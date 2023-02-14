@@ -6,29 +6,37 @@ import {
     ToggleButton,
     OutlinedInput,
     IconButton,
-    InputAdornment,
-    Typography
+    InputAdornment
 } from "@mui/material";
 import {FiberManualRecord, Label, Close} from "@mui/icons-material";
-import {LayoutContext} from "./LayoutContext";
-import {Register} from "../../Register";
-import moment from "moment";
-import {humanFileSize} from "../../services/HumanFileSize";
+import {RecordingBarContext, SnackBarContext} from "../ContextProvider/Context";
+import {Register} from "../../../Register";
+import RecordingBarTicker from "./RecordingBarTicker";
 
 export default function RecordingBar() {
     const [recording, setRecording] = useState(false);
     const [label, setLabel] = useState("");
-    const [size, setSize] = useState<number>();
-    const [timeLength, setTimeLength] = useState<number>();
+    const snackContext = useContext(SnackBarContext);
+    const recordingContext = useContext(RecordingBarContext)
+    const dataPersister = useMemo(() => Register.neurosityFileWriter, []);
     const [name, setName] = useState<string>();
 
-    const layoutContext = useContext(LayoutContext);
-    const dataPersister = useMemo(() => Register.neurosityFileWriter, []);
+    useEffect(() => {
+        if (dataPersister) {
+            const sub = dataPersister.status$.subscribe((status) => {
+                setRecording(true);
+                setName(status.recordingFileName)
+            });
+            return () => {
+                sub.unsubscribe();
+            }
+        }
+    }, [dataPersister]);
 
     const handleLabeling = () => {
         const tag = label || new Date().toLocaleString();
         dataPersister.addTag(tag);
-        layoutContext.setSnackMessage('Stream labeled: "' + tag + '"');
+        snackContext.setSnackMessage('Stream labeled: "' + tag + '"');
         setLabel("");
     };
 
@@ -43,37 +51,20 @@ export default function RecordingBar() {
         if (isRecordingNow) {
             const recordingStarted = await dataPersister.startRecording();
             if (recordingStarted) {
-                layoutContext.setSnackMessage('Recording Started');
+                snackContext.setSnackMessage('Recording Started');
             }
         } else {
             await dataPersister.stopRecording();
-            layoutContext.setSnackMessage('Recording completed: ' + name);
+            snackContext.setSnackMessage('Recording completed: ' + name);
             setRecording(false);
         }
     };
 
     const handleClose = async () => {
-        layoutContext.setRecordingBar(false);
+        recordingContext.setRecordingBar(false);
     };
 
-    useEffect(() => {
-        if (dataPersister) {
-            const sub = dataPersister.status$.subscribe((status) => {
-                setSize(status.currentFileLength);
-                setTimeLength(status.lastSaveTime.getTime() - status.startTime.getTime());
-                setName(status.recordingFileName);
-                setRecording(true);
-            });
-            return () => {
-                sub.unsubscribe();
-            }
-        }
-    }, [dataPersister]);
-
-    const humanTime = recording ? moment.duration(timeLength || 0).humanize() : "";
-    const humanSize = recording ? humanFileSize(size || 0) : "";
-
-    return <Box hidden={!layoutContext.recordingBar}><Container maxWidth="xl">
+    return <Box hidden={!recordingContext.recordingBar}><Container maxWidth="xl">
         <Card sx={{p: 1, m: 1}}>
             <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}}>
                 <ToggleButton sx={{mx: 1}}
@@ -103,16 +94,7 @@ export default function RecordingBar() {
                                    </InputAdornment>
                                }
                 />
-                {recording && <Container sx={{display: 'flex', flexDirection: 'row', flexGrow: 0}}>
-                    <Box sx={{mx: 1}}>
-                        <Typography>{humanTime}</Typography>
-                    </Box>
-
-                    <Box sx={{flexDirection: "column", mx: 1}}>
-                        <Typography>{humanSize}</Typography>
-                        <Typography variant={"caption"}>{name}</Typography>
-                    </Box>
-                </Container>
+                {recording && <RecordingBarTicker></RecordingBarTicker>
                 }
                 <Box sx={{flexGrow: 1}}></Box>
                 <IconButton onClick={async () => {

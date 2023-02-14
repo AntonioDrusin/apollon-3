@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useRef, useState} from "react";
+import React, {useCallback, useContext, useEffect, useRef, useState} from "react";
 import Sketch from "react-p5";
 import type P5 from "p5";
 import {KeysOfNeurosityData, NeurosityData} from "../../../neurosity-adapter/OutputDataSource";
@@ -56,7 +56,7 @@ export function MiniGraph({valueId, dataSource, color, width, height}: MiniGraph
         p5.createCanvas(width, height).parent(canvasParentRef)
     }
 
-    const draw = (p5: P5) => {
+    const draw = useCallback((p5: P5) => {
         p5.background(theme.palette.background.default);
 
         p5.stroke(color);
@@ -83,7 +83,7 @@ export function MiniGraph({valueId, dataSource, color, width, height}: MiniGraph
         p5.fill(theme.palette.secondary.main);
         const textWidth = p5.textWidth(values[samples - 1].toFixed(1));
         p5.text(values[samples - 1].toFixed(1), width - textWidth - margin, 12);
-    };
+    }, []);
 
     return <Sketch setup={setup} draw={draw}></Sketch>
 

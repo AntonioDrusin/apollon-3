@@ -3,7 +3,7 @@ import {Box, Button, Menu, MenuItem} from "@mui/material";
 import {DeviceInfo} from "@neurosity/sdk/dist/cjs/types/deviceInfo";
 import {Register} from "../../Register";
 import LoginDialog from "./LoginDialog";
-import {LayoutContext} from "./LayoutContext";
+import { SnackBarContext} from "./ContextProvider/Context";
 
 
 export default function ConnectionMenu() {
@@ -16,7 +16,7 @@ export default function ConnectionMenu() {
     const neurosityAdapter = useMemo(() => Register.neurosityAdapter, []);
     const [dialogOpen, setDialogOpen] = useState(false);
     const fileReader = useMemo(() => Register.neurosityFileReader, []);
-    const layoutContext = useContext(LayoutContext);
+    const snackContext = useContext(SnackBarContext);
 
     useEffect(() => {
         const devicesSub = neurosityAdapter.devices$.subscribe(setHeadsets);
@@ -58,7 +58,7 @@ export default function ConnectionMenu() {
 
     const loadRecording = async () => {
         if ( await fileReader.loadFile() ) {
-            layoutContext.setSnackMessage("File loaded");
+            snackContext.setSnackMessage("File loaded");
         }
         handleMenuClose();
     };

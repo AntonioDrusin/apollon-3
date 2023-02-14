@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useRef, useState} from "react";
+import React, {useCallback, useContext, useEffect, useRef, useState} from "react";
 import Sketch from "react-p5";
 import type P5 from "p5";
 import {KeysOfNeurosityData, NeurosityData} from "../../../neurosity-adapter/OutputDataSource";
@@ -50,7 +50,7 @@ export function MultiGraph({valueId, dataSource, color, width, height, minPlot, 
         p5.createCanvas(width, height).parent(canvasParentRef)
     }
 
-    const draw = (p5: P5) => {
+    const draw = useCallback( (p5: P5) => {
         p5.background(theme.palette.background.default);
 
         const fillColor = p5.lerpColor(p5.color(color), p5.color(theme.palette.background.default), 0.33);
@@ -72,7 +72,7 @@ export function MultiGraph({valueId, dataSource, color, width, height, minPlot, 
 
         p5.fill(208, 199, 240);
         p5.noStroke();
-    };
+    }, []);
 
     return <Sketch setup={setup} draw={draw}></Sketch>
 
