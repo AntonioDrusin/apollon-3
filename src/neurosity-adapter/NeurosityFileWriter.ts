@@ -41,22 +41,28 @@ export class NeurosityFileWriter {
             this._subscriptions.forEach((s) => s.unsubscribe());
             this._subscriptions = [
                 this._neurosityDataWrapper.powerByBand$.subscribe((data) => {
-                    return this.writeRecord({
-                        messageType: "powerBands",
-                        powerBands: {...data}
-                    });
+                    if ( data ) {
+                        return this.writeRecord({
+                            messageType: "powerBands",
+                            powerBands: {...data}
+                        });
+                    }
                 }),
                 this._neurosityDataWrapper.calm$.subscribe((data) => {
-                    return this.writeRecord({
-                        messageType: "calm",
-                        calm: data.probability
-                    });
+                    if ( data ) {
+                        return this.writeRecord({
+                            messageType: "calm",
+                            calm: data.probability
+                        });
+                    }
                 }),
                 this._neurosityDataWrapper.focus$.subscribe((data) => {
-                    return this.writeRecord({
-                        messageType: "focus",
-                        focus: data.probability
-                    });
+                    if ( data ) {
+                        return this.writeRecord({
+                            messageType: "focus",
+                            focus: data.probability
+                        });
+                    }
                 }),
             ];
 

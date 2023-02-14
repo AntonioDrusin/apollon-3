@@ -39,9 +39,9 @@ export class FilePlayback implements INeurosityDataSource {
     private _loaded: boolean = false;
     private _paused: boolean = true;
 
-    private _calmSubject = new Subject<Calm>();
-    private _focusSubject = new Subject<Focus>();
-    private _powerByBandSubject = new Subject<PowerByBand>();
+    private _calmSubject = new BehaviorSubject<Calm | null>(null);
+    private _focusSubject = new BehaviorSubject<Focus | null>(null);
+    private _powerByBandSubject = new BehaviorSubject<PowerByBand | null>(null);
 
     public async load(fileHandle: FileSystemFileHandle) {
         const file = await fileHandle.getFile();
@@ -102,6 +102,7 @@ export class FilePlayback implements INeurosityDataSource {
     public reset() {
         this._current = 0;
         this._currentLocationMilliseconds = 0;
+        this.sendNulls();
     }
 
     public async play() {
@@ -143,6 +144,7 @@ export class FilePlayback implements INeurosityDataSource {
             locationMilliseconds: this._currentLocationMilliseconds,
         });
         this._paused = true;
+        this.sendNulls();
     }
 
     private next() {
@@ -173,19 +175,25 @@ export class FilePlayback implements INeurosityDataSource {
         }
     }
 
+    private sendNulls() {
+        this._powerByBandSubject.next(null);
+        this._calmSubject.next(null);
+        this._focusSubject.next(null);
+    }
+
     get tags(): FileTag[] {
         return this._tags;
     }
 
-    get calm$(): Observable<Calm> {
+    get calm$(): Observable<Calm | null> {
         return this._calmSubject;
     }
 
-    get focus$(): Observable<Focus> {
+    get focus$(): Observable<Focus | null> {
         return this._focusSubject;
     }
 
-    get powerByBand$(): Observable<PowerByBand> {
+    get powerByBand$(): Observable<PowerByBand | null> {
         return this._powerByBandSubject;
     }
 
@@ -193,7 +201,7 @@ export class FilePlayback implements INeurosityDataSource {
         return this._playbackStatus$;
     }
 
-    public get durationMillseconds(): number {
+    public get durationMilliseconds(): number {
         return this._durationMilliseconds;
     }
 

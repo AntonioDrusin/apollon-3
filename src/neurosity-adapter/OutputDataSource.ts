@@ -1,5 +1,5 @@
 import {PowerByBand} from "@neurosity/sdk/dist/cjs/types/brainwaves";
-import {Observable, Subject} from "rxjs";
+import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {STATUS} from "@neurosity/sdk/dist/esm/types/status";
 import {GraphSource} from "./GraphSource";
 import {NeurosityDataWrapper} from "./NeurosityDataWrapper";
@@ -47,7 +47,7 @@ export const DataSourceInfos: { [key in KeysOfNeurosityData]: OutputInfo } = {
 
 export class OutputDataSource implements GraphSource {
     private _neurosityData: NeurosityDataWrapper;
-    private readonly _data$: Subject<NeurosityData>;
+    private readonly _data$: Subject<NeurosityData | null>;
     // @ts-ignore
     private _currentData: PartialNeurosityData;
     private _hasData: boolean;
@@ -58,7 +58,7 @@ export class OutputDataSource implements GraphSource {
         this._neurosityData = neurosityData;
         this._hasData = false;
         this._currentData = {};
-        this._data$ = new Subject<NeurosityData>();
+        this._data$ = new BehaviorSubject<NeurosityData | null>(null);
         this.subscribe();
     }
 
@@ -67,7 +67,7 @@ export class OutputDataSource implements GraphSource {
         this._hasData = false;
     }
 
-    public get data$(): Observable<NeurosityData> {
+    public get data$(): Observable<NeurosityData | null> {
         return this._data$;
     }
 
@@ -75,48 +75,67 @@ export class OutputDataSource implements GraphSource {
         if (!this._hasData) {
             this._hasData = NeurosityDataKeys.every((k) => this._currentData[k]);
         }
+
         if (this._hasData) {
             this._data$.next(this._currentData as NeurosityData);
+        } else {
+            this._data$.next(null);
         }
+    }
+
+    private pause(): void {
+        this._hasData = false;
+        this._currentData = {};
     }
 
     private subscribe(): void {
         this._neurosityData.powerByBand$.subscribe(
             // The SDK has an incorrect definition of PowerByBand
             (brainwaves: any) => {
-                const data = (brainwaves.data as PowerByBand);
+                if (brainwaves) {
+                    const data = (brainwaves.data as PowerByBand);
 
-                // Averages
-                this._currentData.alpha = this.avg(data.alpha);
-                this._currentData.beta = this.avg(data.beta);
-                this._currentData.theta = this.avg(data.theta);
-                this._currentData.delta = this.avg(data.delta);
-                this._currentData.gamma = this.avg(data.gamma);
+                    // Averages
+                    this._currentData.alpha = this.avg(data.alpha);
+                    this._currentData.beta = this.avg(data.beta);
+                    this._currentData.theta = this.avg(data.theta);
+                    this._currentData.delta = this.avg(data.delta);
+                    this._currentData.gamma = this.avg(data.gamma);
 
-                this._currentData.engagement =
-                    this.savg(data.alpha, [PO3, PO4])
-                    / this.savg(data.theta, [C3, C4])
+                    this._currentData.engagement =
+                        this.savg(data.alpha, [PO3, PO4])
+                        / this.savg(data.theta, [C3, C4])
 
-                this._currentData.valence =
-                    (data.alpha[PO3] + data.alpha[F5])
-                    / (data.alpha[PO4] + data.alpha[F6]);
+                    this._currentData.valence =
+                        (data.alpha[PO3] + data.alpha[F5])
+                        / (data.alpha[PO4] + data.alpha[F6]);
 
-                this._currentData.workload =
-                    (this.savg(data.delta, [F5,F6]) + this.savg(data.theta,[F5,F6]))
-                    / this.savg(data.alpha, [PO3, PO4]);
+                    this._currentData.workload =
+                        (this.savg(data.delta, [F5, F6]) + this.savg(data.theta, [F5, F6]))
+                        / this.savg(data.alpha, [PO3, PO4]);
 
-                this._currentData.vigilance = this._currentData.beta / this._currentData.theta;
-
+                    this._currentData.vigilance = this._currentData.beta / this._currentData.theta;
+                } else {
+                    this.pause();
+                }
                 this.sendData();
             });
 
         this._neurosityData.calm$.subscribe((calm) => {
-            this._currentData.calm = calm.probability;
+            if (calm) {
+                this._currentData.calm = calm.probability;
+            } else {
+                this.pause();
+            }
             this.sendData();
         });
 
         this._neurosityData.focus$.subscribe((focus) => {
-            this._currentData.focus = focus.probability;
+            if (focus) {
+                this._currentData.focus = focus.probability;
+            } else {
+                this.pause();
+            }
             this.sendData();
         });
 

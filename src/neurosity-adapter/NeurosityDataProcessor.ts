@@ -1,5 +1,5 @@
 import {KeysOfNeurosityData, NeurosityData, NeurosityDataKeys, OutputDataSource} from "./OutputDataSource";
-import {map, interval, Observable, withLatestFrom, connectable, Subject} from "rxjs";
+import {filter, map, interval, Observable, withLatestFrom, connectable, Subject} from "rxjs";
 import {InputProcessor} from "./InputProcessor";
 import {GraphSource} from "./GraphSource";
 
@@ -25,13 +25,20 @@ export class NeurosityDataProcessor implements GraphSource {
         }, {}) as any;
 
         const timer = interval(1000 / 60);
-        const source = timer.pipe(withLatestFrom(this._dataSource.data$), map(([_, data]) => {
-            const newData: any = {};
-            NeurosityDataKeys.forEach((key) => {
-                newData[key] = this._processors[key].next(data[key])
-            });
-            return newData;
-        }));
+        const source = timer.pipe(
+            withLatestFrom(this._dataSource.data$),
+            map(([_, data]) => {
+                if (data) {
+                    const newData: any = {};
+                    NeurosityDataKeys.forEach((key) => {
+                        newData[key] = this._processors[key].next(data[key])
+                    });
+                    return newData;
+                }
+                return null;
+            }),
+            filter((data) => !!data)
+        );
         const c = connectable(source, {connector: () => new Subject(), resetOnDisconnect: false});
         c.connect();
         this._data$ = c;
@@ -45,7 +52,7 @@ export class NeurosityDataProcessor implements GraphSource {
         return this._data$;
     }
 
-    get preData$(): Observable<NeurosityData> {
+    get preData$(): Observable<NeurosityData | null> {
         return this._dataSource.data$;
     }
 }

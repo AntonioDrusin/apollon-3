@@ -32,7 +32,7 @@ export class NeurosityFileReader {
         this._active$.next({
             active: true,
             tags: this._playback.tags,
-            durationMilliseconds: this._playback.durationMillseconds,
+            durationMilliseconds: this._playback.durationMilliseconds,
         });
         this._playbackStatus$.next(this._playback.playStatus$);
         return true;

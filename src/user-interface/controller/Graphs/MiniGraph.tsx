@@ -7,17 +7,18 @@ import {getThemeByName, ThemeContext} from "../../../App";
 
 interface MiniGraphProps {
     valueId: string;
-    dataSource: Observable<NeurosityData>;
+    dataSource: Observable<NeurosityData | null>;
     color: string;
     width: number;
     height: number;
 }
 
 export function MiniGraph({valueId, dataSource, color, width, height}: MiniGraphProps) {
-    const periodMs = 1000/120;
+    const periodMs = 1000 / 120;
     const samples = width;
     const margin = 8;
     let value = useRef(0)
+    let pause = useRef(false);
     const themeContext = useContext(ThemeContext);
     const theme = getThemeByName(themeContext.themeName);
 
@@ -29,8 +30,10 @@ export function MiniGraph({valueId, dataSource, color, width, height}: MiniGraph
 
     useEffect(() => {
         const interval = setInterval(() => {
-            const l = values.push(value.current);
-            if (l > samples) values.shift();
+            if ( !pause.current ) {
+                const l = values.push(value.current);
+                if (l > samples) values.shift();
+            }
         }, periodMs);
 
         return () => clearInterval(interval);
@@ -38,7 +41,12 @@ export function MiniGraph({valueId, dataSource, color, width, height}: MiniGraph
 
     useEffect(() => {
         const sub = dataSource.subscribe((data) => {
-                value.current = data[valueId as KeysOfNeurosityData];
+                if (data) {
+                    value.current = data[valueId as KeysOfNeurosityData];
+                    pause.current = false;
+                } else {
+                    pause.current = true;
+                }
             }
         );
         return () => sub.unsubscribe();
@@ -57,12 +65,12 @@ export function MiniGraph({valueId, dataSource, color, width, height}: MiniGraph
 
         const min = Math.min.apply(null, values);
         const max = Math.max.apply(null, values);
-        const yScale = height /(max-min);
+        const yScale = height / (max - min);
         const xScale = width / (samples - 1);
 
         p5.beginShape();
         // p5.vertex(0, height);
-        values.forEach((value, index) => p5.vertex(index * xScale, height - ((value-min) * yScale)));
+        values.forEach((value, index) => p5.vertex(index * xScale, height - ((value - min) * yScale)));
         // p5.vertex(width, height);
         p5.endShape();
 
