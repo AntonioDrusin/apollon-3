@@ -20,7 +20,6 @@ export class NeurosityFileReader {
     }
 
     public async loadFile(): Promise<boolean> {
-
         const files = await window.showOpenFilePicker();
         if (!files) {
             this._active$.next({active: false, durationMilliseconds: 0});
@@ -61,6 +60,10 @@ export class NeurosityFileReader {
 
     public play() {
         this._playback?.play();
+    }
+
+    public setPositionSeconds(second: number) {
+        this._playback?.setPositionSeconds(second);
     }
 
     public eject() {

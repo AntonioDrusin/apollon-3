@@ -48,19 +48,29 @@ export class FilePlayback implements INeurosityDataSource {
         const readResult = await file.stream().getReader().read();
 
         const reader = new Reader(readResult.value!);
+        // Read version and marker
+        NeurosityFileVersionRecord.decodeDelimited(reader);
 
         let index = 0;
         let beginning: number = 0;
         let ending: number = 0;
-
-        // Read version and marker
-        NeurosityFileVersionRecord.decodeDelimited(reader);
+        let currentSecond: number = 0;
+        this._seconds.push(0);
 
         while (reader.pos < reader.len) {
             const value = NeurosityRecord.decodeDelimited(reader);
+
+
             if (value) {
                 if (index === 0) beginning = value.timestamp;
                 ending = value.timestamp;
+
+                const newPositionSecond = Math.floor((value.timestamp - beginning)/1000);
+                if ( newPositionSecond != currentSecond) {
+                    currentSecond = newPositionSecond;
+                    this._seconds.push(index);
+                }
+
                 if (value.powerBands) {
                     this._data.push({
                         powerByBand: {data: {...value.powerBands}} as any, // The SDK has an incorrect definition of PowerByBand
@@ -139,12 +149,16 @@ export class FilePlayback implements INeurosityDataSource {
     }
 
     public pause() {
+        this.sendCurrentPausedPosition();
+        this._paused = true;
+        this.sendNulls();
+    }
+
+    private sendCurrentPausedPosition() {
         this._playbackStatus$.next({
             play: false,
             locationMilliseconds: this._currentLocationMilliseconds,
         });
-        this._paused = true;
-        this.sendNulls();
     }
 
     private next() {
@@ -203,6 +217,17 @@ export class FilePlayback implements INeurosityDataSource {
 
     public get durationMilliseconds(): number {
         return this._durationMilliseconds;
+    }
+
+    public setPositionSeconds(second: number) {
+        const secondsIndex = Math.floor(second);
+        if ( this._seconds[secondsIndex] ) {
+            this._current = this._seconds[secondsIndex];
+        }
+        if (this._paused) {
+            this._currentLocationMilliseconds = this._data[secondsIndex].timestamp;
+            this.sendCurrentPausedPosition();
+        }
     }
 
 }

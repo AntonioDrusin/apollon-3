@@ -15,7 +15,9 @@ import {getThemeByName, ThemeContext} from "../../App";
 
 export default function FilePlaybackBar() {
     const [hidden, setHidden] = useState(true);
-    const fileReader = useMemo( () => {return Register.neurosityFileReader}, []);
+    const fileReader = useMemo(() => {
+        return Register.neurosityFileReader
+    }, []);
     const [tags, setTags] = useState<FileTag[]>([]);
     const [play, setPlay] = useState<boolean>(false);
     const [position, setPosition] = useState<number>(0);
@@ -24,14 +26,14 @@ export default function FilePlaybackBar() {
     const theme = getThemeByName(themeContext.themeName);
 
     useEffect(() => {
-        const sub = fileReader.active$.subscribe( (started) => {
+        const sub = fileReader.active$.subscribe((started) => {
             setHidden(!started.active);
             setDurationMilliseconds(started.durationMilliseconds);
-            if ( started.tags ) {
+            if (started.tags) {
                 setTags([...started.tags]);
             }
         });
-        const playSub = fileReader.playStatus$.subscribe( (status) => {
+        const playSub = fileReader.playStatus$.subscribe((status) => {
             setPlay(status.play);
             setPosition(status.locationMilliseconds);
         });
@@ -39,13 +41,12 @@ export default function FilePlaybackBar() {
             sub.unsubscribe();
             playSub.unsubscribe();
         };
-    },[fileReader]);
+    }, [fileReader]);
 
     const handlePlayPause = () => {
-        if ( play ) {
+        if (play) {
             fileReader.pause();
-        }
-        else {
+        } else {
             fileReader.play();
         }
     };
@@ -54,13 +55,17 @@ export default function FilePlaybackBar() {
         fileReader.eject();
     }
 
+    const handlePositionChange = (event: Event, newValue: number | number[]) => {
+        fileReader.setPositionSeconds(Math.floor((newValue as number) / 1000));
+    }
+
     return <Box hidden={hidden}>
         <Container maxWidth="xl">
             <Card sx={{p: 1, m: 1}}>
                 <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}}>
                     <Box sx={{flexShrink: 1, mx: 2}}>
                         <IconButton onClick={handlePlayPause}>
-                            { play ? <Pause/> : <PlayArrow/> }
+                            {play ? <Pause/> : <PlayArrow/>}
                         </IconButton>
                         <IconButton onClick={handleEject}> <Eject/> </IconButton>
                     </Box>
@@ -71,13 +76,13 @@ export default function FilePlaybackBar() {
                             isOptionEqualToValue={(option, value) => option.index === value.index}
                             id="combo-box-demo"
                             options={tags}
-                            sx={{ width: 300 }}
-                            renderInput={(params) => <TextField {...params} label="Go To..." />}
+                            sx={{width: 300}}
+                            renderInput={(params) => <TextField {...params} label="Go To..."/>}
                         />
                     </Box>
                     <Box sx={{flexGrow: 1, mx: 2}}>
                         <Slider
-
+                            onChange={handlePositionChange}
                             value={position}
                             min={0}
                             max={durationMilliseconds}
