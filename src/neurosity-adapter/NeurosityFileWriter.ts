@@ -84,6 +84,7 @@ export class NeurosityFileWriter {
             this._size = (this._size || 0) + buffer.length;
             await this._writable.write({data: buffer, type: "write"});
         }
+
     }
 
     private writeRecord(source: any) {

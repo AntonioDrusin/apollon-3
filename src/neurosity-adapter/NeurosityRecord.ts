@@ -1,5 +1,6 @@
 import {Field, Message, OneOf, Type} from "protobufjs";
 
+@Type.d("PowerBandsRecord_v1")
 export class PowerBandsRecord extends Message<PowerBandsRecord> {
     @Field.d(1, "float", "repeated")
     public gamma!: number[];
