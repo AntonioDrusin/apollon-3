@@ -46,11 +46,9 @@ export class FilePlayback implements INeurosityDataSource {
 
     public async load(fileHandle: FileSystemFileHandle) {
         const file = await fileHandle.getFile();
-        const readResult = await file.stream().getReader().read();
+        const fileReader = file.stream().getReader();
+        let readResult = await fileReader.read();
 
-        const reader = new Reader(readResult.value!);
-        // Read version and marker
-        NeurosityFileVersionRecord.decodeDelimited(reader);
 
         let index = 0;
         let beginning: number = 0;
@@ -58,16 +56,39 @@ export class FilePlayback implements INeurosityDataSource {
         let currentSecond: number = 0;
         this._seconds.push(0);
 
-        while (reader.pos < reader.len) {
-            const value = NeurosityRecord.decodeDelimited(reader);
+        let reader = new Reader(readResult.value!);
+        // Read version and marker
+        NeurosityFileVersionRecord.decodeDelimited(reader);
 
+
+        while (reader.pos < reader.len) {
+            let value = null;
+
+            value = NeurosityRecord.decodeDelimited(reader);
+
+            if (!readResult.done && (reader.pos / reader.len) > .90) {
+                console.log("Reading next chunk");
+                readResult = await fileReader.read();
+                if (readResult.value) {
+                    const leftLength = reader.len - reader.pos;
+                    console.log("Left length: " + leftLength)
+                    if (leftLength > 0) {
+                        const mergedArray = new Uint8Array(readResult.value.length + leftLength);
+                        mergedArray.set(reader.buf.slice(reader.pos, reader.len), 0);
+                        mergedArray.set(readResult.value, leftLength);
+                        reader = new Reader(mergedArray)
+                    } else {
+                        reader = new Reader(readResult.value)
+                    }
+                }
+            }
 
             if (value) {
                 if (index === 0) beginning = value.timestamp;
                 ending = value.timestamp;
 
-                const newPositionSecond = Math.floor((value.timestamp - beginning)/1000);
-                if ( newPositionSecond != currentSecond) {
+                const newPositionSecond = Math.floor((value.timestamp - beginning) / 1000);
+                if (newPositionSecond !== currentSecond) {
                     currentSecond = newPositionSecond;
                     this._seconds.push(index);
                 }
@@ -102,6 +123,7 @@ export class FilePlayback implements INeurosityDataSource {
                 index++;
             }
         }
+
         if (index !== 0) {
             this._loaded = true;
             this._beginningTimeStamp = beginning;
@@ -136,7 +158,7 @@ export class FilePlayback implements INeurosityDataSource {
 
             // Send update
             const newLocation = (start - this._beginningTimeStamp);
-            if ( Math.floor(newLocation / 500) !== Math.floor(this._currentLocationMilliseconds / 50) ) {
+            if (Math.floor(newLocation / 500) !== Math.floor(this._currentLocationMilliseconds / 50)) {
                 this._currentLocationMilliseconds = newLocation;
                 this._playbackStatus$.next({
                     play: true,
@@ -223,7 +245,7 @@ export class FilePlayback implements INeurosityDataSource {
 
     public setPositionSeconds(seconds: number) {
         const index = Math.floor(seconds);
-        if ( this._seconds[index] ) {
+        if (this._seconds[index]) {
             this.setPositionIndex(this._seconds[index]);
         }
     }
