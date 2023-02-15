@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo, useState} from "react";
 import {DeviceStatus} from "@neurosity/sdk/dist/esm/types/status";
 import Typography from "@mui/material/Typography";
-import {Box} from "@mui/material";
+import {Box, Container} from "@mui/material";
 import {
     Battery20, Battery30, Battery50, Battery60, Battery80, Battery90,
     BatteryAlert, BatteryCharging20, BatteryCharging30, BatteryCharging50, BatteryCharging60,
@@ -26,8 +26,21 @@ export function HeadsetStatus({headset}: StatusProps) {
 
     const [status, setStatus] = useState<DeviceStatus | null>(null);
     const [recording, setRecording] = useState<boolean>(false);
+    const [playbackFile, setPlaybackFile] = useState<string>();
     const neurosity = useMemo(() => Register.neurosityAdapter, []);
     const fileWriter = useMemo(() => Register.neurosityFileWriter, [])
+    const fileReader = useMemo(() => Register.neurosityFileReader, [])
+
+    useEffect(() => {
+        const sub = fileReader.active$.subscribe((a) => {
+            if (a.active) {
+                setPlaybackFile(a.name);
+            } else {
+                setPlaybackFile(undefined);
+            }
+            return () => sub.unsubscribe();
+        });
+    }, [fileReader]);
 
     useEffect(() => {
         const sub = fileWriter.recordingStatus$.subscribe((s) => {
@@ -81,17 +94,30 @@ export function HeadsetStatus({headset}: StatusProps) {
     };
 
     return (
-        <Box hidden={!status}>
-            { !recording ? null :
-                <Box sx={{verticalAlign: "middle", color: "red"}} component="span">
-                    <FiberManualRecord/>
-                </Box>
+        <Box hidden={!status} sx={{flexDirection: "row", display: "flex"}}>
+            {playbackFile ?
+                <span>
+                    {!recording ? null :
+                        <Box sx={{verticalAlign: "middle", color: "red"}} component="span">
+                            <FiberManualRecord/>
+                        </Box>
+                    }
+                    <Typography variant="h6" component="span">{playbackFile}</Typography>
+                </span>
+                :
+                <span>
+                    {!recording ? null :
+                        <Box sx={{verticalAlign: "middle", color: "red"}} component="span">
+                            <FiberManualRecord/>
+                        </Box>
+                    }
+                    <Box sx={{verticalAlign: "middle"}} component="span">
+                        {battery()}
+                    </Box>
+                    <Typography variant="h6"
+                                component="span">{headset} ({status.state in statesLabels ? statesLabels[status.state] : status.state})</Typography>
+                </span>
             }
-            <Box sx={{verticalAlign: "middle"}} component="span">
-                {battery()}
-            </Box>
-            <Typography variant="h6"
-                        component="span">{headset} ({status.state in statesLabels ? statesLabels[status.state] : status.state})</Typography>
         </Box>
     );
 }

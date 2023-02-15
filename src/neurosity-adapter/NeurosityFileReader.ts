@@ -5,9 +5,9 @@ import {BehaviorSubject, Observable, share, Subject, switchAll} from "rxjs";
 export interface FileActive {
     active: boolean;
     tags?: FileTag[];
+    name?: string;
     durationMilliseconds: number;
 }
-
 
 export class NeurosityFileReader {
     private _neurosityDataWrapper: NeurosityDataWrapper;
@@ -28,10 +28,12 @@ export class NeurosityFileReader {
 
         this._playback = await this.load(files[0]);
         this._neurosityDataWrapper.setDataSourceTo(this._playback);
+        const fileInfo = await files[0].getFile();
         this._active$.next({
             active: true,
             tags: this._playback.tags,
             durationMilliseconds: this._playback.durationMilliseconds,
+            name: fileInfo.name,
         });
         this._playbackStatus$.next(this._playback.playStatus$);
         return true;
