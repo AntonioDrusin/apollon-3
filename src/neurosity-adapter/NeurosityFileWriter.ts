@@ -9,6 +9,11 @@ export interface DataPersisterStatus {
     recordingFileName: string;
 }
 
+export interface DataPersisterRecordingStatus {
+    recordingFileName: string;
+    recording: boolean;
+}
+
 export class NeurosityFileWriter {
     private _neurosityDataWrapper: NeurosityDataWrapper;
     private _subscriptions: Subscription[] = [];
@@ -17,14 +22,19 @@ export class NeurosityFileWriter {
     private _startTime?: Date;
     private _size?: number;
     private _name?: string;
-    private _persisterDataSource: Subject<DataPersisterStatus> = new Subject<DataPersisterStatus>();
+    private _persisterDataSource$: Subject<DataPersisterStatus> = new Subject<DataPersisterStatus>();
+    private _persisterRecordingDataSource$: Subject<DataPersisterRecordingStatus> = new Subject<DataPersisterRecordingStatus>();
 
     public constructor(neurosityDataWrapper: NeurosityDataWrapper) {
         this._neurosityDataWrapper = neurosityDataWrapper;
     }
 
     public get status$(): Observable<DataPersisterStatus> {
-        return this._persisterDataSource;
+        return this._persisterDataSource$;
+    }
+
+    public get recordingStatus$() {
+        return this._persisterRecordingDataSource$;
     }
 
     public async startRecording(): Promise<boolean> {
@@ -66,7 +76,11 @@ export class NeurosityFileWriter {
                 }),
             ];
 
-            this._persisterDataSource.next({
+            this._persisterRecordingDataSource$.next({
+                recordingFileName: this._name,
+                recording: true,
+            });
+            this._persisterDataSource$.next({
                 lastSaveTime: this._startTime,
                 currentFileLength: 0,
                 recordingFileName: this._name,
@@ -116,7 +130,7 @@ export class NeurosityFileWriter {
             let updateDelta = (time.getTime() - this._lastWriteTime!.getTime()) / 1000;
             if (updateDelta > 1) {
                 this._lastWriteTime = time;
-                this._persisterDataSource.next({
+                this._persisterDataSource$.next({
                     lastSaveTime: time,
                     currentFileLength: this._size || 0,
                     recordingFileName: this._name || "",
@@ -141,13 +155,10 @@ export class NeurosityFileWriter {
         }
         this._subscriptions.forEach((s) => s.unsubscribe());
         this._subscriptions = [];
-        // console.log("Write completed");
-        //
-        // const f = await tempFile.getFile();
-        // const readBuffer = await f.stream().getReader().read();
-        // const zz = NeurosityRecord.decodeDelimited(readBuffer.value!);
-        // console.log(JSON.stringify(zz));
 
-        // const root = await navigator.storage.getDirectory();
+        this._persisterRecordingDataSource$.next({
+            recordingFileName: this._name || "",
+            recording: false,
+        });
     }
 }

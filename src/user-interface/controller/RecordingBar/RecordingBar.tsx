@@ -24,11 +24,14 @@ export default function RecordingBar() {
     useEffect(() => {
         if (dataPersister) {
             const sub = dataPersister.status$.subscribe((status) => {
-                setRecording(true);
                 setName(status.recordingFileName)
             });
+            const subStatus = dataPersister.recordingStatus$.subscribe((recStatus) => {
+                setRecording(recStatus.recording)
+            })
             return () => {
                 sub.unsubscribe();
+                subStatus.unsubscribe();
             }
         }
     }, [dataPersister]);
@@ -56,7 +59,6 @@ export default function RecordingBar() {
         } else {
             await dataPersister.stopRecording();
             snackContext.setSnackMessage('Recording completed: ' + name);
-            setRecording(false);
         }
     };
 

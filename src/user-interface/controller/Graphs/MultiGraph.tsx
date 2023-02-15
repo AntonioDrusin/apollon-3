@@ -72,7 +72,7 @@ export function MultiGraph({valueId, dataSource, color, width, height, minPlot, 
 
         p5.fill(208, 199, 240);
         p5.noStroke();
-    }, []);
+    }, [color, height, maxPlot, minPlot, samples, theme, values, width]);
 
     return <Sketch setup={setup} draw={draw}></Sketch>
 

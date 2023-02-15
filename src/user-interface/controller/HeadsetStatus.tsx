@@ -6,7 +6,7 @@ import {
     Battery20, Battery30, Battery50, Battery60, Battery80, Battery90,
     BatteryAlert, BatteryCharging20, BatteryCharging30, BatteryCharging50, BatteryCharging60,
     BatteryCharging80, BatteryCharging90, BatteryChargingFull,
-    BatteryFull
+    BatteryFull, FiberManualRecord
 } from "@mui/icons-material";
 import {Register} from "../../Register";
 
@@ -25,7 +25,16 @@ export interface StatusProps {
 export function HeadsetStatus({headset}: StatusProps) {
 
     const [status, setStatus] = useState<DeviceStatus | null>(null);
+    const [recording, setRecording] = useState<boolean>(false);
     const neurosity = useMemo(() => Register.neurosityAdapter, []);
+    const fileWriter = useMemo(() => Register.neurosityFileWriter, [])
+
+    useEffect(() => {
+        const sub = fileWriter.recordingStatus$.subscribe((s) => {
+            setRecording(s.recording);
+        });
+        return () => sub.unsubscribe();
+    }, [fileWriter]);
 
     useEffect(() => {
         const subscription = neurosity.status$.subscribe((status) => {
@@ -73,6 +82,11 @@ export function HeadsetStatus({headset}: StatusProps) {
 
     return (
         <Box hidden={!status}>
+            { !recording ? null :
+                <Box sx={{verticalAlign: "middle", color: "red"}} component="span">
+                    <FiberManualRecord/>
+                </Box>
+            }
             <Box sx={{verticalAlign: "middle"}} component="span">
                 {battery()}
             </Box>
