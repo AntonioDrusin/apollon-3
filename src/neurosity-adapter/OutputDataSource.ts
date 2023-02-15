@@ -103,8 +103,8 @@ export class OutputDataSource implements GraphSource {
                     this._currentData.gamma = this.avg(data.gamma);
 
                     this._currentData.engagement =
-                        this.savg(data.alpha, [PO3, PO4])
-                        / this.savg(data.theta, [C3, C4])
+                        this.savg(data.alpha, [CP3, CP4, PO3, PO4])
+                        / this.savg(data.theta, [C3, C4, CP3, CP4, PO3, PO4])
 
                     this._currentData.valence =
                         (data.alpha[PO3] + data.alpha[F5])
