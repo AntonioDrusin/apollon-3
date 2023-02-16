@@ -35,7 +35,7 @@ export default function HeadsetQuality() {
                     </Box>
         {
             quality.map((q: any) => {
-                return <Typography variant="h6" component="span" sx={{color: q.color, marginRight: 1}}>{q.name}</Typography>
+                return <Typography key={"headset-quality-"+q.name} variant="h6" component="span" sx={{color: q.color, marginRight: 1}}>{q.name}</Typography>
             })
         }
     </span>

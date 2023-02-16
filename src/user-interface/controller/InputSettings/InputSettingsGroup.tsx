@@ -24,9 +24,7 @@ export function InputSettingsGroup({visualizerInfo, live, map, onLive, onParamet
     };
 
     const handleToggles = (event: React.MouseEvent<HTMLElement>, value: any) => {
-        if (value.indexOf("tv") !== -1) {
-            onLive(visualizerInfo.label);
-        }
+        onLive(visualizerInfo.label);
     };
 
 

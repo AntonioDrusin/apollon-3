@@ -3,7 +3,11 @@ import {VisualizerDirectory} from "../visualizers/VisualizerDirectory";
 import {NeurosityData} from "../neurosity-adapter/OutputDataSource";
 import {__BROADCAST_CHANNEL_NAME__, InputData, ParameterMaps} from "./ScreenLink";
 import {Settings} from "../services/Settings";
+import {Observable, Subject} from "rxjs";
 
+export interface VisualizerChange {
+    visualizer: string | null;
+}
 export class ScreenLinkTransmitter {
 
     private _maps: ParameterMaps;
@@ -13,7 +17,7 @@ export class ScreenLinkTransmitter {
     private _settings: Settings;
     private readonly _storageKey = "parameterMaps";
     private readonly _visualizerStorageKey = "selectedVisualizer";
-
+    private readonly _visualizerChange$ = new Subject<VisualizerChange>()
 
     constructor(dataProcessor: NeurosityDataProcessor, settings: Settings) {
         const visualizers = new VisualizerDirectory();
@@ -62,6 +66,9 @@ export class ScreenLinkTransmitter {
         return this._visualizer;
     }
 
+    public get visualizerChanges$(): Observable<VisualizerChange> {
+        return this._visualizerChange$;
+    }
 
     public setMaps(maps: ParameterMaps): void {
         this._maps = maps;
@@ -71,5 +78,6 @@ export class ScreenLinkTransmitter {
     public setVisualizer(visualizerKey: string | null) {
         this._visualizer = visualizerKey;
         this._settings.setProp(this._visualizerStorageKey, this._visualizer);
+        this._visualizerChange$.next({visualizer: visualizerKey})
     }
 }

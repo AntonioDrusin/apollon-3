@@ -19,6 +19,7 @@ export default function RecordingBar() {
     const snackContext = useContext(SnackBarContext);
     const recordingContext = useContext(RecordingBarContext)
     const dataPersister = useMemo(() => Register.neurosityFileWriter, []);
+    const transmitter = useMemo(() => Register.screenLink, []);
     const [name, setName] = useState<string>();
 
     useEffect(() => {
@@ -36,6 +37,17 @@ export default function RecordingBar() {
         }
     }, [dataPersister]);
 
+    useEffect( () => {
+        const sub = transmitter.visualizerChanges$.subscribe( (v) => {
+            if ( recording ) {
+                const tag = v.visualizer ? "Visualizer " + v.visualizer : "Visualizer stop";
+                dataPersister.addTag(tag);
+                snackContext.setSnackMessage('Stream labeled: "' + tag + '"');
+            }
+        });
+        return () => { sub.unsubscribe()};
+    }, [transmitter, dataPersister, snackContext]);
+
     const handleLabeling = () => {
         const tag = label || new Date().toLocaleString();
         dataPersister.addTag(tag);
@@ -43,8 +55,9 @@ export default function RecordingBar() {
         setLabel("");
     };
 
+
     const handleKeyDown = (e: any) => {
-        if ( e.keyCode === 13 ) {
+        if (e.keyCode === 13) {
             handleLabeling();
         }
     }
