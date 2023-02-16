@@ -30,7 +30,7 @@ export default function HeadsetQuality() {
 
 
     return <span>
-         <Box sx={{verticalAlign: "middle", marginLeft: 1}} component="span">
+         <Box sx={{verticalAlign: "middle", mx: 1}} component="span">
                         <AutoGraph/>
                     </Box>
         {

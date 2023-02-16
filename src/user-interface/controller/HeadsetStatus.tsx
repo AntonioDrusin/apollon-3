@@ -3,7 +3,6 @@ import {DeviceStatus} from "@neurosity/sdk/dist/esm/types/status";
 import Typography from "@mui/material/Typography";
 import {Box} from "@mui/material";
 import {
-    AutoGraph,
     Battery20, Battery30, Battery50, Battery60, Battery80, Battery90,
     BatteryAlert, BatteryCharging20, BatteryCharging30, BatteryCharging50, BatteryCharging60,
     BatteryCharging80, BatteryCharging90, BatteryChargingFull,

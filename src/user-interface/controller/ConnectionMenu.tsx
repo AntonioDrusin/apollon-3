@@ -67,7 +67,6 @@ export default function ConnectionMenu() {
         <Button
             variant="outlined"
             onClick={menuButtonClick}
-            color="inherit"
         >{dataSource}</Button>
         <Menu
             anchorEl={anchorEl}

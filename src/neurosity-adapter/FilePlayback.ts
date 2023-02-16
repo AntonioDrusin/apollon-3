@@ -1,5 +1,5 @@
 import {INeurosityDataSource} from "./INeurosityDataSource";
-import {BehaviorSubject, Observable, Subject} from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
 import {Calm} from "@neurosity/sdk/dist/esm/types/calm";
 import {Focus} from "@neurosity/sdk/dist/esm/types/focus";
 import {PowerByBand} from "@neurosity/sdk/dist/esm/types/brainwaves";

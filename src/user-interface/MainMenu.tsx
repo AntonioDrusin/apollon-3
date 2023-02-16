@@ -1,4 +1,4 @@
-import {Box, IconButton, Menu, MenuItem} from "@mui/material";
+import {Box, Button, IconButton, Menu, MenuItem} from "@mui/material";
 import React, {useContext, useState} from "react";
 import {MenuBook} from "@mui/icons-material";
 import ThemeDialog from "./ThemeDialog";
@@ -33,12 +33,12 @@ export default function MainMenu() {
     }
 
     return <Box sx={{mx: 4}}>
-        <IconButton
-            color="inherit"
+        <Button
+            variant="outlined"
             onClick={menuButtonClick}
         >
             <MenuBook></MenuBook>
-        </IconButton>
+        </Button>
         <Menu
             anchorEl={anchorEl}
             open={menuOpen}

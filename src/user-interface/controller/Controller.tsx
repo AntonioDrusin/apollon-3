@@ -1,6 +1,6 @@
 import {
     AppBar,
-    Box,
+    Box, Button,
     Container,
     IconButton,
     Toolbar,
@@ -55,22 +55,22 @@ export default function Controller() {
                     </Box>
                     <ConnectionMenu></ConnectionMenu>
                     <Box sx={{mx: 4}}>
-                        <IconButton onClick={() => {
+                        <Button variant="outlined" onClick={() => {
                             window.open(window.location.pathname + "#/visualizer", "_blank");
                         }}>
                             <PersonalVideo color="inherit"></PersonalVideo>
-                        </IconButton>
+                        </Button>
                     </Box>
                 </Toolbar>
             </AppBar>
+            <FilePlaybackBar></FilePlaybackBar>
+            <RecordingBar></RecordingBar>
             <DndProvider backend={HTML5Backend}>
                 <Container maxWidth="xl" >
                     <Box sx={{p: 1, m: 1}}>
                         <PreviewCard dataSource={dataProcessor.data$}></PreviewCard>
                     </Box>
                 </Container>
-                <FilePlaybackBar></FilePlaybackBar>
-                <RecordingBar></RecordingBar>
                 <ControllerTabs></ControllerTabs>
             </DndProvider>
             <MultiSnackBar></MultiSnackBar>
