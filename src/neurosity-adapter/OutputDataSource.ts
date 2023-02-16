@@ -22,6 +22,8 @@ const F6 = 5;
 const C4 = 6;
 const CP4 = 7;
 
+export const BrainwaveNames = ["CP3", "C3", "F5", "PO3", "PO4", "F6", "C4", "CP4"];
+
 export const NeurosityDataKeys = [
     "alpha", "beta", "gamma", "theta", "delta", "focus", "calm",
     "valence", "vigilance", "engagement", "workload"

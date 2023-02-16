@@ -5,6 +5,7 @@ import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {Credentials} from "@neurosity/sdk/dist/cjs/types/credentials";
 import {OutputDataSource} from "./OutputDataSource";
 import {Settings} from "../services/Settings";
+import {SignalQuality} from "@neurosity/sdk/dist/esm/types/signalQuality";
 
 
 export class NeurosityAdapter {
@@ -49,6 +50,10 @@ export class NeurosityAdapter {
 
     get status$(): Observable<DeviceStatus> {
         return this._neurosity.status();
+    }
+
+    get signalQuality$(): Observable<SignalQuality> {
+        return this._neurosity.signalQuality();
     }
 
     private getDevices(): void {

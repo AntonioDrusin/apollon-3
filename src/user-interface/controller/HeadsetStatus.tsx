@@ -1,14 +1,16 @@
 import React, {useEffect, useMemo, useState} from "react";
 import {DeviceStatus} from "@neurosity/sdk/dist/esm/types/status";
 import Typography from "@mui/material/Typography";
-import {Box, Container} from "@mui/material";
+import {Box} from "@mui/material";
 import {
+    AutoGraph,
     Battery20, Battery30, Battery50, Battery60, Battery80, Battery90,
     BatteryAlert, BatteryCharging20, BatteryCharging30, BatteryCharging50, BatteryCharging60,
     BatteryCharging80, BatteryCharging90, BatteryChargingFull,
     BatteryFull, FiberManualRecord
 } from "@mui/icons-material";
 import {Register} from "../../Register";
+import HeadsetQuality from "./HeadsetQuality";
 
 const statesLabels = {
     booting: "Starting OS...",
@@ -111,10 +113,12 @@ export function HeadsetStatus({headset}: StatusProps) {
                             <FiberManualRecord/>
                         </Box>
                     }
+                    <HeadsetQuality></HeadsetQuality>
                     <Box sx={{verticalAlign: "middle"}} component="span">
                         {battery()}
                     </Box>
-                    <Typography variant="h6"
+                    <Typography variant="h6" component="span">{status.battery.toLocaleString() +"%"} </Typography>
+                    <Typography sx={{marginLeft: 1}} variant="h6"
                                 component="span">{headset} ({status.state in statesLabels ? statesLabels[status.state] : status.state})</Typography>
                 </span>
             }

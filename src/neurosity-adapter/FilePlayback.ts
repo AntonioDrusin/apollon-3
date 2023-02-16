@@ -67,11 +67,9 @@ export class FilePlayback implements INeurosityDataSource {
             value = NeurosityRecord.decodeDelimited(reader);
 
             if (!readResult.done && (reader.pos / reader.len) > .90) {
-                console.log("Reading next chunk");
                 readResult = await fileReader.read();
                 if (readResult.value) {
                     const leftLength = reader.len - reader.pos;
-                    console.log("Left length: " + leftLength)
                     if (leftLength > 0) {
                         const mergedArray = new Uint8Array(readResult.value.length + leftLength);
                         mergedArray.set(reader.buf.slice(reader.pos, reader.len), 0);
@@ -245,12 +243,15 @@ export class FilePlayback implements INeurosityDataSource {
 
     public setPositionSeconds(seconds: number) {
         const index = Math.floor(seconds);
+        console.log("SEEK SECONDS" + index)
         if (this._seconds[index]) {
             this.setPositionIndex(this._seconds[index]);
         }
+        console.log("SEEK COMPLETE");
     }
 
     public setPositionIndex(index: number) {
+        console.log("SEEK INDEX " + index);
         this._current = index;
         if (this._paused) {
             this._currentLocationMilliseconds = this._data[index].timestamp - this._beginningTimeStamp;
