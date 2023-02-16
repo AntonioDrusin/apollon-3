@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {
     Box,
     Card,
@@ -15,6 +15,7 @@ import {KeysOfNeurosityData, OutputInfo} from "../../../neurosity-adapter/Output
 import {MultiGraph} from "../Graphs/MultiGraph";
 import {NeurosityDataProcessor} from "../../../neurosity-adapter/NeurosityDataProcessor";
 import {MiniGraph} from "../Graphs/MiniGraph";
+import {getThemeByName, ThemeContext} from "../../../App";
 
 export interface PreProcessOutputProps {
     outputInfo: OutputInfo;
@@ -29,6 +30,9 @@ export function PreProcessPanel({outputInfo, dataKey, processor}: PreProcessOutp
     const [loading, setLoading] = useState(true);
     const [autoscaling, setAutoscaling] = useState(true);
     const [autoscalingSeconds, setAutoscalingSeconds] = useState("0");
+
+    const themeContext = useContext(ThemeContext);
+    const theme = getThemeByName(themeContext.themeName);
 
     useEffect(() => {
         const inputProcessor = processor.getInputProcessor(dataKey);
@@ -83,7 +87,7 @@ export function PreProcessPanel({outputInfo, dataKey, processor}: PreProcessOutp
 
     return loading ? null : (
         <Card sx={{m: 3, p: 0, outlineColor: outputInfo.color, outlineWidth: 2, outlineStyle: "solid"}}>
-            <Box sx={{background: outputInfo.color, px: 2, py: 1}}>
+            <Box sx={{background: outputInfo.color, px: 2, py: 1, color: theme.apollon?.colorCardText || "default"}}>
                 <Typography>{outputInfo.name}</Typography>
             </Box>
             <Box sx={{m: 1, p: 0}}>
