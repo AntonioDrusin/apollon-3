@@ -87,7 +87,7 @@ export function PreProcessPanel({outputInfo, dataKey, processor}: PreProcessOutp
 
     return loading ? null : (
         <Card sx={{m: 3, p: 0, outlineColor: outputInfo.color, outlineWidth: 2, outlineStyle: "solid"}}>
-            <Box sx={{background: outputInfo.color, px: 2, py: 1, color: theme.apollon?.colorCardText || "default"}}>
+            <Box sx={{background: outputInfo.color, px: 2, py: 1, color: theme.palette.getContrastText(outputInfo.color)}}>
                 <Typography>{outputInfo.name}</Typography>
             </Box>
             <Box sx={{m: 1, p: 0}}>
