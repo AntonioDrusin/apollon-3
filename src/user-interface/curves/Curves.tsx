@@ -31,7 +31,7 @@ const Paths : {[key in Curve]: string} = {
 }
 
 export function CurveDisplay({color, curve}: CurveProps) {
-    return <svg viewBox="0 0 500 500" width="100%" height="auto">
+    return <svg viewBox="0 0 500 500" style={{width: "100%", height: "auto"}}>
         <path
             style={baseStyle(color)}
             d={Paths[curve]}>

@@ -66,11 +66,11 @@ export function InputSettingsPanel({info, link, onParameterChange}: VisualizerIn
     };
 
     return loading ? null : (
-        <Card sx={{m: 3, p: 0,
+        <Card sx={{m: 1, p: 0,
             outlineColor: theme.palette.primary.dark,
             outlineWidth: 2, outlineStyle: "solid",
             width: 340}} ref={drop}>
-            <Box sx={{px: 2, py: 1, backgroundColor: theme.palette.primary.dark}}>
+            <Box sx={{px: 2, py: 1, backgroundColor: theme.palette.primary.dark, color: theme.palette.getContrastText(theme.palette.primary.dark)}}>
                 <Typography>{info.label}</Typography>
             </Box>
             <Box>

@@ -9,6 +9,7 @@ export interface InputProcessorParameters {
     highClamp: number;
     autoscaling: boolean;
     autoscalingPeriodSeconds: number;
+    autoMax: number;
 }
 
 export class NeurosityDataProcessor implements GraphSource {

@@ -6,6 +6,7 @@ import {InputRange} from "./InputRange";
 
 
 export class InputProcessor {
+    _log: boolean = false;
     _parameters: InputProcessorParameters;
     _fir: number[];
     _settings: Settings;
@@ -18,6 +19,7 @@ export class InputProcessor {
     private readonly _autoscalerSettingsKey: string;
 
     constructor(key: string) {
+        this._log = key === "alpha";
         this._settings = Register.settings;
         this._settingsKey = `InputProcessor[${key}]`;
         this._autoscalerSettingsKey = `InputProcessorScale[${key}]`;
@@ -28,7 +30,8 @@ export class InputProcessor {
             highClamp: 1,
             lowClamp: 0,
             autoscaling: true,
-            autoscalingPeriodSeconds: 10
+            autoscalingPeriodSeconds: 10,
+            autoMax: 0,
         };
 
         const saved = this._settings.getProp<InputRange>(this._autoscalerSettingsKey);
@@ -62,12 +65,12 @@ export class InputProcessor {
     // Must return a value between 0 and 1
     public next(input: number): number {
         this._hasValues = true;
-        this._currentInputRange.next(input);
+
         const value = this.clamp(input);
         return this.fir(value);
     }
 
-    private fir(value: number) {
+    private fir(value: number): number {
         if (this._parameters.firLength === 0) {
             return value;
         } else {
@@ -86,15 +89,23 @@ export class InputProcessor {
         }
     }
 
-    private clamp(input: number) {
+    private clamp(input: number): number {
         this._currentAutoScale.adjustTo(this._desiredAutoScale);
+
+        if ( this._parameters.autoscaling && (this._parameters.autoMax || 0) > 0) {
+            input = Math.min(this._parameters.autoMax, input);
+        }
+        this._currentInputRange.next(input);
+
 
         let high = this._parameters.highClamp;
         let low = this._parameters.lowClamp;
+
         if ( this._parameters.autoscaling) {
             high = this._currentAutoScale.max;
             low = this._currentAutoScale.min;
         }
+
         input = Math.min(input, high);
         input = Math.max(input, low);
         const range = high - low;
