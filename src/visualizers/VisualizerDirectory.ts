@@ -1,4 +1,3 @@
-import Graphics from "p5";
 import "reflect-metadata";
 import {VisualizersMap} from "./VisualizersMap";
 
@@ -56,10 +55,6 @@ export function numberInput(label: string, from: number, to: number) {
         metaData.inputs.push({label, min: from, max: to, propertyKey} as InputInfo);
         Reflect.defineMetadata(__FIELD_VISUALIZERS_METADATA_KEY, metaData, target.constructor);
     }
-}
-
-export interface Visualizer {
-    paint(width: number, height: number, g: Graphics): void;
 }
 
 

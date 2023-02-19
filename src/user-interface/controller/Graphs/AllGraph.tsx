@@ -17,7 +17,7 @@ export default function AllGraph ({ data }: AllGraphProps) {
         const container = containerRef.current;
 
         if (container) {
-            new p5((sketch) => {
+            new p5((sketch: p5) => {
                 const width = container.offsetWidth;
                 const height = container.offsetHeight;
                 const padding = 50;
