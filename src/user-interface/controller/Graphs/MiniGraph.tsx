@@ -86,6 +86,4 @@ export function MiniGraph({valueId, dataSource, color, width, height}: MiniGraph
     }, []);
 
     return <Sketch setup={setup} draw={draw}></Sketch>
-
-
 }

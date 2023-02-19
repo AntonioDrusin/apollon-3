@@ -16,11 +16,12 @@ export class Circles implements IVisualizer {
     private _width: number = 1920;
     private _height: number = 1080;
 
-    init(width: number, height: number, element: Element): void {
+    constructor(width: number, height: number, element: Element) {
         this._p5 = new p5((p: p5) => {
             p.setup = () => {
                 // See docs for positioning canvas
                 p.createCanvas(p.displayWidth, p.displayHeight).parent(element);
+
                 this._width = p.displayWidth;
                 this._height = p.displayHeight;
             };
@@ -33,8 +34,8 @@ export class Circles implements IVisualizer {
                 p.fill(100, 120, 100);
                 p.strokeWeight(this.border);
                 p.stroke(200, 200, 200);
-                p.circle(mul * 800, mul * 100, mul * this.leftDiameter);
-                p.circle(mul * 800, mul * 500, mul * this.rightDiameter);
+                p.circle(mul * 960, mul * 100, mul * this.leftDiameter);
+                p.circle(mul * 960, mul * 500, mul * this.rightDiameter);
             }
         });
     }
@@ -42,4 +43,5 @@ export class Circles implements IVisualizer {
     clear(): void {
         this._p5?.remove()
     }
+
 }

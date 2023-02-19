@@ -15,5 +15,5 @@ export function VisualizerCanvas() {
         receiver.linkVisualizer(refWidth.current, refHeight.current, containerRef.current!);
     }, [receiver, containerRef]);
 
-    return <div ref={containerRef} style={{width: "100%", height: "100%"}}></div>
+    return <div ref={containerRef} style={{width: "1920px", height: "1080px", overflow: "hidden"}}></div>
 }
