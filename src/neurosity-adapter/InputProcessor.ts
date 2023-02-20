@@ -6,20 +6,21 @@ import {InputRange} from "./InputRange";
 
 
 export class InputProcessor {
-    _log: boolean = false;
-    _parameters: InputProcessorParameters;
-    _fir: number[];
-    _settings: Settings;
-    _inputRanges: InputRange[] = [];
-    _currentInputRange: InputRange = new InputRange();
-    _currentAutoScale: InputRange = new InputRange();
-    _desiredAutoScale: InputRange = new InputRange();
-    _hasValues = false;
+    private _log: boolean = false;
+    private _parameters: InputProcessorParameters;
+    private _fir: number[];
+    private _settings: Settings;
+    private _inputRanges: InputRange[] = [];
+    private _currentInputRange: InputRange = new InputRange();
+    private readonly _currentAutoScale: InputRange = new InputRange();
+    private _desiredAutoScale: InputRange = new InputRange();
+    private _hasValues = false;
     private readonly _settingsKey: string;
     private readonly _autoscalerSettingsKey: string;
+    private _lastValue = 0;
 
     constructor(key: string) {
-        this._log = key === "alpha";
+        this._log = key === "theta";
         this._settings = Register.settings;
         this._settingsKey = `InputProcessor[${key}]`;
         this._autoscalerSettingsKey = `InputProcessorScale[${key}]`;
@@ -93,17 +94,25 @@ export class InputProcessor {
         this._currentAutoScale.adjustTo(this._desiredAutoScale);
 
         if ( this._parameters.autoscaling && (this._parameters.autoMax || 0) > 0) {
-            input = Math.min(this._parameters.autoMax, input);
+            if ( input > this._parameters.autoMax ) {
+                input = this._lastValue || 0;
+            }
+            //input = Math.min(this._parameters.autoMax, input);
         }
-        this._currentInputRange.next(input);
+        else {
+            if ( input > this._parameters.highClamp ) input = this._lastValue || 0;
+        }
 
+        this._lastValue = input;
+        this._currentInputRange.next(input);
 
         let high = this._parameters.highClamp;
         let low = this._parameters.lowClamp;
 
         if ( this._parameters.autoscaling) {
             high = this._currentAutoScale.max;
-            low = this._currentAutoScale.min;
+            // low = this._currentAutoScale.min;
+            low = 0;
         }
 
         input = Math.min(input, high);
