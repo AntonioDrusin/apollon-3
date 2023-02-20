@@ -2,14 +2,14 @@ import React, {useContext, useEffect, useState} from "react";
 import {useDrop} from "react-dnd";
 import {DataSourceInfos, KeysOfNeurosityData} from "../../../neurosity-adapter/OutputDataSource";
 import {getThemeByName, ThemeContext} from "../../../App";
-import {Box, Card, FormControl, InputLabel, MenuItem, Select, Slider, Typography} from "@mui/material";
+import {Box, Card, Container, FormControl, InputLabel, MenuItem, Select, Slider, Typography} from "@mui/material";
 import {InputInfo} from "../../../visualizers/VisualizerDirectory";
 import {ParameterLink} from "../../../link/ScreenLink";
+import {CurveDisplay} from "../../curves/Curves";
 
 export interface VisualizerInputProps {
     info: InputInfo;
     link: ParameterLink;
-
     onParameterChange(link: ParameterLink): void;
 }
 
@@ -66,11 +66,11 @@ export function InputSettingsPanel({info, link, onParameterChange}: VisualizerIn
     };
 
     return loading ? null : (
-        <Card sx={{m: 3, p: 0,
+        <Card sx={{m: 1, p: 0,
             outlineColor: theme.palette.primary.dark,
             outlineWidth: 2, outlineStyle: "solid",
             width: 340}} ref={drop}>
-            <Box sx={{px: 2, py: 1, backgroundColor: theme.palette.primary.dark}}>
+            <Box sx={{px: 2, py: 1, backgroundColor: theme.palette.primary.dark, color: theme.palette.getContrastText(theme.palette.primary.dark)}}>
                 <Typography>{info.label}</Typography>
             </Box>
             <Box>
@@ -82,6 +82,7 @@ export function InputSettingsPanel({info, link, onParameterChange}: VisualizerIn
                             borderRadius: 27,
                             backgroundColor: DataSourceInfos[selectedInput as KeysOfNeurosityData]?.color ?? theme.palette.background.default
                         }}>
+                        <Box sx={{margin: "auto"}}><CurveDisplay curve={"linear"} color="white"/></Box>
                     </Box>
                     <Box sx={{minWidth: 220}}>
                         <FormControl fullWidth component="span">
@@ -103,6 +104,7 @@ export function InputSettingsPanel({info, link, onParameterChange}: VisualizerIn
                             </Select>
                         </FormControl>
                     </Box>
+
                     <Box sx={{m: 1, p: 1, width: 320}}>
                         <Slider value={manualValue} onChange={handleManualSignalChange} step={0.01} min={0} max={1.0}
                                 disabled={selectedInput !== MANUAL}></Slider>

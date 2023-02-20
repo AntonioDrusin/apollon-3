@@ -14,7 +14,7 @@ interface MiniGraphProps {
 }
 
 export function MiniGraph({valueId, dataSource, color, width, height}: MiniGraphProps) {
-    const periodMs = 1000 / 120;
+    const periodMs = 1000 / 4;
     const samples = width;
     const margin = 8;
     let value = useRef(0)
@@ -86,6 +86,4 @@ export function MiniGraph({valueId, dataSource, color, width, height}: MiniGraph
     }, []);
 
     return <Sketch setup={setup} draw={draw}></Sketch>
-
-
 }

@@ -30,7 +30,6 @@ export function PreProcessPanel({outputInfo, dataKey, processor}: PreProcessOutp
     const [loading, setLoading] = useState(true);
     const [autoscaling, setAutoscaling] = useState(true);
     const [autoscalingSeconds, setAutoscalingSeconds] = useState("0");
-    const [autoMaxString, setAutoMaxString] = useState("0");
 
     const themeContext = useContext(ThemeContext);
     const theme = getThemeByName(themeContext.themeName);
@@ -43,29 +42,26 @@ export function PreProcessPanel({outputInfo, dataKey, processor}: PreProcessOutp
         setClampLowString(parameters.lowClamp?.toString() || "0");
         setClampHighString(parameters.highClamp?.toString() || "1");
         setAutoscaling(parameters.autoscaling);
-        setAutoMaxString(parameters.autoMax?.toString() || "0");
         setAutoscalingSeconds(parameters.autoscalingPeriodSeconds?.toString() || "1");
         setLoading(false);
     }, [processor, dataKey]);
 
 
     useEffect(() => {
-        if (!loading) {
+        if ( !loading ) {
             let lowClamp = parseFloat(clampLowString) || outputInfo.min;
             let highClamp = parseFloat(clampHighString) || outputInfo.max;
             let autoscalingPeriodSeconds = parseFloat(autoscalingSeconds) || 1;
             let firLength = parseFloat(filter) || 0;
-            let autoMax = parseFloat(autoMaxString) || 0;
             processor.getInputProcessor(dataKey).setParameters({
                 autoscaling,
                 autoscalingPeriodSeconds,
                 lowClamp,
                 highClamp,
-                firLength,
-                autoMax
+                firLength
             });
         }
-    }, [loading, outputInfo, dataKey, processor, clampLowString, clampHighString, autoscaling, autoscalingSeconds, filter, autoMaxString]);
+    }, [loading, outputInfo, dataKey, processor, clampLowString, clampHighString, autoscaling, autoscalingSeconds, filter]);
 
 
     const handleFilterChange = (event: any) => {
@@ -90,13 +86,13 @@ export function PreProcessPanel({outputInfo, dataKey, processor}: PreProcessOutp
     }
 
     return loading ? null : (
+<<<<<<< Updated upstream
+        <Card sx={{m: 3, p: 0, outlineColor: outputInfo.color, outlineWidth: 2, outlineStyle: "solid"}}>
+            <Box sx={{background: outputInfo.color, px: 2, py: 1, color: theme.palette.getContrastText(outputInfo.color)}}>
+=======
         <Card sx={{m: 1, p: 0, outlineColor: outputInfo.color, outlineWidth: 2, outlineStyle: "solid"}}>
-            <Box sx={{
-                background: outputInfo.color,
-                px: 2,
-                py: 1,
-                color: theme.palette.getContrastText(outputInfo.color)
-            }}>
+            <Box sx={{background: outputInfo.color, px: 2, py: 1}}>
+>>>>>>> Stashed changes
                 <Typography>{outputInfo.name}</Typography>
             </Box>
             <Box sx={{m: 1, p: 0}}>
@@ -115,36 +111,32 @@ export function PreProcessPanel({outputInfo, dataKey, processor}: PreProcessOutp
                     </Box>
 
                     {autoscaling ? (
-                        <Box sx={{
-                            display: "flex",
-                            flexDirection: "row",
-                        }}>
-                            <TextField sx={{m: 1}} id={"autoscalingSeconds-" + dataKey} label="Seconds"
-                                       variant="outlined"
+                        <Box>
+                            <TextField sx={{m: 1}} id={"autoscalingSeconds-"+dataKey} label="Seconds" variant="outlined"
                                        value={autoscalingSeconds}
                                        onChange={handleAutoscalingSeconds}
                                        inputProps={{inputMode: "numeric", pattern: "[0-9.]*"}}/>
-                            <TextField sx={{m: 1}} id={"clamp-" + dataKey} label="Clamp" variant="outlined"
-                                       value={autoMaxString}
-                                       onChange={(event) => setAutoMaxString(event.target.value)}
-                                       inputProps={{inputMode: "numeric", pattern: "[0-9.]*"}}/>
                         </Box>
-
                     ) : (
                         <Box sx={{
                             display: "flex",
                             flexDirection: "row",
                         }}>
-                            <TextField sx={{m: 1}} id={"clampLow-" + dataKey} label="Low" variant="outlined"
+                            <TextField sx={{m: 1}} id={"clampLow-"+dataKey} label="Low" variant="outlined"
                                        value={clampLowString}
                                        onChange={handleClampLow}
                                        inputProps={{inputMode: "numeric", pattern: "[0-9.]*"}}/>
-                            <TextField sx={{m: 1}} id={"clampHigh-" + dataKey} label="High" variant="outlined"
+                            <TextField sx={{m: 1}} id={"clampHigh-"+dataKey} label="High" variant="outlined"
                                        value={clampHighString}
                                        onChange={handleClampHigh}
                                        inputProps={{inputMode: "numeric", pattern: "[0-9.]*"}}/>
                         </Box>
                     )}
+                    <Box>
+                        <TextField sx={{m: 1}} id={"clamp-"+dataKey} label="Clamp" variant="outlined"
+                                   value={0}
+                                   inputProps={{inputMode: "numeric", pattern: "[0-9.]*"}}/>
+                    </Box>
 
                 </Box>
                 <Box sx={{mr: 2}}>
