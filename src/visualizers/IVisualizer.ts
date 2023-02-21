@@ -1,3 +1,4 @@
 export interface IVisualizer {
-    clear(): void;
+    start(): void;
+    pause(): void;
 }

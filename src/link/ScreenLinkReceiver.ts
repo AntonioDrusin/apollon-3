@@ -48,6 +48,7 @@ export class ScreenLinkReceiver {
             if (label !== this._current?.info.label) {
                 if (label) {
                     this.setCurrentElementHidden(true);
+                    this._current?.visualizer?.pause();
                     this._current = this._visualizersData[label];
                     if ( !this._current.visualizer ) {
                         const element = document.createElement('div');
@@ -57,6 +58,7 @@ export class ScreenLinkReceiver {
                         this._current.visualizer = new this._visualizersData[label].info
                             .Constructor(this._width, this._height, element);
                     }
+                    this._current.visualizer?.start();
                     this.setCurrentElementHidden(false);
                 } else {
                     this._current = undefined;
