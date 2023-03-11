@@ -22,6 +22,9 @@ export class Circles implements IVisualizer {
         this.start();
     }
 
+    async load(): Promise<void> {
+    }
+
     pause(): void {
         this._p5?.remove()
     }

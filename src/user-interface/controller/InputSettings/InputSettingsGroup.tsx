@@ -8,7 +8,7 @@ import {InputSettingsPanel} from "./InputSettingsPanel";
 export interface VisualizerPanelProps {
     visualizerInfo: VisualizerInfo;
     live: boolean;
-    map: ParameterMap;
+    map?: ParameterMap;
     onLive(key: string): void;
     onParameterChange(map: ParameterMap): void;
 }
@@ -19,8 +19,10 @@ export function InputSettingsGroup({visualizerInfo, live, map, onLive, onParamet
     const [toggles, setToggles] = useState<string[]>([]);
 
     const handleParameterChange = (index: number, link: ParameterLink) => {
-        map.links[index] = link;
-        onParameterChange(map);
+        if ( map ) {
+            map.links[index] = link;
+            onParameterChange(map);
+        }
     };
 
     const handleToggles = (event: React.MouseEvent<HTMLElement>, value: any) => {
@@ -35,7 +37,6 @@ export function InputSettingsGroup({visualizerInfo, live, map, onLive, onParamet
                 if (index === -1) {
                     setToggles(toggles.concat([item]));
                 }
-
             }
             else {
                 if (index !== -1) {
@@ -59,7 +60,7 @@ export function InputSettingsGroup({visualizerInfo, live, map, onLive, onParamet
                 </ToggleButton>
             </ToggleButtonGroup>
         </Box>
-        {(map &&
+        {(map && visualizerInfo.inputs &&
             <Box sx={{display: "flex", flexWrap: "wrap"}}>
                 {
                     visualizerInfo.inputs.map((info, index) => {

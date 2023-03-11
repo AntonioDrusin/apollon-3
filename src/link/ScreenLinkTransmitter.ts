@@ -25,6 +25,7 @@ export class ScreenLinkTransmitter {
         this._settings = settings;
         const loadedMaps = this._settings.getProp<ParameterMaps>(this._storageKey);
         visualizers.visualizers.forEach((v) => {
+            v.inputs ||= [];
             // Deal with the fact that we have saved may not match the new visualizers we have
             maps[v.label] = loadedMaps?.[v.label] ?? {
                 links: Array(v.inputs.length).fill({

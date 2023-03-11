@@ -55,6 +55,8 @@ export class Squares implements IVisualizer {
        this.start();
     }
 
+    async load(): Promise<void> {
+    }
 
     private render(): void {
         this.dodecahedron1.scale.x = this.inputDiameter;
