@@ -135,9 +135,9 @@ export class Apparitions implements IVisualizer {
         this.color.r += Math.round((noise2D(this.noiseOffsets.r, 0)) * this.colorSkip);
         this.color.g += Math.round((noise2D(this.noiseOffsets.g, 0)) * this.colorSkip);
         this.color.b += Math.round((noise2D(this.noiseOffsets.b, 0)) * this.colorSkip);
-        this.color.r %= 255;
-        this.color.g %= 255;
-        this.color.b %= 255;
+        this.color.r %= wrap(this.color.r, 100, 255);
+        this.color.g %= wrap(this.color.g, 100, 255);
+        this.color.b %= wrap(this.color.b, 100, 255);
 
         this.drawLinePoints();
 
