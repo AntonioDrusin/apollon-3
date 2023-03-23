@@ -27,7 +27,11 @@ export class ScreenLinkTransmitter {
         visualizers.visualizers.forEach((v) => {
             v.inputs ||= [];
             // Deal with the fact that we have saved may not match the new visualizers we have
-            maps[v.label] = loadedMaps?.[v.label] ?? {
+            let loadedMap = loadedMaps?.[v.label]
+            if (loadedMaps?.[v.label].links.length !== v.inputs.length) { // If we mismatch the length, clear out the maps.
+                loadedMap = undefined;
+            }
+            maps[v.label] = loadedMap ?? {
                 links: Array(v.inputs.length).fill({
                     manualValue: 0,
                     outputKey: null,
