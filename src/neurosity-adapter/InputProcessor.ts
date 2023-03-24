@@ -111,8 +111,7 @@ export class InputProcessor {
 
         if ( this._parameters.autoscaling) {
             high = this._currentAutoScale.max;
-            // low = this._currentAutoScale.min;
-            low = 0;
+            low = this._currentAutoScale.min;
         }
 
         input = Math.min(input, high);
