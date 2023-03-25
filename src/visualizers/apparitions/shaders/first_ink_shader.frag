@@ -4,30 +4,6 @@ varying vec2 vUv;
 
 // Algorithm parameters
 uniform float dryRate;
-uniform float paintDrop;
-
-// Drawing the line
-uniform vec3 color;
-uniform vec2 from;
-uniform vec2 to;
-
-float drawLine(vec2 p1, vec2 p2) {
-    float thickness = 1.0/(iResolution.x+iResolution.y);
-    vec2 uv = vUv.xy;
-
-    float a = abs(distance(p1, uv));
-    float b = abs(distance(p2, uv));
-    float c = abs(distance(p1, p2));
-
-    if ( a >= c || b >=  c ) return 0.0;
-
-    float p = (a + b + c) * 0.5;
-
-    // median to (p1, p2) vector
-    float h = 2.0 / c * sqrt( p * ( p - a) * ( p - b) * ( p - c));
-
-    return mix(1.0, 0.0, smoothstep(0.5 * thickness, 1.5 * thickness, h));
-}
 
 void main() {
     vec2 step = 1.0/iResolution;
@@ -35,13 +11,6 @@ void main() {
     float mixers = 1.0;
 
     vec4 finalColor = texture(tex, vUv);
-    if ( distance(from / iResolution, to / iResolution)  < 0.9 ) {
-        float lineMultiplier = drawLine(from / iResolution, to / iResolution);
-        if ( lineMultiplier > 0.0 ) {
-            finalColor = vec4((color.rgb + finalColor.rgb)/2.0,  finalColor.a + paintDrop);
-        }
-    }
-
     float totalInk = finalColor.a;
     float inkDisperse = 4.0;
 

@@ -4,14 +4,15 @@ import * as THREE from "three";
 import firstInkShaderFile from './shaders/first_ink_shader.frag';
 import vertexShaderFile from './shaders/vertex.vert';
 import effectShaderFile from './shaders/effect_shader.frag';
+import mixShaderFile from './shaders/mix_shader.frag';
 import {
-    Mesh,
-    PlaneGeometry,
     ShaderMaterial,
-    Vector2, Vector3, Vector4,
+    Vector2,
+    Vector3,
     WebGLRenderTarget
 } from "three";
 import {noise2D} from "./Noise";
+
 
 // https://editor.p5js.org/StevesMakerspace/sketches/d0lPUJt8T
 //
@@ -43,21 +44,21 @@ export class Apparitions implements IVisualizer {
     private dryRate = 0.0012
     private paintDrop = 40;
 
-
-
     private readonly renderer: THREE.WebGLRenderer;
-    private scene?: THREE.Scene;
-    private bufferScene?: THREE.Scene;
-    private camera?: THREE.OrthographicCamera;
+    private readonly scene: THREE.Scene;
+    private readonly firstInkScene: THREE.Scene;
+    private readonly mixScene: THREE.Scene;
 
-    private frameId: number | null = null;
-    private material?: ShaderMaterial;
-    private copy_material?: ShaderMaterial;
+    private readonly camera: THREE.OrthographicCamera;
+
+    private firstInkMaterial?: ShaderMaterial;
+    private effectMaterial?: ShaderMaterial;
+    private mixMaterial?: ShaderMaterial;
     private readonly width: number;
     private readonly height: number;
-    private mesh?: Mesh<PlaneGeometry, ShaderMaterial>;
-    private bufferTextureA?: WebGLRenderTarget;
-    private bufferTextureB?: WebGLRenderTarget;
+    private readonly firstInkTexture: WebGLRenderTarget;
+    private readonly secondInkTexture: WebGLRenderTarget;
+    private readonly paintTexture: WebGLRenderTarget;
 
     private noiseOffsets = {
         x: Math.random() * 40000,
@@ -81,10 +82,9 @@ export class Apparitions implements IVisualizer {
         y: 0,
     }
 
-
+    private frameId: number | null = null;
 
     constructor(width: number, height: number, element: Element) {
-
         this.width = width;
         this.height = height;
 
@@ -94,9 +94,26 @@ export class Apparitions implements IVisualizer {
 
         element.appendChild(this.renderer.domElement);
 
+        // Create all the textures
+        const calcTextureParams = {
+            minFilter: THREE.LinearFilter,
+            magFilter: THREE.NearestFilter,
+            type: THREE.FloatType,
+        };
+        this.firstInkTexture = new THREE.WebGLRenderTarget(this.width, this.height, calcTextureParams);
+        this.secondInkTexture = new THREE.WebGLRenderTarget(this.width, this.height, calcTextureParams);
+        this.paintTexture = new THREE.WebGLRenderTarget(this.width, this.height, calcTextureParams);
+
+        this.scene = new THREE.Scene();
+        this.firstInkScene = new THREE.Scene();
+        this.mixScene = new THREE.Scene();
+
+        this.camera = new THREE.OrthographicCamera(-this.width / 2, this.width / 2, -this.height / 2, this.height / 2, 1, 1000);
+        this.camera.position.set(0, 0, -100);
+        this.camera.rotateX(Math.PI);
+
         this.previousPos.x = this.pos.x = Math.random() * width;
         this.previousPos.y = this.pos.y = Math.random() * width;
-
     }
 
     pause(): void {
@@ -139,76 +156,58 @@ export class Apparitions implements IVisualizer {
     private render(): void {
         this.addPaint();
 
-        // Apply the transformation of the material
-        this.material!.uniforms!.tex = {value: this.bufferTextureA!.texture!};
-        this.material!.uniforms!.from = {value: new Vector2(Math.abs(this.pos.x % this.width), Math.abs(this.pos.y % this.height))};
-        this.material!.uniforms!.to = {value: new Vector2(Math.abs(this.previousPos.x % this.width), Math.abs(this.previousPos.y % this.height))};
-        this.material!.uniforms!.color = {value: new Vector3(this.color.r / 255, this.color.g / 255, this.color.b / 255)};
-        this.material!.uniforms!.dryRate = {value: this.dryRate};
-        this.material!.uniforms!.paintDrop = {value: this.paintDrop};
+        // Apply the transformation of the firstInkMaterial
+        this.firstInkMaterial!.uniforms!.iResolution = {value: new Vector2(this.width, this.height)};
+        this.firstInkMaterial!.uniforms!.tex = {value: this.paintTexture.texture};
+        this.firstInkMaterial!.uniforms!.dryRate = {value: this.dryRate};
 
-        this.renderer.setRenderTarget(this.bufferTextureB!);
-        this.renderer.render(this.bufferScene!, this.camera!);
+        this.renderer.setRenderTarget(this.firstInkTexture);
+        this.renderer.render(this.firstInkScene!, this.camera);
+
+        // Mix the two ink textures
+        this.mixMaterial!.uniforms!.firstTex = {value: this.firstInkTexture.texture};
+        this.mixMaterial!.uniforms!.secondTex = {value: this.secondInkTexture.texture};
+        this.mixMaterial!.uniforms!.from = {value: new Vector2(Math.abs(this.pos.x % this.width), Math.abs(this.pos.y % this.height))};
+        this.mixMaterial!.uniforms!.to = {value: new Vector2(Math.abs(this.previousPos.x % this.width), Math.abs(this.previousPos.y % this.height))};
+        this.mixMaterial!.uniforms!.color = {value: new Vector3(this.color.r / 255, this.color.g / 255, this.color.b / 255)};
+        this.mixMaterial!.uniforms!.paintDrop = {value: this.paintDrop};
+        this.mixMaterial!.uniforms!.resolution = {value: new Vector2(this.width, this.height)};
+        this.renderer.setRenderTarget(this.paintTexture);
+        this.renderer.render(this.mixScene, this.camera);
 
         // Apply the texture to the screen
-        this.copy_material!.uniforms!.tex = {value: this.bufferTextureB!.texture!};
+        this.effectMaterial!.uniforms!.tex = {value: this.paintTexture.texture};
         this.renderer.setRenderTarget(null);
-        this.renderer.render(this.scene!, this.camera!);
-
-        const tA = this.bufferTextureA;
-        this.bufferTextureA = this.bufferTextureB;
-        this.bufferTextureB = tA;
+        this.renderer.render(this.scene, this.camera);
     }
 
     async load(): Promise<void> {
-
-        this.scene = new THREE.Scene();
-        this.camera = new THREE.OrthographicCamera(-this.width / 2, this.width / 2, -this.height / 2, this.height / 2, 1, 1000);
-        this.camera.position.set(0, 0, -100);
-        this.camera.rotateX(Math.PI);
-
-        // We need the extra precision to calculate the drying time
-        this.bufferScene = new THREE.Scene();
-        this.bufferTextureA = new THREE.WebGLRenderTarget(this.width, this.height, {
-            minFilter: THREE.LinearFilter,
-            magFilter: THREE.NearestFilter,
-            type: THREE.FloatType,
-        });
-        this.bufferTextureB = new THREE.WebGLRenderTarget(this.width, this.height, {
-            minFilter: THREE.LinearFilter,
-            magFilter: THREE.NearestFilter,
-            type: THREE.FloatType,
-        });
-
         const plane = new THREE.PlaneGeometry(this.width, this.height, 1, 1);
-
         const fileLoader = new THREE.FileLoader();
-
         const vertexShader = await fileLoader.loadAsync(vertexShaderFile) as string;
         const fragmentShader = await fileLoader.loadAsync(firstInkShaderFile) as string;
         const copyShader = await fileLoader.loadAsync(effectShaderFile) as string;
+        const mixShader = await fileLoader.loadAsync(mixShaderFile) as string;
 
-        this.material = new THREE.ShaderMaterial({
-            uniforms: {
-                iResolution: {value: new Vector2(this.width, this.height)},
-            },
+        this.firstInkMaterial = new THREE.ShaderMaterial({
             vertexShader: vertexShader,
             fragmentShader: fragmentShader,
             depthTest: false,
         });
 
-        this.copy_material = new THREE.ShaderMaterial({
+        this.effectMaterial = new THREE.ShaderMaterial({
             vertexShader: vertexShader,
             fragmentShader: copyShader,
             depthTest: false,
         });
+        this.mixMaterial = new THREE.ShaderMaterial({
+            vertexShader: vertexShader,
+            fragmentShader: mixShader,
+            depthTest: false,
+        })
 
-        // buffer scene
-        const bufferObject = new THREE.Mesh(plane, this.material);
-        this.bufferScene.add(bufferObject);
-
-        // screen scene
-        this.mesh = new THREE.Mesh(plane, this.copy_material);
-        this.scene.add(this.mesh);
+        this.firstInkScene.add(new THREE.Mesh(plane, this.firstInkMaterial));
+        this.mixScene.add(new THREE.Mesh(plane, this.mixMaterial));
+        this.scene.add(new THREE.Mesh(plane, this.effectMaterial));
     }
 }
