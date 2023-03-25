@@ -1,9 +1,9 @@
 import {numberInput, visualizer} from "../VisualizerDirectory";
 import {IVisualizer} from "../IVisualizer";
 import * as THREE from "three";
-import fragmentShaderFile from './shaders/fragment.frag';
+import firstInkShaderFile from './shaders/first_ink_shader.frag';
 import vertexShaderFile from './shaders/vertex.vert';
-import copyShaderFile from './shaders/copy_shader.frag';
+import effectShaderFile from './shaders/effect_shader.frag';
 import {
     Mesh,
     PlaneGeometry,
@@ -59,7 +59,6 @@ export class Apparitions implements IVisualizer {
     private bufferTextureA?: WebGLRenderTarget;
     private bufferTextureB?: WebGLRenderTarget;
 
-    // Simulation parameters
     private noiseOffsets = {
         x: Math.random() * 40000,
         y: Math.random() * 40000,
@@ -186,8 +185,8 @@ export class Apparitions implements IVisualizer {
         const fileLoader = new THREE.FileLoader();
 
         const vertexShader = await fileLoader.loadAsync(vertexShaderFile) as string;
-        const fragmentShader = await fileLoader.loadAsync(fragmentShaderFile) as string;
-        const copyShader = await fileLoader.loadAsync(copyShaderFile) as string;
+        const fragmentShader = await fileLoader.loadAsync(firstInkShaderFile) as string;
+        const copyShader = await fileLoader.loadAsync(effectShaderFile) as string;
 
         this.material = new THREE.ShaderMaterial({
             uniforms: {
@@ -199,9 +198,6 @@ export class Apparitions implements IVisualizer {
         });
 
         this.copy_material = new THREE.ShaderMaterial({
-            uniforms: {
-                tex: {value: this.bufferTextureA.texture},
-            },
             vertexShader: vertexShader,
             fragmentShader: copyShader,
             depthTest: false,
