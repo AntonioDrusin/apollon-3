@@ -57,7 +57,6 @@ export class Apparitions implements IVisualizer {
     private readonly width: number;
     private readonly height: number;
     private readonly firstInkTexture: WebGLRenderTarget;
-    private readonly secondInkTexture: WebGLRenderTarget;
     private readonly paintTexture: WebGLRenderTarget;
 
     private noiseOffsets = {
@@ -101,7 +100,6 @@ export class Apparitions implements IVisualizer {
             type: THREE.FloatType,
         };
         this.firstInkTexture = new THREE.WebGLRenderTarget(this.width, this.height, calcTextureParams);
-        this.secondInkTexture = new THREE.WebGLRenderTarget(this.width, this.height, calcTextureParams);
         this.paintTexture = new THREE.WebGLRenderTarget(this.width, this.height, calcTextureParams);
 
         this.scene = new THREE.Scene();
@@ -166,7 +164,6 @@ export class Apparitions implements IVisualizer {
 
         // Mix the two ink textures
         this.mixMaterial!.uniforms!.firstTex = {value: this.firstInkTexture.texture};
-        this.mixMaterial!.uniforms!.secondTex = {value: this.secondInkTexture.texture};
         this.mixMaterial!.uniforms!.from = {value: new Vector2(Math.abs(this.pos.x % this.width), Math.abs(this.pos.y % this.height))};
         this.mixMaterial!.uniforms!.to = {value: new Vector2(Math.abs(this.previousPos.x % this.width), Math.abs(this.previousPos.y % this.height))};
         this.mixMaterial!.uniforms!.color = {value: new Vector3(this.color.r / 255, this.color.g / 255, this.color.b / 255)};

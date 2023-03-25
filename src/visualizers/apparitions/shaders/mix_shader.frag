@@ -1,5 +1,4 @@
 uniform sampler2D firstTex;
-uniform sampler2D secondTex;
 varying vec2 vUv;
 
 // Drawing the line
@@ -29,7 +28,6 @@ float drawLine(vec2 p1, vec2 p2) {
 }
 
 void main() {
-    // Mixes the two paint textures, depending on the runny colors setting
     // Draws the line
 
     vec4 firstSample = texture(firstTex, vUv);
