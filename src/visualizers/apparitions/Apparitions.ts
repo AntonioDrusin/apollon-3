@@ -27,6 +27,7 @@ export class Apparitions implements IVisualizer {
     // Parameters
     @numberInput("Move noise", 0.02, 0.32)
     private noiseCoordOffset = 0.08;
+    @numberInput("Color noise", 0.02, 0.32)
     private noiseColorOffset = 0.5;
     @numberInput("Move amplification", 2, 24)
     private pixelSkip = 12;
