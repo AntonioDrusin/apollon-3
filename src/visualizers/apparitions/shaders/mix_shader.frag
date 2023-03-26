@@ -31,7 +31,6 @@ void main() {
     // Draws the line
 
     vec4 firstSample = texture(firstTex, vUv);
-    vec4 secondSample = texture(secondTex, vUv);
 
     vec4 finalColor = firstSample;
 

@@ -14,14 +14,8 @@ import {
 import {noise2D} from "./Noise";
 
 
+// This is a port to shaders of
 // https://editor.p5js.org/StevesMakerspace/sketches/d0lPUJt8T
-//
-// TODO:
-//
-// Match ink values to the p5 version.
-// Add runny colors false
-// Name shaders and textures correctly
-// Shorten functions
 
 
 function wrap(value: number, from: number, to: number): number {
@@ -30,18 +24,17 @@ function wrap(value: number, from: number, to: number): number {
 
 @visualizer("Apparitions", "2d")
 export class Apparitions implements IVisualizer {
-    @numberInput("X coord", 0, 1.0)
-    posX: number = 0;
-
-    @numberInput("Y coord", 0, 1.0)
-    posY: number = 0;
-
     // Parameters
+    @numberInput("Move noise", 0.02, 0.32)
     private noiseCoordOffset = 0.08;
     private noiseColorOffset = 0.5;
+    @numberInput("Move amplification", 2, 24)
     private pixelSkip = 12;
+    @numberInput("Color amplification", 2, 18)
     private colorSkip = 7;
+    @numberInput("Dry rate", 0.0002, 0.0048)
     private dryRate = 0.0012
+    @numberInput("Paint amount", 0, 120)
     private paintDrop = 40;
 
     private readonly renderer: THREE.WebGLRenderer;
