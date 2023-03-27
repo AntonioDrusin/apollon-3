@@ -38,8 +38,10 @@ export function InputSettingsPanel({info, link, onParameterChange}: VisualizerIn
     }))
 
     useEffect(() => {
-        setSelectedInput(link.outputKey ?? MANUAL);
-        setLoading(false);
+        if ( link ) {
+            setSelectedInput(link.outputKey ?? MANUAL);
+            setLoading(false);
+        }
     }, [link]);
 
     useEffect(() => {

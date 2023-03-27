@@ -52,14 +52,11 @@ export class Squares implements IVisualizer {
         const ambientLight = new THREE.AmbientLight( 0x303030 );
         this.scene.add( ambientLight );
 
-        const renderLoop = (): void => {
-            this.render();
-            this.frameId = requestAnimationFrame(renderLoop);
-        };
-
-        this.frameId = requestAnimationFrame(renderLoop);
+       this.start();
     }
 
+    async load(): Promise<void> {
+    }
 
     private render(): void {
         this.dodecahedron1.scale.x = this.inputDiameter;
@@ -77,16 +74,20 @@ export class Squares implements IVisualizer {
         this.renderer.render(this.scene, this.camera);
     }
 
-    clear(): void {
+
+    pause(): void {
         if (this.frameId !== null) {
             cancelAnimationFrame(this.frameId);
             this.frameId = null;
         }
-        // this.renderer.dispose();
-        // // this.scene.remove(this.dodecahedron1);
-        // // this.scene.remove(this.dodecahedron2);
-        // // this.dodecahedron1.geometry.dispose();
-        // // this.dodecahedron2.geometry.dispose();
     }
 
+    start(): void {
+        const renderLoop = (): void => {
+            this.render();
+            this.frameId = requestAnimationFrame(renderLoop);
+        };
+
+        this.frameId = requestAnimationFrame(renderLoop);
+    }
 }

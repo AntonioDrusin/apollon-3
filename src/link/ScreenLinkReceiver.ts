@@ -23,8 +23,9 @@ export class ScreenLinkReceiver {
         this._channel = new BroadcastChannel(__BROADCAST_CHANNEL_NAME__);
         this._channel.onmessage = (message) => {
             this._data = message.data;
-            this.setVisualizer()
-            this.setParameters();
+            this.setVisualizer().then(r => {
+                this.setParameters();
+            });
         }
         this._directory = new VisualizerDirectory();
         const visualizerData: { [k: string]: VisualizerData } = {};
@@ -42,12 +43,13 @@ export class ScreenLinkReceiver {
         this._parentElement = ref;
     }
 
-    private setVisualizer() {
+    private async setVisualizer() {
         if (this._parentElement && this._width && this._height) {
             const label = this._data.visualizerLabel;
             if (label !== this._current?.info.label) {
                 if (label) {
                     this.setCurrentElementHidden(true);
+                    this._current?.visualizer?.pause();
                     this._current = this._visualizersData[label];
                     if ( !this._current.visualizer ) {
                         const element = document.createElement('div');
@@ -56,7 +58,9 @@ export class ScreenLinkReceiver {
                         this._current.element = element;
                         this._current.visualizer = new this._visualizersData[label].info
                             .Constructor(this._width, this._height, element);
+                        await this._current.visualizer?.load();
                     }
+                    this._current.visualizer?.start();
                     this.setCurrentElementHidden(false);
                 } else {
                     this._current = undefined;
@@ -75,7 +79,7 @@ export class ScreenLinkReceiver {
         if (this._data.visualizerLabel && this._current) {
             const visualizer = this._current.visualizer as any;
             const info = this._current.info;
-            info.inputs.forEach((input, index) => {
+            info.inputs?.forEach((input, index) => {
                 visualizer[input.propertyKey] = input.min + (input.max - input.min) * this._data.parameters[index];
             })
         }

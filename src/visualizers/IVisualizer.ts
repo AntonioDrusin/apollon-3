@@ -1,3 +1,5 @@
 export interface IVisualizer {
-    clear(): void;
+    load(): Promise<void>;
+    start(): void;
+    pause(): void;
 }

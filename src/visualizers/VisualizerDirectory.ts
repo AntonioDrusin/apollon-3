@@ -5,7 +5,7 @@ export interface VisualizerInfo {
     Constructor: any;
     label: string;
     p5mode: string;
-    inputs: InputInfo[];
+    inputs?: InputInfo[];
 }
 
 export interface InputInfo {
@@ -41,9 +41,10 @@ export class VisualizerDirectory {
 export function visualizer(label: string, p5mode: "2d" | "webgl") {
     return function (constructor: Function) {
         const __FIELD_VISUALIZERS_METADATA_KEY = "Field.Visualizers.Metadata.Key";
-        const meta = Reflect.getMetadata(__FIELD_VISUALIZERS_METADATA_KEY, constructor);
+        const meta = Reflect.getMetadata(__FIELD_VISUALIZERS_METADATA_KEY, constructor) || {};
         meta.label = label;
         meta.p5mode = p5mode;
+        Reflect.defineMetadata(__FIELD_VISUALIZERS_METADATA_KEY, meta, constructor);
     };
 }
 
