@@ -8,6 +8,7 @@ import {Observable, Subject} from "rxjs";
 export interface VisualizerChange {
     visualizer: string | null;
 }
+
 export class ScreenLinkTransmitter {
 
     private _maps: ParameterMaps;
@@ -28,61 +29,118 @@ export class ScreenLinkTransmitter {
             v.inputs ||= [];
             // Deal with the fact that we have saved may not match the new visualizers we have
             let loadedMap = loadedMaps?.[v.label]
-            if (loadedMaps?.[v.label].links.length !== v.inputs.length) { // If we mismatch the length, clear out the maps.
-                loadedMap = undefined;
-            }
-            maps[v.label] = loadedMap ?? {
-                links: Array(v.inputs.length).fill({
-                    manualValue: 0,
-                    outputKey: null,
-                })
-            };
-        });
-        this._maps = maps;
-        this._dataProcessor = dataProcessor;
-        this._channel = new BroadcastChannel(__BROADCAST_CHANNEL_NAME__);
-        this._dataProcessor.data$.subscribe((data) => {
-            const message = this.mapData(data);
-            this._channel.postMessage(message);
-        });
-
-        const loadedVisualizer = this._settings.getProp<string>(this._visualizerStorageKey);
-        this._visualizer = loadedVisualizer && maps[loadedVisualizer] ? loadedVisualizer : null;
-    }
-
-    private mapData(data: NeurosityData): InputData {
-        let parameters: number[] = [];
-        if (this._visualizer) {
-            parameters = this
-                ._maps[this._visualizer].links
-                .map((link) => link.outputKey ? data[link.outputKey] : link.manualValue);
+            if (loadedMap)
+                if (loadedMap.links.length !== v.inputs.length) { // If we mismatch the length, clear out the maps.
+                    loadedMap = undefined;
+                }
         }
-        return {
-            visualizerLabel: this._visualizer,
-            parameters: parameters
-        }
+        maps[v.label] = loadedMap ?? {
+            links: Array(v.inputs.length).fill({
+                manualValue: 0,
+                outputKey: null,
+            })
+        };
     }
 
-    public getMaps(): ParameterMaps {
-        return this._maps;
-    }
+);
+    this
+.
+    _maps = maps;
+    this
+.
+    _dataProcessor = dataProcessor;
+    this
+.
+    _channel = new BroadcastChannel(__BROADCAST_CHANNEL_NAME__);
+    this
+.
+    _dataProcessor
+.
+    data$
+.
 
-    public getVisualizer(): string | null {
-        return this._visualizer;
-    }
+    subscribe(
 
-    public get visualizerChanges$(): Observable<VisualizerChange> {
-        return this._visualizerChange$;
-    }
+(
+    data
+) => {
+    const
+    message = this.mapData(data);
+    this
+.
+    _channel
+.
 
-    public setMaps(maps: ParameterMaps): void {
-        this._maps = maps;
-        this._settings.setProp(this._storageKey, this._maps);
-    }
+    postMessage(message);
+}
 
-    public setVisualizer(visualizerKey: string | null) {
-        this._visualizer = visualizerKey;
-        this._settings.setProp(this._visualizerStorageKey, this._visualizer);
-        this._visualizerChange$.next({visualizer: visualizerKey})
+)
+;
+
+const loadedVisualizer = this._settings.getProp<string>(this._visualizerStorageKey);
+this._visualizer = loadedVisualizer && maps[loadedVisualizer] ? loadedVisualizer : null;
+}
+
+private
+mapData(data
+:
+NeurosityData
+):
+InputData
+{
+    let parameters: number[] = [];
+    if (this._visualizer) {
+        parameters = this
+            ._maps[this._visualizer].links
+            .map((link) => link.outputKey ? data[link.outputKey] : link.manualValue);
     }
+    return {
+        visualizerLabel: this._visualizer,
+        parameters: parameters
+    }
+}
+
+public
+getMaps()
+:
+ParameterMaps
+{
+    return this._maps;
+}
+
+public
+getVisualizer()
+:
+string | null
+{
+    return this._visualizer;
+}
+
+public get
+visualizerChanges$()
+:
+Observable < VisualizerChange > {
+    return this._visualizerChange$;
+}
+
+public
+setMaps(maps
+:
+ParameterMaps
+):
+void {
+    this._maps = maps;
+    this._settings.setProp(this._storageKey, this._maps);
+}
+
+public
+setVisualizer(visualizerKey
+:
+string | null
+)
+{
+    this._visualizer = visualizerKey;
+    this._settings.setProp(this._visualizerStorageKey, this._visualizer);
+    this._visualizerChange$.next({visualizer: visualizerKey})
+}
 }
