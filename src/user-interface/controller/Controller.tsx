@@ -66,11 +66,11 @@ export default function Controller() {
             <FilePlaybackBar></FilePlaybackBar>
             <RecordingBar></RecordingBar>
             <DndProvider backend={HTML5Backend}>
-                <Container maxWidth="xl" >
+                <Box >
                     <Box sx={{p: 1, m: 1}}>
                         <PreviewCard dataSource={dataProcessor.data$}></PreviewCard>
                     </Box>
-                </Container>
+                </Box>
                 <ControllerTabs></ControllerTabs>
             </DndProvider>
             <MultiSnackBar></MultiSnackBar>

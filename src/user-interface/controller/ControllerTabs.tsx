@@ -53,7 +53,7 @@ export default function ControllerTabs() {
     const onTabChange = (event: React.SyntheticEvent, newValue: any) => setSelectedPanel(newValue);
 
 
-    return (loading ? null : <Container maxWidth="xl">
+    return (loading ? null : <Box>
         <Box sx={{borderBottom: 1, borderColor: "divider"}}>
             <Tabs value={selectedPanel} onChange={onTabChange}>
                 <Tab key={"preprocessing"} label={"Preprocessing"}></Tab>
@@ -84,5 +84,5 @@ export default function ControllerTabs() {
                     ;
             })
         }
-    </Container>)
+    </Box>)
 }

@@ -19,7 +19,7 @@ import {noise2D} from "./Noise";
 
 
 function wrap(value: number, from: number, to: number): number {
-    return from + Math.abs((value - from) % (to-from));
+    return from + Math.abs((value - from) % (to - from));
 }
 
 @visualizer("Apparitions", "2d")
@@ -37,6 +37,10 @@ export class Apparitions implements IVisualizer {
     private dryRate = 0.0012
     @numberInput("Paint amount", 0, 120)
     private paintDrop = 40;
+    @numberInput("Pen Threshold", 0, 1)
+    private penThreshold = 0;
+    @numberInput("Pen Down", 0, 1)
+    private penDown = 1;
 
     private readonly renderer: THREE.WebGLRenderer;
     private readonly scene: THREE.Scene;
@@ -163,6 +167,7 @@ export class Apparitions implements IVisualizer {
         this.mixMaterial!.uniforms!.color = {value: new Vector3(this.color.r / 255, this.color.g / 255, this.color.b / 255)};
         this.mixMaterial!.uniforms!.paintDrop = {value: this.paintDrop};
         this.mixMaterial!.uniforms!.resolution = {value: new Vector2(this.width, this.height)};
+        this.mixMaterial!.uniforms!.penDown = {value: this.penDown - this.penThreshold};
         this.renderer.setRenderTarget(this.paintTexture);
         this.renderer.render(this.mixScene, this.camera);
 
