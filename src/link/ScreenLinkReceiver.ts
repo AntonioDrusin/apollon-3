@@ -17,9 +17,10 @@ export class ScreenLinkReceiver {
     private _width?: number;
     private _height?: number;
     private _parentElement?: HTMLElement;
+    private _paused: boolean;
 
     constructor() {
-        this._data = {visualizerLabel: null, parameters: []};
+        this._data = {visualizerLabel: null, parameters: [], paused: false};
         this._channel = new BroadcastChannel(__BROADCAST_CHANNEL_NAME__);
         this._channel.onmessage = (message) => {
             this._data = message.data;
@@ -35,6 +36,7 @@ export class ScreenLinkReceiver {
         this._visualizersData = visualizerData;
 
         this._current = undefined;
+        this._paused = false;
     }
 
     public linkVisualizer(width: number, height: number, ref: HTMLElement) {
@@ -60,7 +62,7 @@ export class ScreenLinkReceiver {
                             .Constructor(this._width, this._height, element);
                         await this._current.visualizer?.load();
                     }
-                    this._current.visualizer?.start();
+                    if ( !this._paused ) this._current.visualizer?.start();
                     this.setCurrentElementHidden(false);
                 } else {
                     this._current = undefined;
@@ -82,6 +84,17 @@ export class ScreenLinkReceiver {
             info.inputs?.forEach((input, index) => {
                 visualizer[input.propertyKey] = input.min + (input.max - input.min) * this._data.parameters[index];
             })
+
+            const visualizerInterface = visualizer as IVisualizer;
+            if ( this._paused && !this._data.paused) {
+                visualizerInterface.start();
+                this._paused = false;
+            }
+            if ( !this._paused && this._data.paused) {
+                visualizerInterface.pause();
+                this._paused = true;
+            }
+
         }
     }
 

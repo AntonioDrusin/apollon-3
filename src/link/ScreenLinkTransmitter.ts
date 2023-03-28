@@ -3,7 +3,7 @@ import {VisualizerDirectory} from "../visualizers/VisualizerDirectory";
 import {NeurosityData} from "../neurosity-adapter/OutputDataSource";
 import {__BROADCAST_CHANNEL_NAME__, InputData, ParameterMaps} from "./ScreenLink";
 import {Settings} from "../services/Settings";
-import {Observable, Subject} from "rxjs";
+import {BehaviorSubject, Observable, Subject, withLatestFrom} from "rxjs";
 
 export interface VisualizerChange {
     visualizer: string | null;
@@ -18,6 +18,8 @@ export class ScreenLinkTransmitter {
     private readonly _storageKey = "parameterMaps";
     private readonly _visualizerStorageKey = "selectedVisualizer";
     private readonly _visualizerChange$ = new Subject<VisualizerChange>()
+
+    private readonly _paused$ = new BehaviorSubject<boolean>(false);
 
     constructor(dataProcessor: NeurosityDataProcessor, settings: Settings) {
         const visualizers = new VisualizerDirectory();
@@ -41,16 +43,18 @@ export class ScreenLinkTransmitter {
         this._maps = maps;
         this._dataProcessor = dataProcessor;
         this._channel = new BroadcastChannel(__BROADCAST_CHANNEL_NAME__);
-        this._dataProcessor.data$.subscribe((data) => {
-            const message = this.mapData(data);
-            this._channel.postMessage(message);
-        });
+        this._dataProcessor.data$
+            .pipe(withLatestFrom(this._paused$))
+            .subscribe(([data, paused]) => {
+                const message = this.mapData(data, paused);
+                this._channel.postMessage(message);
+            });
 
         const loadedVisualizer = this._settings.getProp<string>(this._visualizerStorageKey);
         this._visualizer = loadedVisualizer && maps[loadedVisualizer] ? loadedVisualizer : null;
     }
 
-    private mapData(data: NeurosityData): InputData {
+    private mapData(data: NeurosityData, paused: boolean): InputData {
         let parameters: number[] = [];
         if (this._visualizer) {
             parameters = this
@@ -59,7 +63,8 @@ export class ScreenLinkTransmitter {
         }
         return {
             visualizerLabel: this._visualizer,
-            parameters: parameters
+            parameters: parameters,
+            paused: paused,
         }
     }
 
@@ -84,5 +89,17 @@ export class ScreenLinkTransmitter {
         this._visualizer = visualizerKey;
         this._settings.setProp(this._visualizerStorageKey, this._visualizer);
         this._visualizerChange$.next({visualizer: visualizerKey})
+    }
+
+    public paused$(): Observable<boolean> {
+        return this._paused$;
+    }
+
+    public pause() {
+        this._paused$.next(true);
+    }
+
+    public play() {
+        this._paused$.next(false);
     }
 }

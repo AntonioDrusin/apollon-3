@@ -1,4 +1,4 @@
-import {Box, Container, Tab, Tabs} from "@mui/material";
+import {Box, Tab, Tabs} from "@mui/material";
 import {VisualizerDirectory, VisualizerInfo} from "../../visualizers/VisualizerDirectory";
 import {TabPanel} from "./TabPanel";
 import {PreProcessGroup} from "./PreProcessing/PreProcessGroup";

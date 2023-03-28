@@ -6,7 +6,7 @@ import {
     Toolbar,
     Typography
 } from "@mui/material";
-import {PersonalVideo} from "@mui/icons-material";
+import {PauseCircle, PersonalVideo, PlayCircle} from "@mui/icons-material";
 import React, {useState, useEffect, useMemo} from "react";
 import {HeadsetStatus} from "./HeadsetStatus";
 import {PreviewCard} from "./PreviewCard";
@@ -20,6 +20,7 @@ import ConnectionMenu from "./ConnectionMenu";
 import FilePlaybackBar from "./FilePlayback/FilePlaybackBar";
 import ControllerTabs from "./ControllerTabs";
 import ContextProvider from "./ContextProvider/ContextProvider";
+import PauseButton from "./PauseButton";
 
 export function controllerLoader() {
     return null;
@@ -60,7 +61,9 @@ export default function Controller() {
                         }}>
                             <PersonalVideo color="inherit"></PersonalVideo>
                         </Button>
+                        <PauseButton/>
                     </Box>
+
                 </Toolbar>
             </AppBar>
             <FilePlaybackBar></FilePlaybackBar>

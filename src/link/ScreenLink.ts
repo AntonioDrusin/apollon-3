@@ -3,6 +3,7 @@ import {KeysOfNeurosityData} from "../neurosity-adapter/OutputDataSource";
 export interface InputData {
     visualizerLabel: string | null;
     parameters: number[];
+    paused: boolean;
 }
 
 export interface ParameterMap {
