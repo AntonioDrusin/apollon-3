@@ -25,17 +25,17 @@ function wrap(value: number, from: number, to: number): number {
 @visualizer("Apparitions", "2d")
 export class Apparitions implements IVisualizer {
     // Parameters
-    @numberInput("Move noise", 0.02, 0.32)
+    @numberInput("Move noise", 0.001, 0.16)
     private noiseCoordOffset = 0.08;
-    @numberInput("Color noise", 0.02, 0.32)
+    @numberInput("Color noise", 0.01, 0.32)
     private noiseColorOffset = 0.5;
-    @numberInput("Move amplification", 2, 24)
+    @numberInput("Move amplification", 1, 24)
     private pixelSkip = 12;
-    @numberInput("Color amplification", 2, 18)
+    @numberInput("Color amplification", 1, 18)
     private colorSkip = 7;
-    @numberInput("Dry rate", 0.0002, 0.0048)
+    @numberInput("Dry rate", -0.0028, 0.0048) // 0.0002
     private dryRate = 0.0012
-    @numberInput("Paint amount", 0, 120)
+    @numberInput("Paint amount", 0, 200)
     private paintDrop = 40;
     @numberInput("Pen Threshold", 0, 1)
     private penThreshold = 0;

@@ -43,7 +43,7 @@ export const DataSourceInfos: { [key in KeysOfNeurosityData]: OutputInfo } = {
     calm: {name: "Calm", min: 0, max: 1, color: "#acafff"},
     valence: {name: "Valence", min: 0, max: 1, color: "#1caf7f"},
     vigilance: {name: "Vigilance", min: 0, max: 1, color: "#2caf9f"},
-    engagement: {name: "Engagement", min: 0, max: 1, color: "#3cafaf"},
+    engagement: {name: "Engagement", min: 0, max: 1, color: "#ffa088"},  //3cafaf
     workload: {name: "Workload", min: 0, max: 1, color: "#4cafff"},
 }
 
