@@ -243,15 +243,12 @@ export class FilePlayback implements INeurosityDataSource {
 
     public setPositionSeconds(seconds: number) {
         const index = Math.floor(seconds);
-        console.log("SEEK SECONDS" + index)
         if (this._seconds[index]) {
             this.setPositionIndex(this._seconds[index]);
         }
-        console.log("SEEK COMPLETE");
     }
 
     public setPositionIndex(index: number) {
-        console.log("SEEK INDEX " + index);
         this._current = index;
         if (this._paused) {
             this._currentLocationMilliseconds = this._data[index].timestamp - this._beginningTimeStamp;

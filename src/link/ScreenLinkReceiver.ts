@@ -1,6 +1,6 @@
-import {__BROADCAST_CHANNEL_NAME__, InputData} from "./ScreenLink";
+import {__BROADCAST_CHANNEL_NAME__, ColorData, InputData} from "./ScreenLink";
 import {VisualizerDirectory, VisualizerInfo} from "../visualizers/VisualizerDirectory";
-import {IVisualizer} from "../visualizers/IVisualizer";
+import {IVisualizer, IVisualizerColor} from "../visualizers/IVisualizer";
 
 interface VisualizerData {
     visualizer?: IVisualizer;
@@ -53,16 +53,16 @@ export class ScreenLinkReceiver {
                     this.setCurrentElementHidden(true);
                     this._current?.visualizer?.pause();
                     this._current = this._visualizersData[label];
-                    if ( !this._current.visualizer ) {
+                    if (!this._current.visualizer) {
                         const element = document.createElement('div');
-                        element.id = "div-visualizer-"+this._current.info.label;
+                        element.id = "div-visualizer-" + this._current.info.label;
                         this._parentElement.appendChild(element);
                         this._current.element = element;
                         this._current.visualizer = new this._visualizersData[label].info
                             .Constructor(this._width, this._height, element);
                         await this._current.visualizer?.load();
                     }
-                    if ( !this._paused ) this._current.visualizer?.start();
+                    if (!this._paused) this._current.visualizer?.start();
                     this.setCurrentElementHidden(false);
                 } else {
                     this._current = undefined;
@@ -82,15 +82,25 @@ export class ScreenLinkReceiver {
             const visualizer = this._current.visualizer as any;
             const info = this._current.info;
             info.inputs?.forEach((input, index) => {
-                visualizer[input.propertyKey] = input.min + (input.max - input.min) * this._data.parameters[index];
+                if (input.type === "number") {
+                    const parameterValue: number = this._data.parameters[index] as number
+                    const inputValue = input.min! + (input.max! - input.min!) * parameterValue;
+                    visualizer[input.propertyKey] = inputValue;
+                } else if (input.type === "color") {
+                    const parameterValue: ColorData = this._data.parameters[index] as ColorData;
+                    const color = visualizer[input.propertyKey] as IVisualizerColor;
+                    color.red = parameterValue.red;
+                    color.green = parameterValue.green;
+                    color.blue = parameterValue.blue;
+                }
             })
 
             const visualizerInterface = visualizer as IVisualizer;
-            if ( this._paused && !this._data.paused) {
+            if (this._paused && !this._data.paused) {
                 visualizerInterface.start();
                 this._paused = false;
             }
-            if ( !this._paused && this._data.paused) {
+            if (!this._paused && this._data.paused) {
                 visualizerInterface.pause();
                 this._paused = true;
             }

@@ -17,7 +17,6 @@ export default function PauseButton() {
     }, [screenLink]);
 
     useEffect(() => {
-        console.log(paused);
         if (paused) {
             screenLink.pause();
         } else {

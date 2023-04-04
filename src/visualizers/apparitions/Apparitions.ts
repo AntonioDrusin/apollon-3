@@ -1,5 +1,5 @@
-import {numberInput, visualizer} from "../VisualizerDirectory";
-import {IVisualizer} from "../IVisualizer";
+import {colorInput, numberInput, visualizer} from "../VisualizerDirectory";
+import {IVisualizer, IVisualizerColor} from "../IVisualizer";
 import * as THREE from "three";
 import firstInkShaderFile from './shaders/first_ink_shader.frag';
 import vertexShaderFile from './shaders/vertex.vert';
@@ -25,6 +25,8 @@ function wrap(value: number, from: number, to: number): number {
 @visualizer("Apparitions", "2d")
 export class Apparitions implements IVisualizer {
     // Parameters
+    @colorInput("Pen Color")
+    private penColor: IVisualizerColor = {red: 0, green: 0, blue: 0};
     @numberInput("Move noise", 0.001, 0.16)
     private noiseCoordOffset = 0.08;
     @numberInput("Color noise", 0.01, 0.32)
@@ -164,7 +166,8 @@ export class Apparitions implements IVisualizer {
         this.mixMaterial!.uniforms!.firstTex = {value: this.firstInkTexture.texture};
         this.mixMaterial!.uniforms!.from = {value: new Vector2(Math.abs(this.pos.x % this.width), Math.abs(this.pos.y % this.height))};
         this.mixMaterial!.uniforms!.to = {value: new Vector2(Math.abs(this.previousPos.x % this.width), Math.abs(this.previousPos.y % this.height))};
-        this.mixMaterial!.uniforms!.color = {value: new Vector3(this.color.r / 255, this.color.g / 255, this.color.b / 255)};
+        //this.mixMaterial!.uniforms!.color = {value: new Vector3(this.color.r / 255, this.color.g / 255, this.color.b / 255)};
+        this.mixMaterial!.uniforms!.color = {value: new Vector3(this.penColor.red, this.penColor.green, this.penColor.blue)};
         this.mixMaterial!.uniforms!.paintDrop = {value: this.paintDrop};
         this.mixMaterial!.uniforms!.resolution = {value: new Vector2(this.width, this.height)};
         this.mixMaterial!.uniforms!.penDown = {value: this.penDown - this.penThreshold};

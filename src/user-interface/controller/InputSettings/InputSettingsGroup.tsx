@@ -13,6 +13,10 @@ export interface VisualizerPanelProps {
     onParameterChange(map: ParameterMap): void;
 }
 
+const sortMap = {
+    "color": 1,
+    "number": 0,
+}
 
 export function InputSettingsGroup({visualizerInfo, live, map, onLive, onParameterChange}: VisualizerPanelProps) {
 
@@ -61,9 +65,11 @@ export function InputSettingsGroup({visualizerInfo, live, map, onLive, onParamet
             </ToggleButtonGroup>
         </Box>
         {(map && visualizerInfo.inputs &&
-            <Box sx={{display: "flex", flexWrap: "wrap"}}>
+            <Box sx={{display: "flex", flexWrap: "wrap", justifyContent: 'flex-start', flexDirection: 'row'}}>
                 {
-                    visualizerInfo.inputs.map((info, index) => {
+                    visualizerInfo.inputs
+                        //.sort((a,b) => sortMap[a.type] - sortMap[b.type])
+                        .map((info, index) => {
                         return <InputSettingsPanel
                             key={info.label + "-viz"}
                             info={info}
