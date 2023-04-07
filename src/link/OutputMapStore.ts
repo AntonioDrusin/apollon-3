@@ -10,7 +10,7 @@ export class OutputMapStore {
 
     private readonly _maps: ParameterMaps;
     private readonly _parameterMap$: BehaviorSubject<ParameterMaps>;
-    private readonly _storageKey = "parameterMaps_1.2"; // Up this version if you break compat
+    private readonly _storageKey = "parameterMaps_1.3"; // Up this version if you break compat
     private _settings: Settings;
 
     constructor(settings: Settings) {

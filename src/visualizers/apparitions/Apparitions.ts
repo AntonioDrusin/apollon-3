@@ -18,21 +18,13 @@ import {noise2D} from "./Noise";
 // https://editor.p5js.org/StevesMakerspace/sketches/d0lPUJt8T
 
 
-function wrap(value: number, from: number, to: number): number {
-    return from + Math.abs((value - from) % (to - from));
-}
-
 @visualizer("Apparitions", "2d")
 export class Apparitions implements IVisualizer {
     // Parameters
     @numberInput("Move noise", 0.001, 0.16)
     private noiseCoordOffset = 0.08;
-    @numberInput("Color noise", 0.01, 0.32)
-    private noiseColorOffset = 0.5;
     @numberInput("Move amplification", 1, 24)
     private pixelSkip = 12;
-    @numberInput("Color amplification", 1, 18)
-    private colorSkip = 7;
     @numberInput("Dry rate", -0.0028, 0.0048) // 0.0002
     private dryRate = 0.0012
     @numberInput("Paint amount", 0, 200)
@@ -64,16 +56,8 @@ export class Apparitions implements IVisualizer {
     private noiseOffsets = {
         x: Math.random() * 40000,
         y: Math.random() * 40000,
-        r: Math.random() * 40000,
-        g: Math.random() * 40000,
-        b: Math.random() * 40000
     };
 
-    private color = {
-        r: Math.random() * 255,
-        g: Math.random() * 255,
-        b: Math.random() * 255,
-    }
     private pos = {
         x: 0,
         y: 0
@@ -136,21 +120,11 @@ export class Apparitions implements IVisualizer {
         this.previousPos.x = this.pos.x;
         this.previousPos.y = this.pos.y;
 
-        this.noiseOffsets.r += this.noiseColorOffset;
-        this.noiseOffsets.g += this.noiseColorOffset;
-        this.noiseOffsets.b += this.noiseColorOffset;
         this.noiseOffsets.x += this.noiseCoordOffset;
         this.noiseOffsets.y += this.noiseCoordOffset;
 
         this.pos.x += Math.round((noise2D(this.noiseOffsets.x, 0)) * this.pixelSkip);
         this.pos.y += Math.round((noise2D(this.noiseOffsets.y, 0)) * this.pixelSkip);
-
-        this.color.r += Math.round((noise2D(this.noiseOffsets.r, 0)) * this.colorSkip);
-        this.color.g += Math.round((noise2D(this.noiseOffsets.g, 0)) * this.colorSkip);
-        this.color.b += Math.round((noise2D(this.noiseOffsets.b, 0)) * this.colorSkip);
-        this.color.r = wrap(this.color.r, 100, 255);
-        this.color.g = wrap(this.color.g, 100, 255);
-        this.color.b = wrap(this.color.b, 100, 255);
     }
 
     private render(): void {
@@ -168,7 +142,6 @@ export class Apparitions implements IVisualizer {
         this.mixMaterial!.uniforms!.firstTex = {value: this.firstInkTexture.texture};
         this.mixMaterial!.uniforms!.from = {value: new Vector2(Math.abs(this.pos.x % this.width), Math.abs(this.pos.y % this.height))};
         this.mixMaterial!.uniforms!.to = {value: new Vector2(Math.abs(this.previousPos.x % this.width), Math.abs(this.previousPos.y % this.height))};
-        //this.mixMaterial!.uniforms!.color = {value: new Vector3(this.color.r / 255, this.color.g / 255, this.color.b / 255)};
         this.mixMaterial!.uniforms!.color = {value: new Vector3(this.penColor.red, this.penColor.green, this.penColor.blue)};
         this.mixMaterial!.uniforms!.paintDrop = {value: this.paintDrop};
         this.mixMaterial!.uniforms!.resolution = {value: new Vector2(this.width, this.height)};

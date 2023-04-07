@@ -56,11 +56,8 @@ export class ScreenLinkTransmitter {
                             if (values) {
                                 const a = ScreenLinkTransmitter.getNumberLinkValue(values.links[0], data);
                                 const b = ScreenLinkTransmitter.getNumberLinkValue(values.links[1], data);
-                                let c = 0;
-                                if (link.colorLink!.colorMode !== "perlin") {
-                                    c = ScreenLinkTransmitter.getNumberLinkValue(values.links[2], data);
-                                }
-                                return ColorGenerator(link.colorLink!.colorMode, a, b, c);
+                                const c = ScreenLinkTransmitter.getNumberLinkValue(values.links[2] || 0, data);
+                                return ColorGenerator(link.colorLink!.colorMode, a, b, c, `${this._visualizerKey}:${link.propertyKey}`);
                             }
                         }
                         return {red: 0, green: 0.8, blue: 0.0};
