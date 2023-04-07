@@ -4,102 +4,88 @@ import React, {useEffect, useState} from "react";
 import {OutputSelect} from "./OutputSelect";
 import {ColorModeSelect} from "./ColorModeSelect";
 import {InputInfo} from "../../../visualizers/VisualizerDirectory";
-import {NumbersLink, ParameterLink} from "../../../link/ScreenLink";
-import * as _ from "lodash";
-
-import {colorModes, ColorModes} from "../../../link/ColorTransmission";
+import {ColorLink} from "../../../link/ScreenLink";
+import {colorModes} from "../../../link/ColorTransmission";
+import {Register} from "../../../Register";
+import {take} from "rxjs";
 
 export interface ColorSettingsProps {
     info: InputInfo;
-    link: ParameterLink;
-
-    onParameterChange(link: ParameterLink): void;
+    linkIndex: number;
+    mapKey: string;
 }
 
-export interface NumberLinkValue {
-    manualValue: number;
-    outputKey: KeysOfNeurosityData | undefined | "Manual";
-}
-
-type ColorInputValues = {
-    numberLinks: NumberLinkValue[];
-}
-type ColorInputForModes = { [k: ColorModes]: ColorInputValues };
-
-export function ColorSettings({info, link, onParameterChange}: ColorSettingsProps) {
-    const [values, setValues] = useState<ColorInputForModes>({});
-    const [colorMode, setColorMode] = useState<ColorModes>("rgb");
-    const [manualValue, setManualValue] = useState<number[]>([0, 0, 0]);
-
+export function ColorSettings({info, linkIndex, mapKey}: ColorSettingsProps) {
+    const [link, setLink] = useState<ColorLink>();
+    const [store] = useState(Register.outputMapStore);
 
     useEffect(() => {
-        console.log(JSON.stringify(link));
-    }, [link]);
-
-    useEffect(() => {
-        // define a type for this guy
-        const mappedValues: { [key in ColorModes]: NumbersLink } = {};
-
-        _.forEach(values, (value, key) => {
-            mappedValues[key] = {
-                links: _.map(value.numberLinks, (v, index) => {
-                    return {
-                        manualValue: manualValue[index],
-                        outputKey: v.outputKey && v.outputKey !== "Manual" ? v.outputKey : undefined
-                    }
-                })
+        const sub = store.parameterMap$
+            .pipe(take(1))
+            .subscribe((parameters) => {
+            const parameter = parameters[mapKey];
+            if (parameter) {
+                const link = parameter.links[linkIndex];
+                if (link && link.type === "color") {
+                    setLink({...link.colorLink!});
+                }
             }
         });
 
-        onParameterChange({
+        return () => {
+            sub.unsubscribe();
+        };
+    }, [store, linkIndex, mapKey]);
+
+    const updateLink = () => {
+        store.setParameterLink(mapKey, linkIndex, {
             propertyKey: info.propertyKey,
             type: "color",
-            colorLink: {
-                colorMode: colorMode,
-                values: mappedValues,
-            }
+            colorLink: link,
         });
-
-    }, [manualValue, colorMode, values, onParameterChange, info]);
-
-    const onManualValueChange = (index: number, value: number) => {
-        const newValue = [...manualValue];
-        newValue[index] = value;
-        setManualValue(newValue);
     }
 
-    const changeSelectedInput = (index: number, selectedInput: string) => {
-        const updated = {...values};
-        if (!updated[colorMode as ColorModes]) {
-            updated[colorMode as ColorModes] = {
-                numberLinks: [
-                    {manualValue: 0, outputKey: "Manual"},
-                    {manualValue: 0, outputKey: "Manual"},
-                    {manualValue: 0, outputKey: "Manual"}]
-            };
+    const onManualValueChange = (index: number, value: number) => {
+        if (link) {
+            link.colorModeLinks[link.colorMode].links[index].manualValue = value;
+            setLink({...link});
+            updateLink();
         }
-        updated[colorMode as ColorModes].numberLinks[index].outputKey = selectedInput as KeysOfNeurosityData;
+    }
 
-        setValues(updated);
-    };
+    const onSelectionChange = (index: number, value: string) => {
+        if (link) {
+            link.colorModeLinks[link.colorMode].links[index].outputKey = value as KeysOfNeurosityData | undefined;
+            setLink({...link});
+            updateLink();
+        }
+    }
+
+    const onSetColorMode = (colorMode: string) => {
+        if (link) {
+            link.colorMode = colorMode
+            setLink({...link});
+            updateLink();
+        }
+    }
 
     return <>
-        {
-            colorModes[colorMode as KeysOfNeurosityData].inputNames.map((colorPartName, index) => {
+        {!link ? null :
+            colorModes[link.colorMode as KeysOfNeurosityData].inputNames.map((colorPartName, index) => {
                 return <Box sx={{display: "flex", flexWrap: "wrap", p: 1, m: 1}} key={`${index}-box`}>
                     <OutputSelect id={"k1-first"}
                                   key={`${index}-os`}
                                   label={colorPartName}
-                                  manualValue={manualValue[index]}
+                                  manualValue={link?.colorModeLinks[link.colorMode].links[index]?.manualValue || 0}
                                   onManualValueChange={(value) => onManualValueChange(index, value)}
-                                  onSelectionChange={(selectedInput) => changeSelectedInput(index, selectedInput)}
-                                  selectedInput={values[colorMode]?.numberLinks[index]?.outputKey}/>
+                                  onSelectionChange={(selectedInput) => onSelectionChange(index, selectedInput)}
+                                  selectedInput={link?.colorModeLinks[link.colorMode].links[index]?.outputKey}/>
                 </Box>;
             })
         }
         <Box sx={{display: "flex", flexWrap: "wrap", p: 1, m: 1}}>
-            <ColorModeSelect id={`${info.propertyKey}-color-mode`} value={colorMode}
-                             onChange={(value) => setColorMode(value)}/>
+            <ColorModeSelect id={`${info.propertyKey}-color-mode`} value={link?.colorMode || "rgb"}
+                             onChange={(value) => onSetColorMode(value)}/>
         </Box>
     </>
 }

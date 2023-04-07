@@ -22,6 +22,7 @@ export type ParameterMaps = { [k: string]: ParameterMap };
 export const linkTypeNames = ["number", "color"];
 export type LinkType = typeof linkTypeNames[number];
 
+
 export interface NumberLink {
     manualValue: number;
     outputKey: KeysOfNeurosityData | undefined;
@@ -31,9 +32,11 @@ export interface NumbersLink {
     links: NumberLink[];
 }
 
+export type ColorModesLinks = { [key in ColorModes]: NumbersLink };
+
 export interface ColorLink {
     colorMode: ColorModes;
-    values: { [key in ColorModes]: NumbersLink };
+    colorModeLinks: ColorModesLinks;
 }
 
 // These should be mutually exclusive

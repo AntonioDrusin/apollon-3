@@ -1,7 +1,8 @@
 
-const colorModeNames = ["rgb","hsv","perlin","lab"];
+export const ColorModeNames = ["rgb","hsv","perlin","lab"];
 
-export type ColorModes = typeof colorModeNames[number];
+export type ColorModes = typeof ColorModeNames[number];
+
 export interface ColorModeInfo {
     name: string;
     inputNames: string[];

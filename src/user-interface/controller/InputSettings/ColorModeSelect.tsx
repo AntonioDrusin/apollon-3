@@ -4,9 +4,9 @@ import {colorModes, ColorModes} from "../../../link/ColorTransmission";
 
 
 interface ColorModeSelectProps {
-    onChange(value: string): void;
+    onChange(value: ColorModes): void;
     id: string;
-    value: string;
+    value?: string;
 }
 
 export function ColorModeSelect({id, onChange, value} : ColorModeSelectProps) {

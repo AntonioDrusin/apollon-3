@@ -25,8 +25,6 @@ function wrap(value: number, from: number, to: number): number {
 @visualizer("Apparitions", "2d")
 export class Apparitions implements IVisualizer {
     // Parameters
-    @colorInput("Pen Color")
-    private penColor: IVisualizerColor = {red: 0, green: 0, blue: 0};
     @numberInput("Move noise", 0.001, 0.16)
     private noiseCoordOffset = 0.08;
     @numberInput("Color noise", 0.01, 0.32)
@@ -43,6 +41,10 @@ export class Apparitions implements IVisualizer {
     private penThreshold = 0;
     @numberInput("Pen Down", 0, 1)
     private penDown = 1;
+
+    @colorInput("Pen Color")
+    private penColor: IVisualizerColor = {red: 0, green: 0, blue: 0};
+
 
     private readonly renderer: THREE.WebGLRenderer;
     private readonly scene: THREE.Scene;

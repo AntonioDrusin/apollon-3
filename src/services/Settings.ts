@@ -3,13 +3,13 @@ export class Settings {
         localStorage.setItem(name, data ? JSON.stringify(data) : "");
 
     }
-    public getProp<T>(name: string): T | null {
+    public getProp<T>(name: string): T | undefined {
         const item = localStorage.getItem(name);
         try {
             return item && item !== "" ? JSON.parse(item) : null;
         }
         catch (e) {
-            return null;
+            return undefined;
         }
     }
 }

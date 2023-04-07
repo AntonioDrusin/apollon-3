@@ -1,60 +1,73 @@
 import {InputInfo} from "../../../visualizers/VisualizerDirectory";
-import {ParameterLink} from "../../../link/ScreenLink";
 import {Box} from "@mui/material";
 import {KeysOfNeurosityData} from "../../../neurosity-adapter/OutputDataSource";
 import React, {useEffect, useState} from "react";
 import {OutputSelect} from "./OutputSelect";
+import {Register} from "../../../Register";
+import {NumberLink} from "../../../link/ScreenLink";
+import {take} from "rxjs";
 
 export interface NumberSettingsProps {
     info: InputInfo;
-    link: ParameterLink;
-
-    onParameterChange(link: ParameterLink): void;
+    linkIndex: number;
+    mapKey: string
 }
 
-export function NumberSettings({info, link, onParameterChange}: NumberSettingsProps) {
-    const MANUAL = "Manual";
-    const [loading, setLoading] = useState(true);
-    const [selectedInput, setSelectedInput] = useState<string>(MANUAL);
-    const [manualValue, setManualValue] = useState<number>(0);
+export function NumberSettings({info, linkIndex, mapKey}: NumberSettingsProps) {
+    const [store] = useState(Register.outputMapStore);
+    const [link, setLink] = useState<NumberLink>();
 
-
-    useEffect(() => {
-        if (link && link.type === "number") {
-            setSelectedInput(link.numberLink!.outputKey ?? MANUAL);
-            setLoading(false);
-        }
-    }, [link]);
+    // Rewrite to not use state
 
     useEffect(() => {
-        if (!loading) {
-            let input: KeysOfNeurosityData | undefined;
-
-            input = selectedInput === MANUAL
-                ? undefined
-                : selectedInput as KeysOfNeurosityData;
-
-            onParameterChange({
-                propertyKey: info.propertyKey,
-                type: "number",
-                numberLink: {
-                    manualValue: manualValue || 0,
-                    outputKey: input
+        const sub = store.parameterMap$
+            .pipe(take(1))
+            .subscribe((parameters) => {
+                const parameter = parameters[mapKey];
+                if (parameter) {
+                    const newLink = parameter.links[linkIndex];
+                    if (newLink && newLink.type === "number") {
+                        setLink({...newLink.numberLink!});
+                    }
                 }
-            })
-        }
-    }, [info.propertyKey, loading, manualValue, selectedInput, onParameterChange]);
+            });
 
+        return () => {
+            sub.unsubscribe();
+        }
+    }, [store, linkIndex, mapKey]);
+
+    const updateLink = () => {
+        store.setParameterLink(mapKey, linkIndex, {
+            propertyKey: info.propertyKey,
+            type: "number",
+            numberLink: link,
+        });
+    }
     const handleManualSignalChange = (value: number) => {
-        setManualValue(value);
+        if (link) {
+            link.manualValue = value;
+            setLink({...link});
+            updateLink();
+        }
     };
 
+    const handleSelectedInputChange = (value: string) => {
+        if (link) {
+            link.outputKey = value as KeysOfNeurosityData | undefined;
+            setLink({...link});
+            updateLink();
+        }
+    }
+
     return <Box sx={{display: "flex", flexWrap: "wrap", p: 1, m: 1}}>
-        <OutputSelect id={info.propertyKey}
-                      label={"Value"}
-                      manualValue={manualValue}
-                      onSelectionChange={(selectedInput) => setSelectedInput(selectedInput)}
-                      onManualValueChange={handleManualSignalChange}
-                      selectedInput={selectedInput}/>
+        {!link ? null :
+            <OutputSelect id={info.propertyKey}
+                          label={"Value"}
+                          manualValue={link?.manualValue || 0}
+                          onSelectionChange={(selectedInput) => handleSelectedInputChange(selectedInput)}
+                          onManualValueChange={handleManualSignalChange}
+                          selectedInput={link?.outputKey}/>
+        }
     </Box>
 }

@@ -2,37 +2,22 @@ import React, {useEffect, useState} from "react";
 import {Box, ToggleButton, ToggleButtonGroup} from "@mui/material";
 import {VisualizerInfo} from "../../../visualizers/VisualizerDirectory";
 import {PlayArrow} from "@mui/icons-material";
-import {ParameterLink, ParameterMap} from "../../../link/ScreenLink";
 import {InputSettingsPanel} from "./InputSettingsPanel";
 
 export interface VisualizerPanelProps {
     visualizerInfo: VisualizerInfo;
     live: boolean;
-    map?: ParameterMap;
+    mapKey: string;
     onLive(key: string): void;
-    onParameterChange(map: ParameterMap): void;
 }
 
-const sortMap = {
-    "color": 1,
-    "number": 0,
-}
-
-export function InputSettingsGroup({visualizerInfo, live, map, onLive, onParameterChange}: VisualizerPanelProps) {
+export function InputSettingsGroup({visualizerInfo, live, onLive, mapKey}: VisualizerPanelProps) {
 
     const [toggles, setToggles] = useState<string[]>([]);
-
-    const handleParameterChange = (index: number, link: ParameterLink) => {
-        if ( map ) {
-            map.links[index] = link;
-            onParameterChange(map);
-        }
-    };
 
     const handleToggles = (event: React.MouseEvent<HTMLElement>, value: any) => {
         onLive(visualizerInfo.label);
     };
-
 
     useEffect(() => {
         const toggle = (item: string, state: boolean): void => {
@@ -48,7 +33,6 @@ export function InputSettingsGroup({visualizerInfo, live, map, onLive, onParamet
                 }
             }
         }
-
         toggle("tv", live);
     }, [
         toggles,
@@ -64,17 +48,16 @@ export function InputSettingsGroup({visualizerInfo, live, map, onLive, onParamet
                 </ToggleButton>
             </ToggleButtonGroup>
         </Box>
-        {(map && visualizerInfo.inputs &&
+        {(visualizerInfo.inputs &&
             <Box sx={{display: "flex", flexWrap: "wrap", justifyContent: 'flex-start', flexDirection: 'row'}}>
                 {
                     visualizerInfo.inputs
-                        //.sort((a,b) => sortMap[a.type] - sortMap[b.type])
                         .map((info, index) => {
                         return <InputSettingsPanel
                             key={info.label + "-viz"}
                             info={info}
-                            onParameterChange={(link) => handleParameterChange(index, link)}
-                            link={map.links[index]}
+                            linkIndex={index}
+                            mapKey={mapKey}
                         ></InputSettingsPanel>;
                     })
                 }
