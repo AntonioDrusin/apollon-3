@@ -4,6 +4,7 @@ import {Box, Card, Typography} from "@mui/material";
 import {InputInfo} from "../../../visualizers/VisualizerDirectory";
 import {NumberSettings} from "./NumberSettings";
 import { ColorSettings } from "./ColorSettings";
+import {BooleanSettings} from "./BooleanSettings";
 
 export interface VisualizerInputProps {
     info: InputInfo;
@@ -15,6 +16,19 @@ export function InputSettingsPanel({info, linkIndex, mapKey}: VisualizerInputPro
     const themeContext = useContext(ThemeContext);
     const theme = getThemeByName(themeContext.themeName);
 
+    const Settings = (type: string) => {
+        switch(info.type) {
+            case "number":
+                return <NumberSettings linkIndex={linkIndex} mapKey={mapKey} info={info}/>
+            case "color":
+                return <ColorSettings linkIndex={linkIndex} mapKey={mapKey} info={info}/>
+            case "boolean":
+                return <BooleanSettings linkIndex={linkIndex} mapKey={mapKey} info={info}/>
+            default:
+                return <Box>Not implemented</Box>
+        }
+    }
+
     return <Card sx={{m: 1, p: 0,
             outlineColor: theme.palette.primary.dark,
             outlineWidth: 2, outlineStyle: "solid",
@@ -23,10 +37,7 @@ export function InputSettingsPanel({info, linkIndex, mapKey}: VisualizerInputPro
                 <Typography>{info.label}</Typography>
             </Box>
             <Box>
-                { info.type === "number" ?
-                    <NumberSettings linkIndex={linkIndex} mapKey={mapKey} info={info}/> :
-                    <ColorSettings linkIndex={linkIndex} mapKey={mapKey} info={info}/>
-                }
+                {Settings(info.type)}
             </Box>
         </Card>;
 }

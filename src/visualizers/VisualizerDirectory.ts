@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import {VisualizersMap} from "./VisualizersMap";
+import {LinkType} from "../link/ScreenLink";
 
 export interface VisualizerInfo {
     Constructor: any;
@@ -12,7 +13,7 @@ export interface InputInfo {
     label: string;
     min?: number;
     max?: number;
-    type: "color" | "number";
+    type: LinkType;
     propertyKey: string;
 }
 
@@ -74,4 +75,15 @@ export function colorInput(label: string) {
     }
 }
 
+export function booleanInput(label: string) {
+    return function(target: Object, propertyKey: string | symbol) {
+        const __FIELD_VISUALIZERS_METADATA_KEY = "Field.Visualizers.Metadata.Key";
+
+        const metaData = Reflect.getMetadata(__FIELD_VISUALIZERS_METADATA_KEY, target.constructor) || {};
+        metaData.inputs ||= [];
+        metaData.inputs.push({label, propertyKey, type: "boolean"} as InputInfo);
+        Reflect.defineMetadata(__FIELD_VISUALIZERS_METADATA_KEY, metaData, target.constructor);
+
+    }
+}
 

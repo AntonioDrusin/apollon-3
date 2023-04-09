@@ -86,6 +86,7 @@ export class OutputMapStore {
     }
 
     public setParameterLink(visualizerKey: string, linkIndex: number, parameterMap: ParameterLink) {
+        // refactor to not need the whole ParameterLink
         this._maps[visualizerKey].links[linkIndex] = parameterMap;
         this._parameterMap$.next(this._maps);
     }

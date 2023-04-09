@@ -9,7 +9,7 @@ export interface ColorData {
 
 export interface InputData {
     visualizerLabel: string | null;
-    parameters: (number | ColorData)[];
+    parameters: (number | ColorData | boolean)[];
     paused: boolean;
 }
 
@@ -19,12 +19,19 @@ export interface ParameterMap {
 
 export type ParameterMaps = { [k: string]: ParameterMap };
 
-export const linkTypeNames = ["number", "color"];
+export const linkTypeNames = ["number", "color", "bool"];
+
 export type LinkType = typeof linkTypeNames[number];
 
 
 export interface NumberLink {
     manualValue: number;
+    outputKey: KeysOfNeurosityData | undefined;
+}
+
+export interface BooleanLink {
+    threshold: number;
+    manualValue: boolean;
     outputKey: KeysOfNeurosityData | undefined;
 }
 
@@ -45,6 +52,7 @@ export interface ParameterLink {
     type: LinkType
     numberLink?: NumberLink;
     colorLink?: ColorLink;
+    booleanLink?: BooleanLink;
 }
 
 export const __BROADCAST_CHANNEL_NAME__ = "Link.Broadcast."

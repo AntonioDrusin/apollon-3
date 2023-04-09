@@ -44,25 +44,36 @@ export class ScreenLinkTransmitter {
     }
 
     private mapData(data: NeurosityData, paused: boolean, parameterMaps: ParameterMaps): InputData {
-        let parameters: (number | IVisualizerColor)[] = [];
+        let parameters: (number | IVisualizerColor | boolean)[] = [];
         if (this._visualizerKey) {
             parameters = parameterMaps[this._visualizerKey].links
                 .map((link) => {
-                    if (link.type === "number") {
-                        return ScreenLinkTransmitter.getNumberLinkValue(link.numberLink, data);
-                    } else if (link.type === "color") {
-                        if (link.colorLink) {
-                            const values = link.colorLink!.colorModeLinks[link.colorLink.colorMode];
-                            if (values) {
-                                const a = ScreenLinkTransmitter.getNumberLinkValue(values.links[0], data);
-                                const b = ScreenLinkTransmitter.getNumberLinkValue(values.links[1], data);
-                                const c = ScreenLinkTransmitter.getNumberLinkValue(values.links[2] || 0, data);
-                                return ColorGenerator(link.colorLink!.colorMode, a, b, c, `${this._visualizerKey}:${link.propertyKey}`);
+                    switch (link.type) {
+                        case "number":
+                            return ScreenLinkTransmitter.getNumberLinkValue(link.numberLink, data);
+                        case "color":
+                            if (link.colorLink) {
+                                const values = link.colorLink!.colorModeLinks[link.colorLink.colorMode];
+                                if (values) {
+                                    const a = ScreenLinkTransmitter.getNumberLinkValue(values.links[0], data);
+                                    const b = ScreenLinkTransmitter.getNumberLinkValue(values.links[1], data);
+                                    const c = ScreenLinkTransmitter.getNumberLinkValue(values.links[2] || 0, data);
+                                    return ColorGenerator(link.colorLink!.colorMode, a, b, c, `${this._visualizerKey}:${link.propertyKey}`);
+                                }
                             }
-                        }
-                        return {red: 0, green: 0.8, blue: 0.0};
+                            return {red: 0, green: 0.8, blue: 0.0};
+                        case "boolean":
+                            if ( link.booleanLink) {
+                                if (link.booleanLink.outputKey) {
+                                    return data[link.booleanLink.outputKey] > link.booleanLink.threshold;
+                                } else {
+                                    return link.booleanLink.manualValue;
+                                }
+                            }
+                            return true;
+                        default:
+                            return 0.0;
                     }
-                    return 0.0;
                 });
         }
         return {
@@ -80,11 +91,6 @@ export class ScreenLinkTransmitter {
         return this._visualizerChange$;
     }
 
-    // Moved to OutputMapStore.ts
-    // public setMaps(maps: ParameterMaps): void {
-    //     this._maps = maps;
-    //     this._settings.setProp(this._storageKey, this._maps);
-    // }
 
     public setVisualizer(visualizerKey: string | null) {
         this._visualizerKey = visualizerKey;

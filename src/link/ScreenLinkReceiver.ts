@@ -82,16 +82,25 @@ export class ScreenLinkReceiver {
             const visualizer = this._current.visualizer as any;
             const info = this._current.info;
             info.inputs?.forEach((input, index) => {
-                if (input.type === "number") {
-                    const parameterValue: number = this._data.parameters[index] as number
-                    const inputValue = input.min! + (input.max! - input.min!) * parameterValue;
-                    visualizer[input.propertyKey] = inputValue;
-                } else if (input.type === "color") {
-                    const parameterValue: ColorData = this._data.parameters[index] as ColorData;
-                    const color = visualizer[input.propertyKey] as IVisualizerColor;
-                    color.red = parameterValue.red;
-                    color.green = parameterValue.green;
-                    color.blue = parameterValue.blue;
+                switch (input.type) {
+                    case "number": {
+                        const parameterValue: number = this._data.parameters[index] as number
+                        const inputValue = input.min! + (input.max! - input.min!) * parameterValue;
+                        visualizer[input.propertyKey] = inputValue;
+                        break;
+                    }
+                    case "color": {
+                        const parameterValue: ColorData = this._data.parameters[index] as ColorData;
+                        const color = visualizer[input.propertyKey] as IVisualizerColor;
+                        color.red = parameterValue.red;
+                        color.green = parameterValue.green;
+                        color.blue = parameterValue.blue;
+                        break;
+                    }
+                    case "boolean": {
+                        visualizer[input.propertyKey] = this._data.parameters[index] as boolean;
+                        break;
+                    }
                 }
             })
 

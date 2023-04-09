@@ -32,7 +32,7 @@ export function OutputSelect({
                             handleChange={onSelectionChange}
                             label={label}
         />
-        <Box sx={{m: 1, p: 1, width: 320}}>
+        <Box sx={{m: 1, width: 320}}>
             <Slider value={manualValue} onChange={handleManualSignalChange} step={0.01} min={0} max={1.0}
                     disabled={!!selectedInput}></Slider>
         </Box>

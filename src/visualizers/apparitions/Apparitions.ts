@@ -1,4 +1,4 @@
-import {colorInput, numberInput, visualizer} from "../VisualizerDirectory";
+import {booleanInput, colorInput, numberInput, visualizer} from "../VisualizerDirectory";
 import {IVisualizer, IVisualizerColor} from "../IVisualizer";
 import * as THREE from "three";
 import firstInkShaderFile from './shaders/first_ink_shader.frag';
@@ -28,11 +28,9 @@ export class Apparitions implements IVisualizer {
     @numberInput("Dry rate", -0.0028, 0.0048) // 0.0002
     private dryRate = 0.0012
     @numberInput("Paint amount", 0, 200)
-    private paintDrop = 40;
-    @numberInput("Pen Threshold", 0, 1)
-    private penThreshold = 0;
-    @numberInput("Pen Down", 0, 1)
-    private penDown = 1;
+    private paintDrop = 40
+    @booleanInput("Pen Down")
+    private penDown: boolean = true;
 
     @colorInput("Pen Color")
     private penColor: IVisualizerColor = {red: 0, green: 0, blue: 0};
@@ -145,7 +143,7 @@ export class Apparitions implements IVisualizer {
         this.mixMaterial!.uniforms!.color = {value: new Vector3(this.penColor.red, this.penColor.green, this.penColor.blue)};
         this.mixMaterial!.uniforms!.paintDrop = {value: this.paintDrop};
         this.mixMaterial!.uniforms!.resolution = {value: new Vector2(this.width, this.height)};
-        this.mixMaterial!.uniforms!.penDown = {value: this.penDown - this.penThreshold};
+        this.mixMaterial!.uniforms!.penDown = {value: this.penDown ? 1 : -1};
         this.renderer.setRenderTarget(this.paintTexture);
         this.renderer.render(this.mixScene, this.camera);
 
