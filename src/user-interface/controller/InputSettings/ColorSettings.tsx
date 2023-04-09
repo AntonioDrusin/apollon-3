@@ -23,14 +23,14 @@ export function ColorSettings({info, linkIndex, mapKey}: ColorSettingsProps) {
         const sub = store.parameterMap$
             .pipe(take(1))
             .subscribe((parameters) => {
-            const parameter = parameters[mapKey];
-            if (parameter) {
-                const link = parameter.links[linkIndex];
-                if (link && link.type === "color") {
-                    setLink({...link.colorLink!});
+                const parameter = parameters[mapKey];
+                if (parameter) {
+                    const link = parameter.links[linkIndex];
+                    if (link && link.type === "color") {
+                        setLink({...link.colorLink!});
+                    }
                 }
-            }
-        });
+            });
 
         return () => {
             sub.unsubscribe();
@@ -38,35 +38,23 @@ export function ColorSettings({info, linkIndex, mapKey}: ColorSettingsProps) {
     }, [store, linkIndex, mapKey]);
 
     const updateLink = () => {
-        store.setParameterLink(mapKey, linkIndex, {
-            propertyKey: info.propertyKey,
-            type: "color",
-            colorLink: link,
-        });
+        setLink({...link!});
+        store.setParameterLink(mapKey, linkIndex, link!);
     }
 
     const onManualValueChange = (index: number, value: number) => {
-        if (link) {
-            link.colorModeLinks[link.colorMode].links[index].manualValue = value;
-            setLink({...link});
-            updateLink();
-        }
+        link!.colorModeLinks[link!.colorMode].links[index].manualValue = value;
+        updateLink();
     }
 
     const onSelectionChange = (index: number, value: string) => {
-        if (link) {
-            link.colorModeLinks[link.colorMode].links[index].outputKey = value as KeysOfNeurosityData | undefined;
-            setLink({...link});
-            updateLink();
-        }
+        link!.colorModeLinks[link!.colorMode].links[index].outputKey = value as KeysOfNeurosityData | undefined;
+        updateLink();
     }
 
     const onSetColorMode = (colorMode: string) => {
-        if (link) {
-            link.colorMode = colorMode
-            setLink({...link});
-            updateLink();
-        }
+        link!.colorMode = colorMode
+        updateLink();
     }
 
     return <>
@@ -76,10 +64,10 @@ export function ColorSettings({info, linkIndex, mapKey}: ColorSettingsProps) {
                     <OutputSelect id={"k1-first"}
                                   key={`${index}-os`}
                                   label={colorPartName}
-                                  manualValue={link?.colorModeLinks[link.colorMode].links[index]?.manualValue || 0}
+                                  manualValue={link.colorModeLinks[link.colorMode].links[index]?.manualValue || 0}
                                   onManualValueChange={(value) => onManualValueChange(index, value)}
                                   onSelectionChange={(selectedInput) => onSelectionChange(index, selectedInput)}
-                                  selectedInput={link?.colorModeLinks[link.colorMode].links[index]?.outputKey}/>
+                                  selectedInput={link.colorModeLinks[link.colorMode].links[index]?.outputKey}/>
                 </Box>;
             })
         }

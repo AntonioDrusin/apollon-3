@@ -1,4 +1,4 @@
-import {ColorModesLinks, ParameterLink, ParameterMaps} from "./ScreenLink";
+import {BooleanLink, ColorLink, ColorModesLinks, NumberLink, ParameterLink, ParameterMaps} from "./ScreenLink";
 import {VisualizerDirectory} from "../visualizers/VisualizerDirectory";
 import * as _ from "lodash";
 import {Settings} from "../services/Settings";
@@ -85,9 +85,23 @@ export class OutputMapStore {
         return this._parameterMap$;
     }
 
-    public setParameterLink(visualizerKey: string, linkIndex: number, parameterMap: ParameterLink) {
+    public setParameterLink(visualizerKey: string, linkIndex: number, link: NumberLink | ColorLink | BooleanLink) {
         // refactor to not need the whole ParameterLink
-        this._maps[visualizerKey].links[linkIndex] = parameterMap;
+        const map = this._maps[visualizerKey].links[linkIndex];
+        switch ( map.type) {
+            case "number": {
+                map.numberLink = link as NumberLink;
+                break;
+            }
+            case "color": {
+                map.colorLink = link as ColorLink;
+                break;
+            }
+            case "boolean": {
+                map.booleanLink = link as BooleanLink;
+                break;
+            }
+        }
         this._parameterMap$.next(this._maps);
     }
 

@@ -38,24 +38,18 @@ export function NumberSettings({info, linkIndex, mapKey}: NumberSettingsProps) {
     }, [store, linkIndex, mapKey]);
 
     const updateLink = () => {
-        store.setParameterLink(mapKey, linkIndex, {
-            propertyKey: info.propertyKey,
-            type: "number",
-            numberLink: link,
-        });
+        setLink({...link!});
+        store.setParameterLink(mapKey, linkIndex, link!);
     }
+
     const handleManualSignalChange = (value: number) => {
-        if (link) {
-            link.manualValue = value;
-            setLink({...link});
+            link!.manualValue = value;
             updateLink();
-        }
     };
 
     const handleSelectedInputChange = (value: string) => {
         if (link) {
             link.outputKey = value as KeysOfNeurosityData | undefined;
-            setLink({...link});
             updateLink();
         }
     }
@@ -64,10 +58,10 @@ export function NumberSettings({info, linkIndex, mapKey}: NumberSettingsProps) {
         {!link ? null :
             <OutputSelect id={info.propertyKey}
                           label={"Value"}
-                          manualValue={link?.manualValue || 0}
+                          manualValue={link.manualValue || 0}
                           onSelectionChange={(selectedInput) => handleSelectedInputChange(selectedInput)}
                           onManualValueChange={handleManualSignalChange}
-                          selectedInput={link?.outputKey}/>
+                          selectedInput={link.outputKey}/>
         }
     </Box>
 }

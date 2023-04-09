@@ -37,36 +37,24 @@ export function BooleanSettings({info, linkIndex, mapKey}: NumberSettingsProps) 
     }, [store, linkIndex, mapKey]);
 
     const updateLink = () => {
-        store.setParameterLink(mapKey, linkIndex, {
-            propertyKey: info.propertyKey,
-            type: "boolean",
-            booleanLink: link,
-        });
+        setLink({...link!});
+        store.setParameterLink(mapKey, linkIndex, link!);
     }
 
     // REFACTOR
     const handleSelectedInputChange = (value: string) => {
-        if (link) {
-            link.outputKey = value as KeysOfNeurosityData | undefined;
-            setLink({...link});
-            updateLink();
-        }
+        link!.outputKey = value as KeysOfNeurosityData | undefined;
+        updateLink();
     }
 
     const handleThresholdChange = (event: any) => {
-        if (link) {
-            link.threshold = event.target.value;
-            setLink({...link});
-            updateLink();
-        }
+        link!.threshold = event.target.value;
+        updateLink();
     }
 
     const handleManualValueChange = (event: any) => {
-        if (link) {
-            link.manualValue = event.target.checked;
-            setLink({...link});
-            updateLink();
-        }
+        link!.manualValue = event.target.checked;
+        updateLink();
     }
 
     const selectedInput = link?.outputKey;
@@ -79,15 +67,15 @@ export function BooleanSettings({info, linkIndex, mapKey}: NumberSettingsProps) 
             />
             <Box sx={{m: 1, width: 320}}>
                 <Typography gutterBottom>Threshold</Typography>
-                    <Slider value={link?.threshold} onChange={handleThresholdChange} step={0.01} min={0} max={1.0}
-                            disabled={!selectedInput}></Slider>
+                <Slider value={link.threshold} onChange={handleThresholdChange} step={0.01} min={0} max={1.0}
+                        disabled={!selectedInput}></Slider>
 
 
             </Box>
             <Box sx={{m: 1}}>
                 <Typography gutterBottom>Manual Value</Typography>
                 <Switch defaultChecked
-                        value={link?.manualValue}
+                        value={link.manualValue}
                         onChange={handleManualValueChange}
                         disabled={!!selectedInput}
                 />
