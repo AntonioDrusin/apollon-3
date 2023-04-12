@@ -88,6 +88,7 @@ export class Apparitions implements IVisualizer {
         this.firstInkTexture = new THREE.WebGLRenderTarget(this.width, this.height, calcTextureParams);
         this.paintTexture = new THREE.WebGLRenderTarget(this.width, this.height, calcTextureParams);
 
+
         this.scene = new THREE.Scene();
         this.firstInkScene = new THREE.Scene();
         this.mixScene = new THREE.Scene();
@@ -98,6 +99,11 @@ export class Apparitions implements IVisualizer {
 
         this.previousPos.x = this.pos.x = Math.random() * width;
         this.previousPos.y = this.pos.y = Math.random() * width;
+
+        this.renderer.setRenderTarget(this.paintTexture);
+        this.renderer.setClearColor(0x30a050, 1);
+        this.renderer.clear();
+        this.renderer.render(this.scene, this.camera);
     }
 
     pause(): void {

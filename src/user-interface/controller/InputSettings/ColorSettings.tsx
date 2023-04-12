@@ -38,22 +38,27 @@ export function ColorSettings({info, linkIndex, mapKey}: ColorSettingsProps) {
     }, [store, linkIndex, mapKey]);
 
     const updateLink = () => {
-        setLink({...link!});
         store.setParameterLink(mapKey, linkIndex, link!);
     }
 
     const onManualValueChange = (index: number, value: number) => {
-        link!.colorModeLinks[link!.colorMode].links[index].manualValue = value;
+        const updated = {...link!};
+        updated.colorModeLinks[link!.colorMode].links[index].manualValue = value;
+        setLink(updated);
         updateLink();
     }
 
     const onSelectionChange = (index: number, value: string) => {
-        link!.colorModeLinks[link!.colorMode].links[index].outputKey = value as KeysOfNeurosityData | undefined;
+        const updated = {...link!};
+        updated.colorModeLinks[link!.colorMode].links[index].outputKey = value as KeysOfNeurosityData | undefined;
+        setLink(updated);
         updateLink();
     }
 
     const onSetColorMode = (colorMode: string) => {
-        link!.colorMode = colorMode
+        const updated = {...link!};
+        updated!.colorMode = colorMode
+        setLink(updated);
         updateLink();
     }
 
