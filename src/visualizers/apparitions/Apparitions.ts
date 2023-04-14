@@ -129,8 +129,8 @@ export class Apparitions implements IVisualizer {
         this.noiseOffsets.x += this.noiseCoordOffset;
         this.noiseOffsets.y += this.noiseCoordOffset;
 
-        this.pos.x += Math.round((noise2D(this.noiseOffsets.x, 0)) * this.pixelSkip);
-        this.pos.y += Math.round((noise2D(this.noiseOffsets.y, 0)) * this.pixelSkip);
+        this.pos.x += ((noise2D(this.noiseOffsets.x, 0) * this.pixelSkip) );
+        this.pos.y += ((noise2D(this.noiseOffsets.y, 0)* this.pixelSkip) );
     }
 
     private render(): void {
