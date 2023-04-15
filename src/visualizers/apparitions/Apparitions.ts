@@ -36,7 +36,7 @@ export class Apparitions implements IVisualizer {
     @colorInput("Pen Color")
     private inputPenColor: IVisualizerColor = {red: 0, green: 0, blue: 0};
 
-    private penColor: IVisualizerColor = {red: 0, green: 0, blue: 0};
+    private penColor?: IVisualizerColor;
 
     private readonly renderer: THREE.WebGLRenderer;
     private readonly scene: THREE.Scene;
@@ -148,7 +148,7 @@ export class Apparitions implements IVisualizer {
         this.mixMaterial!.uniforms!.firstTex = {value: this.firstInkTexture.texture};
         this.mixMaterial!.uniforms!.from = {value: new Vector2(Math.abs(this.pos.x % this.width), Math.abs(this.pos.y % this.height))};
         this.mixMaterial!.uniforms!.to = {value: new Vector2(Math.abs(this.previousPos.x % this.width), Math.abs(this.previousPos.y % this.height))};
-        if ( !this.penDown || !this.holdPenColor ) {
+        if ( !this.penDown || !this.holdPenColor || !this.penColor ) {
             this.penColor = {...this.inputPenColor};
         }
         this.mixMaterial!.uniforms!.color = {value: new Vector3(this.penColor.red, this.penColor.green, this.penColor.blue)};
