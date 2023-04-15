@@ -18,28 +18,27 @@ const perlinStates: { [key: string]: PerlinState } = {};
 export function ColorGenerator(mode: ColorModes, a: number, b: number, c: number, valueKey: string): IVisualizerColor {
 
     function HSV(h: number, s: number, v: number): IVisualizerColor {
-        if (s <= 0) return {red: 0, green: 0, blue: 0};
-        let hh: number = h * 360;
-        hh = hh / 60;
-        const i = Math.floor(hh);
-        const ff = hh - i;
-        const p = v * (1 - s);
-        const q = v * (1 - (s * ff));
-        const t = v * (1 - (s * (1 - ff)));
-        switch (i) {
+        h = h * 360; // Denormalize h
+
+        const c = v * s;
+        const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+        const m = v - c;
+        const sextant = Math.floor(h / 60);
+
+        switch (sextant) {
             case 0:
-                return {red: v, green: t, blue: p};
+                return {red: c + m, green: x + m, blue: m};
             case 1:
-                return {red: q, green: v, blue: p};
+                return {red: x + m, green: c + m, blue: m};
             case 2:
-                return {red: p, green: v, blue: t};
+                return {red: 0 + m, green: c + m, blue: x + m};
             case 3:
-                return {red: p, green: q, blue: v};
+                return {red: 0 + m, green: x + m, blue: c + m};
             case 4:
-                return {red: t, green: p, blue: v};
+                return {red: x + m, green: 0 + m, blue: c + m};
             case 5:
             default:
-                return {red: v, green: p, blue: q};
+                return {red: c + m, green: 0 + m, blue: x + m};
         }
     }
 
@@ -109,6 +108,8 @@ export function ColorGenerator(mode: ColorModes, a: number, b: number, c: number
         case "rgb":
             return {red: a, green: b, blue: c};
         case "hsv":
+            const hsv = HSV(a, b, c);
+            console.log(`${a},${b},${c} -> ${hsv.red},${hsv.blue},${hsv.green}`)
             return HSV(a, b, c);
         case "lab":
             return LAB(a * 10, 100 - b * 200, 100 - c * 200);
