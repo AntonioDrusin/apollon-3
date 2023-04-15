@@ -1,12 +1,11 @@
 import {
     AppBar,
-    Box, Button,
-    Container,
-    IconButton,
+    Box,
+    Button,
     Toolbar,
     Typography
 } from "@mui/material";
-import {PauseCircle, PersonalVideo, PlayCircle} from "@mui/icons-material";
+import {PersonalVideo} from "@mui/icons-material";
 import React, {useState, useEffect, useMemo} from "react";
 import {HeadsetStatus} from "./HeadsetStatus";
 import {PreviewCard} from "./PreviewCard";

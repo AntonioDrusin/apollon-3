@@ -1,4 +1,4 @@
-import {Box, Switch, Slider, FormControlLabel, Typography} from "@mui/material";
+import {Box, Switch, Slider, Typography} from "@mui/material";
 import React, {useEffect, useState} from "react";
 import {InputInfo} from "../../../visualizers/VisualizerDirectory";
 import {NumberSettingsProps} from "./NumberSettings";

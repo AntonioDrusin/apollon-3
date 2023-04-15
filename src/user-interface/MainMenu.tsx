@@ -1,4 +1,4 @@
-import {Box, Button, IconButton, Menu, MenuItem} from "@mui/material";
+import {Box, Button, Menu, MenuItem} from "@mui/material";
 import React, {useContext, useState} from "react";
 import {MenuBook} from "@mui/icons-material";
 import ThemeDialog from "./ThemeDialog";

@@ -2,7 +2,7 @@ import {BooleanLink, ColorLink, ColorModesLinks, NumberLink, ParameterLink, Para
 import {VisualizerDirectory} from "../visualizers/VisualizerDirectory";
 import * as _ from "lodash";
 import {Settings} from "../services/Settings";
-import {BehaviorSubject, debounceTime, Observable, Subject} from "rxjs";
+import {BehaviorSubject, debounceTime, Observable} from "rxjs";
 import {forEach} from "lodash";
 import {ColorModeNames} from "./ColorTransmission";
 
