@@ -43,7 +43,19 @@ export class ScreenLinkTransmitter {
     }
 
     private static getNumberLinkValue(link: NumberLink | null | undefined, data: NeurosityData): number {
-        if (link) return link.outputKey ? data[link.outputKey] : link.manualValue;
+        if (link) {
+
+            const value = link.outputKey ? data[link.outputKey] : link.manualValue;
+            if ( link.lowValue === link.highValue) return 0;
+            if ( link.lowValue <= link.highValue ) {
+                return link.lowValue + (link.highValue-link.lowValue)*value;
+            }
+            else {
+                let unwrapped = link.lowValue + (link.highValue-link.lowValue+1)*value;
+                if ( unwrapped > 1.0 ) unwrapped -= 1.0;
+                return unwrapped;
+            }
+        }
         return 0;
     }
 

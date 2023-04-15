@@ -10,7 +10,7 @@ export class OutputMapStore {
 
     private readonly _maps: ParameterMaps;
     private readonly _parameterMap$: BehaviorSubject<ParameterMaps>;
-    private readonly _storageKey = "parameterMaps_1.3"; // Up this version if you break compat
+    private readonly _storageKey = "parameterMaps_1.4"; // Up this version if you break compat
     private _settings: Settings;
 
     constructor(settings: Settings) {
@@ -52,7 +52,7 @@ export class OutputMapStore {
                     loadedMap = undefined;
                 }
             }
-            const noValue = {manualValue: 0, outputKey: undefined};
+            const noValue: NumberLink = {manualValue: 0, outputKey: undefined, highValue: 1, lowValue: 0};
             // needs to fill depending on what actually we have, right?
             if (loadedMap) {
                 maps[v.label] = loadedMap;

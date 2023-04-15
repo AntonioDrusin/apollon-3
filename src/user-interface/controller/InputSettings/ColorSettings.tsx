@@ -1,7 +1,7 @@
 import {Box} from "@mui/material";
 import {KeysOfNeurosityData} from "../../../neurosity-adapter/OutputDataSource";
 import React, {useEffect, useState} from "react";
-import {OutputSelect} from "./OutputSelect";
+import {NumberSelect} from "./NumberSelect";
 import {ColorModeSelect} from "./ColorModeSelect";
 import {InputInfo} from "../../../visualizers/VisualizerDirectory";
 import {ColorLink} from "../../../link/ScreenLink";
@@ -48,6 +48,14 @@ export function ColorSettings({info, linkIndex, mapKey}: ColorSettingsProps) {
         updateLink();
     }
 
+    const handleClampChange = (index: number, lowClamp: number, highClamp: number) => {
+        const updated = {...link!};
+        updated.colorModeLinks[link!.colorMode].links[index].lowValue = lowClamp;
+        updated.colorModeLinks[link!.colorMode].links[index].highValue = highClamp;
+        setLink(updated);
+        updateLink();
+    }
+
     const onSelectionChange = (index: number, value: string) => {
         const updated = {...link!};
         updated.colorModeLinks[link!.colorMode].links[index].outputKey = value as KeysOfNeurosityData | undefined;
@@ -66,12 +74,15 @@ export function ColorSettings({info, linkIndex, mapKey}: ColorSettingsProps) {
         {!link ? null :
             colorModes[link.colorMode as KeysOfNeurosityData].inputNames.map((colorPartName, index) => {
                 return <Box sx={{display: "flex", flexWrap: "wrap", p: 1, m: 1}} key={`${index}-box`}>
-                    <OutputSelect id={"k1-first"}
+                    <NumberSelect id={"k1-first"}
                                   key={`${index}-os`}
                                   label={colorPartName}
                                   manualValue={link.colorModeLinks[link.colorMode].links[index]?.manualValue || 0}
+                                  lowValue={link.colorModeLinks[link.colorMode].links[index]?.lowValue || 0}
+                                  highValue={link.colorModeLinks[link.colorMode].links[index]?.highValue || 0}
                                   onManualValueChange={(value) => onManualValueChange(index, value)}
                                   onSelectionChange={(selectedInput) => onSelectionChange(index, selectedInput)}
+                                  onClampChange={(lowClamp, highClamp) => handleClampChange(index, lowClamp, highClamp)}
                                   selectedInput={link.colorModeLinks[link.colorMode].links[index]?.outputKey}/>
                 </Box>;
             })

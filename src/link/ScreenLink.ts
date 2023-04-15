@@ -27,6 +27,8 @@ export type LinkType = typeof linkTypeNames[number];
 
 export interface NumberLink {
     manualValue: number;
+    lowValue: number;
+    highValue: number;
     outputKey: KeysOfNeurosityData | undefined;
 }
 

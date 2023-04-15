@@ -2,7 +2,7 @@ import {InputInfo} from "../../../visualizers/VisualizerDirectory";
 import {Box} from "@mui/material";
 import {KeysOfNeurosityData} from "../../../neurosity-adapter/OutputDataSource";
 import React, {useEffect, useState} from "react";
-import {OutputSelect} from "./OutputSelect";
+import {NumberSelect} from "./NumberSelect";
 import {Register} from "../../../Register";
 import {NumberLink} from "../../../link/ScreenLink";
 import {take} from "rxjs";
@@ -46,6 +46,11 @@ export function NumberSettings({info, linkIndex, mapKey}: NumberSettingsProps) {
             link!.manualValue = value;
             updateLink();
     };
+    const handleClampChange = (lowClamp: number, highClamp: number) => {
+        link!.lowValue = lowClamp;
+        link!.highValue = highClamp;
+        updateLink();
+    };
 
     const handleSelectedInputChange = (value: string) => {
         if (link) {
@@ -56,11 +61,14 @@ export function NumberSettings({info, linkIndex, mapKey}: NumberSettingsProps) {
 
     return <Box sx={{display: "flex", flexWrap: "wrap", p: 1, m: 1}}>
         {!link ? null :
-            <OutputSelect id={info.propertyKey}
+            <NumberSelect id={info.propertyKey}
                           label={"Value"}
                           manualValue={link.manualValue || 0}
+                          lowValue={link.lowValue}
+                          highValue={link.highValue}
                           onSelectionChange={(selectedInput) => handleSelectedInputChange(selectedInput)}
                           onManualValueChange={handleManualSignalChange}
+                          onClampChange={handleClampChange}
                           selectedInput={link.outputKey}/>
         }
     </Box>
