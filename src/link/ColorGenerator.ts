@@ -108,14 +108,11 @@ export function ColorGenerator(mode: ColorModes, a: number, b: number, c: number
         case "rgb":
             return {red: a, green: b, blue: c};
         case "hsv":
-            const hsv = HSV(a, b, c);
-            console.log(`${a},${b},${c} -> ${hsv.red},${hsv.blue},${hsv.green}`)
             return HSV(a, b, c);
         case "lab":
             return LAB(a * 10, 100 - b * 200, 100 - c * 200);
         case "perlin_rgb":
             const cr = generatePerlinColor(a, b, `${valueKey}:${mode}`);
-            console.log(JSON.stringify(cr));
             return cr;
         case "perlin_hsv":
             const ch = generatePerlinColor(a, b, `${valueKey}:${mode}`);

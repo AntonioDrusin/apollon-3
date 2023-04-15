@@ -18,9 +18,10 @@ export class ScreenLinkReceiver {
     private _height?: number;
     private _parentElement?: HTMLElement;
     private _paused: boolean;
+    private _reset?: number;
 
     constructor() {
-        this._data = {visualizerLabel: null, parameters: [], paused: false};
+        this._data = {visualizerLabel: null, parameters: [], paused: false, reset: 0};
         this._channel = new BroadcastChannel(__BROADCAST_CHANNEL_NAME__);
         this._channel.onmessage = (message) => {
             this._data = message.data;
@@ -79,6 +80,13 @@ export class ScreenLinkReceiver {
 
     private setParameters() {
         if (this._data.visualizerLabel && this._current) {
+            console.log(this._data.reset);
+            if ( this._reset === undefined || this._data.reset === 0 ) {
+                this._reset = this._data.reset;
+            }
+            if ( this._reset !== this._data.reset ) {
+                window.location.reload();
+            }
             const visualizer = this._current.visualizer as any;
             const info = this._current.info;
             info.inputs?.forEach((input, index) => {

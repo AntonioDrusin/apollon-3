@@ -5,7 +5,7 @@ import {
     Toolbar,
     Typography
 } from "@mui/material";
-import {PersonalVideo} from "@mui/icons-material";
+import {PersonalVideo, ResetTv} from "@mui/icons-material";
 import React, {useState, useEffect, useMemo} from "react";
 import {HeadsetStatus} from "./HeadsetStatus";
 import {PreviewCard} from "./PreviewCard";
@@ -27,8 +27,10 @@ export function controllerLoader() {
 
 export default function Controller() {
     const [headset, setHeadset] = useState<string | null>(null);
+    const [visualizerWindow, setVisualizerWindow] = useState<Window | null>(null);
     const neurosityAdapter = useMemo(() => Register.neurosityAdapter, []);
     const dataProcessor = useMemo(() => Register.dataProcessor, []);
+    const screenLink = useMemo(() => Register.screenLink, []);
 
     useEffect(() => {
         const deviceSub = neurosityAdapter.selectedDevice$.subscribe((device) => {
@@ -56,11 +58,16 @@ export default function Controller() {
                     <ConnectionMenu></ConnectionMenu>
                     <Box sx={{mx: 4}}>
                         <Button variant="outlined" onClick={() => {
-                            window.open(window.location.pathname + "#/visualizer", "_blank");
+                            screenLink.reset();
+                            setVisualizerWindow(window.open(window.location.pathname + "#/visualizer", "_blank"));
                         }}>
                             <PersonalVideo color="inherit"></PersonalVideo>
                         </Button>
                         <PauseButton/>
+                        <Button variant="outlined" onClick={() => {
+                            screenLink.reset();
+                            visualizerWindow?.location.reload();
+                        }}><ResetTv></ResetTv></Button>
                     </Box>
 
                 </Toolbar>

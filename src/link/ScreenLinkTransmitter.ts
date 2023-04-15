@@ -21,6 +21,8 @@ export class ScreenLinkTransmitter {
     private readonly _visualizerChange$ = new Subject<VisualizerChange>()
 
     private readonly _paused$ = new BehaviorSubject<boolean>(false);
+    private readonly _reset$ = new BehaviorSubject<number>(0);
+    private _reset = 0;
 
     constructor(dataProcessor: NeurosityDataProcessor, settings: Settings, store: OutputMapStore) {
         this._settings = settings;
@@ -29,9 +31,11 @@ export class ScreenLinkTransmitter {
         this._channel = new BroadcastChannel(__BROADCAST_CHANNEL_NAME__);
 
         this._dataProcessor.data$
-            .pipe(withLatestFrom(this._paused$, this._store.parameterMap$))
-            .subscribe(([data, paused, parameterMaps]) => {
-                const message = this.mapData(data, paused, parameterMaps);
+            .pipe(
+                withLatestFrom(this._reset$, this._paused$, this._store.parameterMap$),
+            )
+            .subscribe(([data, reset, paused, parameterMaps]) => {
+                const message = this.mapData(data, reset, paused, parameterMaps);
                 this._channel.postMessage(message);
             });
 
@@ -43,7 +47,7 @@ export class ScreenLinkTransmitter {
         return 0;
     }
 
-    private mapData(data: NeurosityData, paused: boolean, parameterMaps: ParameterMaps): InputData {
+    private mapData(data: NeurosityData, reset: number, paused: boolean, parameterMaps: ParameterMaps): InputData {
         let parameters: (number | IVisualizerColor | boolean)[] = [];
         if (this._visualizerKey) {
             parameters = parameterMaps[this._visualizerKey].links
@@ -63,7 +67,7 @@ export class ScreenLinkTransmitter {
                             }
                             return {red: 0, green: 0.8, blue: 0.0};
                         case "boolean":
-                            if ( link.booleanLink) {
+                            if (link.booleanLink) {
                                 if (link.booleanLink.outputKey) {
                                     return data[link.booleanLink.outputKey] > link.booleanLink.threshold;
                                 } else {
@@ -80,6 +84,7 @@ export class ScreenLinkTransmitter {
             visualizerLabel: this._visualizerKey,
             parameters: parameters,
             paused: paused,
+            reset: reset,
         }
     }
 
@@ -108,5 +113,10 @@ export class ScreenLinkTransmitter {
 
     public play() {
         this._paused$.next(false);
+    }
+
+    public reset() {
+        this._reset += 1;
+        this._reset$.next(this._reset);
     }
 }

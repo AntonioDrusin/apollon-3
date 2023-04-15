@@ -11,6 +11,7 @@ export interface InputData {
     visualizerLabel: string | null;
     parameters: (number | ColorData | boolean)[];
     paused: boolean;
+    reset: number;
 }
 
 export interface ParameterMap {
