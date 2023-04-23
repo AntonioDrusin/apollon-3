@@ -5,6 +5,7 @@ import {InputInfo} from "../../../visualizers/VisualizerDirectory";
 import {NumberSettings} from "./NumberSettings";
 import { ColorSettings } from "./ColorSettings";
 import {BooleanSettings} from "./BooleanSettings";
+import {ImageSettings} from "./ImageSettings";
 
 export interface VisualizerInputProps {
     info: InputInfo;
@@ -24,6 +25,8 @@ export function InputSettingsPanel({info, linkIndex, mapKey}: VisualizerInputPro
                 return <ColorSettings linkIndex={linkIndex} mapKey={mapKey} info={info}/>
             case "boolean":
                 return <BooleanSettings linkIndex={linkIndex} mapKey={mapKey} info={info}/>
+            case "image":
+                return <ImageSettings linkIndex={linkIndex} mapKey={mapKey} info={info}/>
             default:
                 return <Box>Not implemented</Box>
         }

@@ -60,7 +60,7 @@ export class ScreenLinkTransmitter {
     }
 
     private mapData(data: NeurosityData, reset: number, paused: boolean, parameterMaps: ParameterMaps): InputData {
-        let parameters: (number | IVisualizerColor | boolean)[] = [];
+        let parameters: (number | IVisualizerColor | boolean | string | undefined)[] = [];
         if (this._visualizerKey) {
             parameters = parameterMaps[this._visualizerKey].links
                 .map((link) => {
@@ -87,6 +87,11 @@ export class ScreenLinkTransmitter {
                                 }
                             }
                             return true;
+                        case "image":
+                            if ( link.imageLink ) {
+                                return link.imageLink.imageUrl;
+                            }
+                            return undefined;
                         default:
                             return 0.0;
                     }

@@ -45,7 +45,7 @@ export function PreviewMeter({dataSource, valueId, color}: PreviewMeterProps) {
                     flexWrap: "wrap"
                 }}
     >
-        <Box>{label}</Box>
+        <Box sx={{color: color}}>{label}</Box>
         <MultiGraph key={"mg-"+label} valueId={valueId} dataSource={dataSource} color={color} width={120} height={32} minPlot={0}
                     maxPlot={1}></MultiGraph>
     </Box>

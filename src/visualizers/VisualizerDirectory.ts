@@ -75,6 +75,18 @@ export function colorInput(label: string) {
     }
 }
 
+export function imageInput(label: string) {
+    return function(target: Object, propertyKey: string | symbol) {
+        const __FIELD_VISUALIZERS_METADATA_KEY = "Field.Visualizers.Metadata.Key";
+
+        const metaData = Reflect.getMetadata(__FIELD_VISUALIZERS_METADATA_KEY, target.constructor) || {};
+        metaData.inputs ||= [];
+        metaData.inputs.push({label, propertyKey, type: "image"} as InputInfo);
+        Reflect.defineMetadata(__FIELD_VISUALIZERS_METADATA_KEY, metaData, target.constructor);
+
+    }
+}
+
 export function booleanInput(label: string) {
     return function(target: Object, propertyKey: string | symbol) {
         const __FIELD_VISUALIZERS_METADATA_KEY = "Field.Visualizers.Metadata.Key";

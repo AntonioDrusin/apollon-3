@@ -1,4 +1,4 @@
-import {booleanInput, colorInput, numberInput, visualizer} from "../VisualizerDirectory";
+import {booleanInput, colorInput, imageInput, numberInput, visualizer} from "../VisualizerDirectory";
 import {IVisualizer, IVisualizerColor} from "../IVisualizer";
 import * as THREE from "three";
 import firstInkShaderFile from './shaders/first_ink_shader.frag';
@@ -35,6 +35,8 @@ export class Apparitions implements IVisualizer {
     private holdPenColor: boolean = true;
     @colorInput("Pen Color")
     private inputPenColor: IVisualizerColor = {red: 0, green: 0, blue: 0};
+    @imageInput("Image")
+    private imageUrl?: string;
 
     private penColor?: IVisualizerColor;
 
@@ -104,6 +106,7 @@ export class Apparitions implements IVisualizer {
         this.renderer.setClearColor(0xdad0bc, 1);
         this.renderer.clear();
         this.renderer.render(this.scene, this.camera);
+
     }
 
     pause(): void {
@@ -129,8 +132,8 @@ export class Apparitions implements IVisualizer {
         this.noiseOffsets.x += this.noiseCoordOffset;
         this.noiseOffsets.y += this.noiseCoordOffset;
 
-        this.pos.x += ((noise2D(this.noiseOffsets.x, 0) * this.pixelSkip) );
-        this.pos.y += ((noise2D(this.noiseOffsets.y, 0)* this.pixelSkip) );
+        this.pos.x += ((noise2D(this.noiseOffsets.x, 0) * this.pixelSkip));
+        this.pos.y += ((noise2D(this.noiseOffsets.y, 0) * this.pixelSkip));
     }
 
     private render(): void {
@@ -148,7 +151,7 @@ export class Apparitions implements IVisualizer {
         this.mixMaterial!.uniforms!.firstTex = {value: this.firstInkTexture.texture};
         this.mixMaterial!.uniforms!.from = {value: new Vector2(Math.abs(this.pos.x % this.width), Math.abs(this.pos.y % this.height))};
         this.mixMaterial!.uniforms!.to = {value: new Vector2(Math.abs(this.previousPos.x % this.width), Math.abs(this.previousPos.y % this.height))};
-        if ( !this.penDown || !this.holdPenColor || !this.penColor ) {
+        if (!this.penDown || !this.holdPenColor || !this.penColor) {
             this.penColor = {...this.inputPenColor};
         }
         this.mixMaterial!.uniforms!.color = {value: new Vector3(this.penColor.red, this.penColor.green, this.penColor.blue)};
@@ -192,5 +195,19 @@ export class Apparitions implements IVisualizer {
         this.firstInkScene.add(new THREE.Mesh(plane, this.firstInkMaterial));
         this.mixScene.add(new THREE.Mesh(plane, this.mixMaterial));
         this.scene.add(new THREE.Mesh(plane, this.effectMaterial));
+
+        if (this.imageUrl) {
+            const loader = new THREE.TextureLoader();
+            loader.load(this.imageUrl, (texture) => {
+                const textureMaterial = new THREE.MeshBasicMaterial({
+                    map: texture,
+                });
+
+                const scene = new THREE.Scene();
+                scene.add(new THREE.Mesh(plane, textureMaterial));
+                this.renderer.setRenderTarget(this.paintTexture);
+                this.renderer.render(scene, this.camera);
+            });
+        }
     }
 }

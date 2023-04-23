@@ -109,6 +109,10 @@ export class ScreenLinkReceiver {
                         visualizer[input.propertyKey] = this._data.parameters[index] as boolean;
                         break;
                     }
+                    case "image": {
+                        visualizer[input.propertyKey] = this._data.parameters[index] as string;
+                        break;
+                    }
                 }
             })
 

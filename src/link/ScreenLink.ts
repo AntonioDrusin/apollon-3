@@ -9,7 +9,7 @@ export interface ColorData {
 
 export interface InputData {
     visualizerLabel: string | null;
-    parameters: (number | ColorData | boolean)[];
+    parameters: (number | ColorData | boolean | string | undefined)[];
     paused: boolean;
     reset: number;
 }
@@ -20,8 +20,7 @@ export interface ParameterMap {
 
 export type ParameterMaps = { [k: string]: ParameterMap };
 
-export const linkTypeNames = ["number", "color", "bool"];
-
+export const linkTypeNames = ["number", "color", "bool", "image"];
 export type LinkType = typeof linkTypeNames[number];
 
 
@@ -42,6 +41,10 @@ export interface NumbersLink {
     links: NumberLink[];
 }
 
+export interface ImageLink {
+    imageUrl?: string;
+}
+
 export type ColorModesLinks = { [key in ColorModes]: NumbersLink };
 
 export interface ColorLink {
@@ -56,6 +59,7 @@ export interface ParameterLink {
     numberLink?: NumberLink;
     colorLink?: ColorLink;
     booleanLink?: BooleanLink;
+    imageLink?: ImageLink;
 }
 
 export const __BROADCAST_CHANNEL_NAME__ = "Link.Broadcast."
