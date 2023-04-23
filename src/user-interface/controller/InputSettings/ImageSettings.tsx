@@ -62,7 +62,7 @@ export function ImageSettings({info, linkIndex, mapKey}: NumberSettingsProps) {
     return <Box sx={{display: "flex", flexWrap: "wrap", p: 1, m: 1}}>
         {!link ? null : <>
             <Box>
-                <img style={{width: "320px"}} src={link.imageUrl}></img>
+                <img style={{width: "100%"}} src={link.imageUrl}></img>
             </Box>
             <Button variant="contained" component="label" sx={{mx: 1}}>
                 Upload
