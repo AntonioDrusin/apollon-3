@@ -20,7 +20,6 @@ export function BooleanSettings({info, linkIndex, mapKey}: NumberSettingsProps) 
 
     useEffect(() => {
         const sub = store.parameterMap$
-            .pipe(take(1))
             .subscribe((parameters) => {
                 const parameter = parameters[mapKey];
                 if (parameter) {
