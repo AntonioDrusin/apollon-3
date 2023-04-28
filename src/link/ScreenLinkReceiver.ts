@@ -1,4 +1,10 @@
-import {__BROADCAST_CHANNEL_NAME__, ColorData, InputData} from "./ScreenLink";
+import {
+    __BROADCAST_CHANNEL_NAME__,
+    __BROADCAST_IMAGE_CHANNEL_NAME__, __BROADCAST_IMAGE_REQUEST_CHANNEL_NAME__,
+    ColorData,
+    ImageMessage,
+    InputData
+} from "./ScreenLink";
 import {VisualizerDirectory, VisualizerInfo} from "../visualizers/VisualizerDirectory";
 import {IVisualizer, IVisualizerColor} from "../visualizers/IVisualizer";
 
@@ -10,6 +16,8 @@ interface VisualizerData {
 
 export class ScreenLinkReceiver {
     private _channel: BroadcastChannel;
+    private _imageChannel: BroadcastChannel;
+    private _requestChannel: BroadcastChannel;
     private _data: InputData;
     private _directory: VisualizerDirectory;
     private readonly _visualizersData: { [k: string]: VisualizerData };
@@ -19,16 +27,36 @@ export class ScreenLinkReceiver {
     private _parentElement?: HTMLElement;
     private _paused: boolean;
     private _reset?: number;
+    private _ready: boolean;
+
+    private readonly _images: { [key: string]: string | undefined } = {};
 
     constructor() {
         this._data = {visualizerLabel: null, parameters: [], paused: false, reset: 0};
+        this._ready = false;
+
+        this._imageChannel = new BroadcastChannel(__BROADCAST_IMAGE_CHANNEL_NAME__);
+        this._imageChannel.onmessage = (message) => {
+            const imageMessage = message.data as ImageMessage;
+            if (imageMessage) {
+                if (imageMessage.key === "DONE") {
+                    this._ready = true;
+                    console.log("Images received");
+                } else {
+                    this._images[imageMessage.key] = imageMessage.url;
+                }
+            }
+        };
+
+        this._requestChannel = new BroadcastChannel(__BROADCAST_IMAGE_REQUEST_CHANNEL_NAME__);
+        this._requestChannel.postMessage("");
+
         this._channel = new BroadcastChannel(__BROADCAST_CHANNEL_NAME__);
         this._channel.onmessage = (message) => {
             this._data = message.data;
-            this.setVisualizer().then(r => {
-                this.setParameters();
-            });
+            this.setVisualizer().then(r => {});
         }
+
         this._directory = new VisualizerDirectory();
         const visualizerData: { [k: string]: VisualizerData } = {};
         this._directory.visualizers.forEach((v) => {
@@ -47,7 +75,7 @@ export class ScreenLinkReceiver {
     }
 
     private async setVisualizer() {
-        if (this._parentElement && this._width && this._height) {
+        if (this._parentElement && this._width && this._height && this._ready) {
             const label = this._data.visualizerLabel;
             if (label !== this._current?.info.label) {
                 if (label) {
@@ -61,6 +89,7 @@ export class ScreenLinkReceiver {
                         this._current.element = element;
                         this._current.visualizer = new this._visualizersData[label].info
                             .Constructor(this._width, this._height, element);
+                        this.setParameters();
                         await this._current.visualizer?.load();
                     }
                     if (!this._paused) this._current.visualizer?.start();
@@ -70,6 +99,7 @@ export class ScreenLinkReceiver {
                 }
             }
         }
+        this.setParameters();
     }
 
     private setCurrentElementHidden(hidden: boolean) {
@@ -80,11 +110,10 @@ export class ScreenLinkReceiver {
 
     private setParameters() {
         if (this._data.visualizerLabel && this._current) {
-            console.log(this._data.reset);
-            if ( this._reset === undefined || this._data.reset === 0 ) {
+            if (this._reset === undefined || this._data.reset === 0) {
                 this._reset = this._data.reset;
             }
-            if ( this._reset !== this._data.reset ) {
+            if (this._reset !== this._data.reset) {
                 window.location.reload();
             }
             const visualizer = this._current.visualizer as any;
@@ -110,7 +139,11 @@ export class ScreenLinkReceiver {
                         break;
                     }
                     case "image": {
-                        visualizer[input.propertyKey] = this._data.parameters[index] as string;
+                        const key = this._data.parameters[index] as string;
+                        if (key && this._images[key]) {
+                            visualizer[input.propertyKey] = this._images[key];
+                            console.log("Image key set");
+                        }
                         break;
                     }
                 }

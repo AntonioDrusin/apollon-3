@@ -62,6 +62,14 @@ export interface ParameterLink {
     imageLink?: ImageLink;
 }
 
-export const __BROADCAST_CHANNEL_NAME__ = "Link.Broadcast."
+export interface ImageMessage {
+    key: string;
+    url?: string; // Done separately so we can send large data urls
+}
+
+
+export const __BROADCAST_CHANNEL_NAME__ = "Link.Broadcast.Data";
+export const __BROADCAST_IMAGE_CHANNEL_NAME__ = "Link.Broadcast.Image";
+export const __BROADCAST_IMAGE_REQUEST_CHANNEL_NAME__ = "Link.Broadcast.ImageRequest";
 
 

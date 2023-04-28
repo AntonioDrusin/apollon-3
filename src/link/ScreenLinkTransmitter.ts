@@ -1,20 +1,33 @@
 import {NeurosityDataProcessor} from "../neurosity-adapter/NeurosityDataProcessor";
 import {NeurosityData} from "../neurosity-adapter/OutputDataSource";
-import {__BROADCAST_CHANNEL_NAME__, InputData, NumberLink, ParameterMaps} from "./ScreenLink";
+import {
+    __BROADCAST_CHANNEL_NAME__,
+    __BROADCAST_IMAGE_CHANNEL_NAME__, __BROADCAST_IMAGE_REQUEST_CHANNEL_NAME__, ImageLink, ImageMessage,
+    InputData,
+    NumberLink,
+    ParameterMaps
+} from "./ScreenLink";
 import {Settings} from "../services/Settings";
 import {BehaviorSubject, Observable, Subject, withLatestFrom} from "rxjs";
 import {IVisualizerColor} from "../visualizers/IVisualizer";
 import {ColorGenerator} from "./ColorGenerator";
 import {OutputMapStore} from "./OutputMapStore";
+import { forEach } from "lodash";
 
 export interface VisualizerChange {
     visualizer: string | null;
+}
+
+interface ImageMapData {
+    link: ImageLink;
 }
 
 export class ScreenLinkTransmitter {
     private _store: OutputMapStore;
     private _dataProcessor: NeurosityDataProcessor;
     private _channel: BroadcastChannel;
+    private _imageChannel: BroadcastChannel;
+    private _requestChannel: BroadcastChannel;
     private _visualizerKey: string | null;
     private _settings: Settings;
     private readonly _visualizerStorageKey = "selectedVisualizer";
@@ -22,6 +35,7 @@ export class ScreenLinkTransmitter {
 
     private readonly _paused$ = new BehaviorSubject<boolean>(false);
     private readonly _reset$ = new BehaviorSubject<number>(0);
+    private readonly _request$ = new Subject();
     private _reset = 0;
 
     constructor(dataProcessor: NeurosityDataProcessor, settings: Settings, store: OutputMapStore) {
@@ -29,6 +43,34 @@ export class ScreenLinkTransmitter {
         this._dataProcessor = dataProcessor;
         this._store = store;
         this._channel = new BroadcastChannel(__BROADCAST_CHANNEL_NAME__);
+        this._imageChannel = new BroadcastChannel(__BROADCAST_IMAGE_CHANNEL_NAME__);
+        this._requestChannel = new BroadcastChannel(__BROADCAST_IMAGE_REQUEST_CHANNEL_NAME__);
+
+        this._requestChannel.onmessage = () => {
+            this._request$.next(null);
+        };
+
+        // For now, we are resending all the images on request.
+        // No support for changing images in runtime.
+        this._request$.pipe(
+            withLatestFrom(this._store.parameterMap$)
+        ).subscribe( ([_, parameterMaps]) => {
+            console.log("SENDING IMAGES");
+            // Set all the images at once.
+            forEach(parameterMaps, (map, mapKey) => {
+                forEach(map.links, (link, linkIndex) => {
+                    if( link.type === "image") {
+                        const key = `${mapKey}:${linkIndex}`;
+                        const message: ImageMessage = {
+                            key: key,
+                            url: link.imageLink!.imageUrl,
+                        };
+                        this._imageChannel.postMessage(message);
+                    }
+                });
+            });
+            this._imageChannel.postMessage({key: "DONE"}); // I do not love this
+        });
 
         this._dataProcessor.data$
             .pipe(
@@ -63,7 +105,7 @@ export class ScreenLinkTransmitter {
         let parameters: (number | IVisualizerColor | boolean | string | undefined)[] = [];
         if (this._visualizerKey) {
             parameters = parameterMaps[this._visualizerKey].links
-                .map((link) => {
+                .map((link, link_index) => {
                     switch (link.type) {
                         case "number":
                             return ScreenLinkTransmitter.getNumberLinkValue(link.numberLink, data);
@@ -89,7 +131,8 @@ export class ScreenLinkTransmitter {
                             return true;
                         case "image":
                             if ( link.imageLink ) {
-                                return link.imageLink.imageUrl;
+                                const key = `${this._visualizerKey}:${link_index}`
+                                return key;
                             }
                             return undefined;
                         default:
