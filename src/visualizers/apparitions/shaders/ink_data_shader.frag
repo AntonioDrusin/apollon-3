@@ -8,46 +8,48 @@ uniform float dryRate;
 
 void main() {
     vec2 step = 1.0/iResolution;
-
     float mixers = 1.0;
 
-    vec4 finalColor = texture(imageTexture, vUv);
-    float totalInk = finalColor.a;
+    vec4 finalData = texture(dataTexture, vUv);
+
+    float totalInk = finalData.r;
+    float alpha = finalData.g;
     float inkDisperse = 4.0;
 
     if ( totalInk > inkDisperse ) totalInk -= inkDisperse;
 
-    vec4 colorUp = texture(imageTexture, vec2(vUv.x, vUv.y + step.y));
-    if ( colorUp.a > inkDisperse ) {
-        finalColor.rgb = (finalColor.rgb + colorUp.rgb);
+    vec4 dataUp = texture(dataTexture, vec2(vUv.x, vUv.y + step.y));
+    if ( dataUp.r > inkDisperse ) {
         totalInk += 1.0;
+        alpha += dataUp.g;
         mixers += 1.0;
     }
 
-    vec4 colorDown = texture(imageTexture, vec2(vUv.x, vUv.y - step.y));
-    if ( colorDown.a > inkDisperse ) {
-        finalColor.rgb = (finalColor.rgb + colorDown.rgb);
+    vec4 dataDown = texture(dataTexture, vec2(vUv.x, vUv.y - step.y));
+    if ( dataDown.r > inkDisperse ) {
         totalInk += 1.0;
+        alpha += dataDown.g;
         mixers += 1.0;
     }
 
-    vec4 colorRight = texture(imageTexture, vec2(vUv.x + step.x, vUv.y));
-    if ( colorRight.a > inkDisperse ) {
-        finalColor.rgb = (finalColor.rgb + colorRight.rgb);
+    vec4 dataRight = texture(dataTexture, vec2(vUv.x + step.x, vUv.y));
+    if ( dataRight.r > inkDisperse ) {
         totalInk += 1.0;
+        alpha += dataRight.g;
         mixers += 1.0;
     }
 
-    vec4 colorLeft = texture(imageTexture, vec2(vUv.x - step.x, vUv.y));
-    if ( colorLeft.a > inkDisperse ) {
-        finalColor.rgb = (finalColor.rgb + colorLeft.rgb);
+    vec4 dataLeft = texture(dataTexture, vec2(vUv.x - step.x, vUv.y));
+    if ( dataLeft.r > inkDisperse ) {
         totalInk += 1.0;
+        alpha += dataLeft.g;
         mixers += 1.0;
     }
 
     if ( totalInk > dryRate ) totalInk -= dryRate;
-    finalColor.rgb = finalColor.rgb / mixers;
-    finalColor.a = totalInk;
 
-    gl_FragColor = finalColor;
+    finalData.r = totalInk;
+    finalData.g = alpha/mixers; // background percentage
+
+    gl_FragColor = finalData;
 }

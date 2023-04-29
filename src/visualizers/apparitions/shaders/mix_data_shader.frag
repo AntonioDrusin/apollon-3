@@ -32,17 +32,22 @@ float drawLine(vec2 p1, vec2 p2) {
 void main() {
     // Draws the line
 
-    vec4 firstSample = texture(imageTexture, vUv);
+    vec4 firstSample = texture(dataTexture, vUv);
 
-    vec4 finalColor = firstSample;
+    float ink = firstSample.r;
+    float transparency = firstSample.g;
 
-    if (penDown > 0.0)
-    if (distance(from / resolution, to / resolution)  < 0.9) {
-        float lineMultiplier = drawLine(from / resolution, to / resolution);
-        if (lineMultiplier > 0.0) {
-            finalColor = vec4((color.rgb + finalColor.rgb)/2.0, finalColor.a + paintDrop);
+    if (penDown > 0.0) {
+        if (distance(from / resolution, to / resolution)  < 0.9) {
+            float lineMultiplier = drawLine(from / resolution, to / resolution);
+            if (lineMultiplier > 0.0) {
+                ink += paintDrop;
+                transparency = 1.0;
+            }
         }
     }
 
-    gl_FragColor = vec4(finalColor);
+   // transparency = firstSample.g;
+
+    gl_FragColor = vec4(ink, transparency, 0, 0);
 }

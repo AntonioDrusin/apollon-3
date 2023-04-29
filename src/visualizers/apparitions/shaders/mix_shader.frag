@@ -40,7 +40,7 @@ void main() {
     if (distance(from / resolution, to / resolution)  < 0.9) {
         float lineMultiplier = drawLine(from / resolution, to / resolution);
         if (lineMultiplier > 0.0) {
-            finalColor = vec4((color.rgb + finalColor.rgb)/2.0, finalColor.a + paintDrop);
+            finalColor = vec4((color.rgb + finalColor.rgb)/2.0, 0);
         }
     }
 

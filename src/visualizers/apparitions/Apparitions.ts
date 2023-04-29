@@ -2,7 +2,7 @@ import {booleanInput, colorInput, imageInput, numberInput, visualizer} from "../
 import {IVisualizer, IVisualizerColor} from "../IVisualizer";
 import * as THREE from "three";
 import inkShaderFile from './shaders/ink_shader.frag';
-import inkDataShaderFile from './shaders/ink_shader.frag';
+import inkDataShaderFile from './shaders/ink_data_shader.frag';
 import vertexShaderFile from './shaders/vertex.vert';
 import effectShaderFile from './shaders/effect_shader.frag';
 import mixShaderFile from './shaders/mix_shader.frag';
