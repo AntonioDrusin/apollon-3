@@ -3,6 +3,7 @@ uniform sampler2D dataTexture;
 uniform sampler2D backgroundTexture;
 uniform vec3 backgroundColor;
 uniform float backgroundColorAlpha; // When 1 don't look at the texture!
+uniform float inkAlpha;
 
 varying vec2 vUv;
 
@@ -20,7 +21,7 @@ void main() {
         vec4 t = texture(backgroundTexture, vUv);
 
         vec3 bg = mix(t.rgb, backgroundColor.rgb, backgroundColorAlpha);
-        vec3 color = mix(s.rgb, bg, 1.0-d.g);
+        vec3 color = mix(s.rgb, bg, (1.0-(d.g*inkAlpha)));
         gl_FragColor = vec4(color, 0.0);
     }
 

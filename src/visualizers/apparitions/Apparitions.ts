@@ -33,6 +33,8 @@ export class Apparitions implements IVisualizer {
     private paintDrop = 40
     @numberInput("Background Alpha", 0, 1)
     private backgroundAlpha = 0.5;
+    @numberInput("Ink Alpha", 0, 1)
+    private inkAlpha = 0.5;
     @booleanInput("Pen Down")
     private penDown: boolean = true;
     @booleanInput("Hold Pen Color")
@@ -220,6 +222,7 @@ export class Apparitions implements IVisualizer {
         this.effectMaterial!.uniforms!.dataTexture = {value: this.paintDataTexture.texture};
         this.effectMaterial!.uniforms!.backgroundTexture = {value: this.backgroundTexture};
         this.effectMaterial!.uniforms!.backgroundColorAlpha = {value: this.backgroundTexture ? this.backgroundAlpha : 1};
+        this.effectMaterial!.uniforms!.inkAlpha = {value: this.inkAlpha};
         this.effectMaterial!.uniforms!.backgroundColor = {value: new Vector3(this.backgroundColor.red, this.backgroundColor.green, this.backgroundColor.blue)};
 
         this.renderer.setRenderTarget(null);
