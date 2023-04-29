@@ -36,37 +36,33 @@ export function ColorSettings({info, linkIndex, mapKey}: ColorSettingsProps) {
         };
     }, [store, linkIndex, mapKey]);
 
-    const updateLink = () => {
-        store.setParameterLink(mapKey, linkIndex, link!);
+    const updateLink = (updated: ColorLink) => {
+        store.setParameterLink(mapKey, linkIndex, updated);
     }
 
     const onManualValueChange = (index: number, value: number) => {
         const updated = {...link!};
         updated.colorModeLinks[link!.colorMode].links[index].manualValue = value;
-        setLink(updated);
-        updateLink();
+        updateLink(updated);
     }
 
     const handleClampChange = (index: number, lowClamp: number, highClamp: number) => {
         const updated = {...link!};
         updated.colorModeLinks[link!.colorMode].links[index].lowValue = lowClamp;
         updated.colorModeLinks[link!.colorMode].links[index].highValue = highClamp;
-        setLink(updated);
-        updateLink();
+        updateLink(updated);
     }
 
     const onSelectionChange = (index: number, value: string) => {
         const updated = {...link!};
         updated.colorModeLinks[link!.colorMode].links[index].outputKey = value as KeysOfNeurosityData | undefined;
-        setLink(updated);
-        updateLink();
+        updateLink(updated);
     }
 
     const onSetColorMode = (colorMode: string) => {
         const updated = {...link!};
         updated!.colorMode = colorMode
-        setLink(updated);
-        updateLink();
+        updateLink(updated);
     }
 
     return <>

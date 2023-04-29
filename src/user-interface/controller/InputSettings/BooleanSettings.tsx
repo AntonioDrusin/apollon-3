@@ -36,8 +36,7 @@ export function BooleanSettings({info, linkIndex, mapKey}: NumberSettingsProps) 
     }, [store, linkIndex, mapKey]);
 
     const updateLink = () => {
-        setLink({...link!});
-        store.setParameterLink(mapKey, linkIndex, link!);
+        store.setParameterLink(mapKey, linkIndex, {...link!});
     }
 
     // REFACTOR

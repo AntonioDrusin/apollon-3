@@ -41,7 +41,6 @@ export class ScreenLinkReceiver {
             if (imageMessage) {
                 if (imageMessage.key === "DONE") {
                     this._ready = true;
-                    console.log("Images received");
                 } else {
                     this._images[imageMessage.key] = imageMessage.url;
                 }
@@ -142,7 +141,6 @@ export class ScreenLinkReceiver {
                         const key = this._data.parameters[index] as string;
                         if (key && this._images[key]) {
                             visualizer[input.propertyKey] = this._images[key];
-                            console.log("Image key set");
                         }
                         break;
                     }

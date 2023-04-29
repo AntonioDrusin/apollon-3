@@ -69,13 +69,15 @@ export class OutputMapStore {
         }
 
         const noValue: NumberLink = {manualValue: 0, outputKey: undefined, highValue: 1, lowValue: 0};
+        const noImage: ImageLink = {};
+        const noColorLinks: ColorModesLinks = {};
+
         // needs to fill depending on what actually we have, right?
         if (loadedMap) {
             return loadedMap
         } else {
-            const defaultColorLinks: ColorModesLinks = {};
             forEach(ColorModeNames, (colorMode) => {
-                defaultColorLinks[colorMode] = {
+                noColorLinks[colorMode] = {
                     links: _.map([0, 1, 2], () => {
                         return {...noValue};
                     })
@@ -88,9 +90,10 @@ export class OutputMapStore {
                     type: i.type,
                     colorLink: i.type === "color" ? {
                         colorMode: "rgb",
-                        colorModeLinks: {...defaultColorLinks},
+                        colorModeLinks: {...noColorLinks},
                     } : null,
                     numberLink: i.type === "number" ? {...noValue} : null,
+                    imageLink: i.type === "image" ? {...noImage} : null,
                 } as ParameterLink
             });
             return {links: newLinks};
@@ -110,6 +113,7 @@ export class OutputMapStore {
                 break;
             }
             case "color": {
+                const colorLink : ColorLink = link as ColorLink;
                 map.colorLink = link as ColorLink;
                 break;
             }

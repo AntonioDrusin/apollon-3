@@ -55,11 +55,10 @@ export class ScreenLinkTransmitter {
         this._request$.pipe(
             withLatestFrom(this._store.parameterMap$)
         ).subscribe( ([_, parameterMaps]) => {
-            console.log("SENDING IMAGES");
             // Set all the images at once.
             forEach(parameterMaps, (map, mapKey) => {
                 forEach(map.links, (link, linkIndex) => {
-                    if( link.type === "image") {
+                    if( link.type === "image" && link.imageLink) {
                         const key = `${mapKey}:${linkIndex}`;
                         const message: ImageMessage = {
                             key: key,

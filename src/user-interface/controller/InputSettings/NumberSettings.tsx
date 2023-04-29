@@ -37,13 +37,12 @@ export function NumberSettings({info, linkIndex, mapKey}: NumberSettingsProps) {
     }, [store, linkIndex, mapKey]);
 
     const updateLink = () => {
-        setLink({...link!});
-        store.setParameterLink(mapKey, linkIndex, link!);
+        store.setParameterLink(mapKey, linkIndex, {...link!});
     }
 
     const handleManualSignalChange = (value: number) => {
-            link!.manualValue = value;
-            updateLink();
+        link!.manualValue = value;
+        updateLink();
     };
     const handleClampChange = (lowClamp: number, highClamp: number) => {
         link!.lowValue = lowClamp;
