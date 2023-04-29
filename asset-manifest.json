@@ -1,19 +1,21 @@
 {
   "files": {
     "main.css": "/apollon-3/static/css/main.e6c13ad2.css",
-    "main.js": "/apollon-3/static/js/main.f72146d5.js",
+    "main.js": "/apollon-3/static/js/main.0ec8fecf.js",
     "static/js/787.95382b35.chunk.js": "/apollon-3/static/js/787.95382b35.chunk.js",
-    "static/media/first_ink_shader.frag": "/apollon-3/static/media/first_ink_shader.e922082414bc0d6ca444.frag",
-    "static/media/mix_shader.frag": "/apollon-3/static/media/mix_shader.bf6beb4e4b4f9907f13a.frag",
+    "static/media/ink_shader.frag": "/apollon-3/static/media/ink_shader.cab0e9a45d89a1228c3a.frag",
+    "static/media/ink_data_shader.frag": "/apollon-3/static/media/ink_data_shader.2d533228f223ff1f21c3.frag",
+    "static/media/mix_data_shader.frag": "/apollon-3/static/media/mix_data_shader.73838f26b25ce85d76ae.frag",
+    "static/media/mix_shader.frag": "/apollon-3/static/media/mix_shader.dcef4763205dbdfb1519.frag",
+    "static/media/effect_shader.frag": "/apollon-3/static/media/effect_shader.8c34cd036049268c0f03.frag",
     "index.html": "/apollon-3/index.html",
-    "static/media/effect_shader.frag": "/apollon-3/static/media/effect_shader.48f395617a8d8b3f8de4.frag",
     "static/media/vertex.vert": "/apollon-3/static/media/vertex.3647e2f99127a5dfc6f9.vert",
     "main.e6c13ad2.css.map": "/apollon-3/static/css/main.e6c13ad2.css.map",
-    "main.f72146d5.js.map": "/apollon-3/static/js/main.f72146d5.js.map",
+    "main.0ec8fecf.js.map": "/apollon-3/static/js/main.0ec8fecf.js.map",
     "787.95382b35.chunk.js.map": "/apollon-3/static/js/787.95382b35.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.e6c13ad2.css",
-    "static/js/main.f72146d5.js"
+    "static/js/main.0ec8fecf.js"
   ]
 }
