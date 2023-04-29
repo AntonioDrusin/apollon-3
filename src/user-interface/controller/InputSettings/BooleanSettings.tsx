@@ -7,6 +7,7 @@ import {BooleanLink} from "../../../link/ScreenLink";
 import {take} from "rxjs";
 import {OutputSourceSelect} from "./OutputSourceSelect";
 import {KeysOfNeurosityData} from "../../../neurosity-adapter/OutputDataSource";
+import * as _ from "lodash";
 
 export interface BooleanSettingsProps {
     info: InputInfo;
@@ -24,7 +25,8 @@ export function BooleanSettings({info, linkIndex, mapKey}: NumberSettingsProps) 
                 const parameter = parameters[mapKey];
                 if (parameter) {
                     const newLink = parameter.links[linkIndex];
-                    if (newLink && newLink.type === "boolean") {
+                    if (newLink && newLink.type === "boolean" && !_.isEqual(newLink.booleanLink, link)) {
+                        console.log("UPDATE LINK")
                         setLink({...newLink.booleanLink!});
                     }
                 }
@@ -33,26 +35,23 @@ export function BooleanSettings({info, linkIndex, mapKey}: NumberSettingsProps) 
         return () => {
             sub.unsubscribe();
         }
-    }, [store, linkIndex, mapKey]);
+    }, [link, store, linkIndex, mapKey]);
 
-    const updateLink = () => {
-        store.setParameterLink(mapKey, linkIndex, {...link!});
+    const updateLink = (newLink: BooleanLink) => {
+        store.setParameterLink(mapKey, linkIndex, newLink);
     }
 
     // REFACTOR
     const handleSelectedInputChange = (value: string) => {
-        link!.outputKey = value as KeysOfNeurosityData | undefined;
-        updateLink();
+        updateLink({...link!, outputKey: value as KeysOfNeurosityData | undefined});
     }
 
     const handleThresholdChange = (event: any) => {
-        link!.threshold = event.target.value;
-        updateLink();
+        updateLink({...link!, threshold: event.target.value});
     }
 
     const handleManualValueChange = (event: any) => {
-        link!.manualValue = event.target.checked;
-        updateLink();
+        updateLink({...link!, manualValue: event.target.checked});
     }
 
     const selectedInput = link?.outputKey;

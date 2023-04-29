@@ -7,7 +7,7 @@ import {InputInfo} from "../../../visualizers/VisualizerDirectory";
 import {ColorLink} from "../../../link/ScreenLink";
 import {colorModes} from "../../../link/ColorTransmission";
 import {Register} from "../../../Register";
-import {take} from "rxjs";
+import * as _ from "lodash";
 
 export interface ColorSettingsProps {
     info: InputInfo;
@@ -24,9 +24,9 @@ export function ColorSettings({info, linkIndex, mapKey}: ColorSettingsProps) {
             .subscribe((parameters) => {
                 const parameter = parameters[mapKey];
                 if (parameter) {
-                    const link = parameter.links[linkIndex];
-                    if (link && link.type === "color") {
-                        setLink({...link.colorLink!});
+                    const newLink = parameter.links[linkIndex];
+                    if (newLink && newLink.type === "color" && !_.isEqual(newLink.colorLink, link)) {
+                        setLink({...newLink.colorLink!});
                     }
                 }
             });
@@ -34,33 +34,33 @@ export function ColorSettings({info, linkIndex, mapKey}: ColorSettingsProps) {
         return () => {
             sub.unsubscribe();
         };
-    }, [store, linkIndex, mapKey]);
+    }, [link, store, linkIndex, mapKey]);
 
-    const updateLink = (updated: ColorLink) => {
-        store.setParameterLink(mapKey, linkIndex, updated);
+    const updateLink = (newLink: ColorLink) => {
+        store.setParameterLink(mapKey, linkIndex, newLink);
     }
 
     const onManualValueChange = (index: number, value: number) => {
-        const updated = {...link!};
+        const updated = _.cloneDeep(link!);
         updated.colorModeLinks[link!.colorMode].links[index].manualValue = value;
         updateLink(updated);
     }
 
     const handleClampChange = (index: number, lowClamp: number, highClamp: number) => {
-        const updated = {...link!};
+        const updated = _.cloneDeep(link!);
         updated.colorModeLinks[link!.colorMode].links[index].lowValue = lowClamp;
         updated.colorModeLinks[link!.colorMode].links[index].highValue = highClamp;
         updateLink(updated);
     }
 
     const onSelectionChange = (index: number, value: string) => {
-        const updated = {...link!};
+        const updated = _.cloneDeep(link!);
         updated.colorModeLinks[link!.colorMode].links[index].outputKey = value as KeysOfNeurosityData | undefined;
         updateLink(updated);
     }
 
     const onSetColorMode = (colorMode: string) => {
-        const updated = {...link!};
+        const updated = _.cloneDeep(link!);
         updated!.colorMode = colorMode
         updateLink(updated);
     }

@@ -5,7 +5,7 @@ import React, {useEffect, useState} from "react";
 import {NumberSelect} from "./NumberSelect";
 import {Register} from "../../../Register";
 import {NumberLink} from "../../../link/ScreenLink";
-import {take} from "rxjs";
+import * as _ from 'lodash';
 
 export interface NumberSettingsProps {
     info: InputInfo;
@@ -25,7 +25,7 @@ export function NumberSettings({info, linkIndex, mapKey}: NumberSettingsProps) {
                 const parameter = parameters[mapKey];
                 if (parameter) {
                     const newLink = parameter.links[linkIndex];
-                    if (newLink && newLink.type === "number") {
+                    if (newLink && newLink.type === "number" && !_.isEqual(newLink.numberLink, link)) {
                         setLink({...newLink.numberLink!});
                     }
                 }
@@ -34,26 +34,29 @@ export function NumberSettings({info, linkIndex, mapKey}: NumberSettingsProps) {
         return () => {
             sub.unsubscribe();
         }
-    }, [store, linkIndex, mapKey]);
+    }, [store, linkIndex, mapKey, link]);
 
-    const updateLink = () => {
-        store.setParameterLink(mapKey, linkIndex, {...link!});
+    const updateLink = (newLink: NumberLink) => {
+        store.setParameterLink(mapKey, linkIndex, newLink);
     }
 
     const handleManualSignalChange = (value: number) => {
-        link!.manualValue = value;
-        updateLink();
+        updateLink({...link!,
+            manualValue: value
+        });
     };
     const handleClampChange = (lowClamp: number, highClamp: number) => {
-        link!.lowValue = lowClamp;
-        link!.highValue = highClamp;
-        updateLink();
+        updateLink({...link!,
+            lowValue: lowClamp,
+            highValue: highClamp,
+        });
     };
 
     const handleSelectedInputChange = (value: string) => {
-        if (link) {
-            link.outputKey = value as KeysOfNeurosityData | undefined;
-            updateLink();
+        if ( link! ) {
+            updateLink({...link,
+                outputKey: value as KeysOfNeurosityData | undefined,
+            });
         }
     }
 
