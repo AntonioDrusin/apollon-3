@@ -5,7 +5,11 @@ varying vec2 vUv;
 
 // Algorithm parameters
 uniform float dryRate;
+uniform float mixRatio; // mix Ratio
+
 const float inkDisperse = 4.0;
+
+
 
 vec4 disperse(in vec4 color, inout float mixers, in vec2 samplePosition, float alpha) {
     vec4 data = texture(dataTexture, samplePosition);
@@ -13,7 +17,8 @@ vec4 disperse(in vec4 color, inout float mixers, in vec2 samplePosition, float a
         vec4 mix = texture(imageTexture, samplePosition);
         mixers += 1.0;
         // return vec4((color.rgb + mix.rgb)/2.0, 1.0);
-        return vec4((color.rgb*alpha + mix.rgb)/(alpha+1.0), 1.0);
+        // return vec4((color.rgb*alpha + mix.rgb)/(alpha+1.0), 1.0);
+        return vec4(((mixRatio*alpha*color.rgb) + (1.0-mixRatio)*mix.rgb)/((1.0-mixRatio) + mixRatio*alpha), 1.0);
     }
     return vec4(0.0, 0.0, 0.0, 0.0);
 }

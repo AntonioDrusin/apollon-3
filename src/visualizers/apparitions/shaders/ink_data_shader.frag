@@ -5,7 +5,10 @@ varying vec2 vUv;
 
 // Algorithm parameters
 uniform float dryRate;
+uniform float mixRatio; // mix Ratio
+
 const float inkDisperse = 4.0;
+
 
 
 vec4 disperse(inout float totalInk, in float alpha, inout float mixers, in vec2 samplePosition) {
@@ -13,7 +16,7 @@ vec4 disperse(inout float totalInk, in float alpha, inout float mixers, in vec2 
     if ( data.r > inkDisperse ) {
         totalInk += 1.0;
         mixers += 1.0;
-        return vec4(0.0, (data.g + alpha)/2.0, 0.0, 1.0);
+        return vec4(0.0, (1.0-mixRatio)*data.g + mixRatio * alpha, 0.0, 1.0);
     }
     return vec4(0.0, 0.0, 0.0, 0.0);
 }

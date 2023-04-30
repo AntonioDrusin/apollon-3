@@ -35,6 +35,8 @@ export class Apparitions implements IVisualizer {
     private backgroundAlpha = 0.5;
     @numberInput("Ink Alpha", 0, 1)
     private inkAlpha = 0.5;
+    @numberInput("Mix Ratio", 0, 1)
+    private mixRatio = 0.5;
     @booleanInput("Pen Down")
     private penDown: boolean = true;
     @booleanInput("Hold Pen Color")
@@ -174,6 +176,7 @@ export class Apparitions implements IVisualizer {
         this.inkMaterial!.uniforms!.imageTexture = {value: this.paintTexture.texture};
         this.inkMaterial!.uniforms!.dataTexture = {value: this.paintDataTexture.texture};
         this.inkMaterial!.uniforms!.dryRate = {value: this.dryRate};
+        this.inkMaterial!.uniforms!.mixRatio = {value: this.mixRatio};
         this.renderer.setRenderTarget(this.firstTexture);
         this.renderer.render(this.inkScene!, this.camera);
 
@@ -182,6 +185,7 @@ export class Apparitions implements IVisualizer {
         this.inkDataMaterial!.uniforms!.imageTexture = {value: this.paintTexture.texture};
         this.inkDataMaterial!.uniforms!.dataTexture = {value: this.paintDataTexture.texture};
         this.inkDataMaterial!.uniforms!.dryRate = {value: this.dryRate};
+        this.inkDataMaterial!.uniforms!.mixRatio = {value: this.mixRatio};
         this.renderer.setRenderTarget(this.firstDataTexture);
         this.renderer.render(this.inkDataScene!, this.camera);
 
