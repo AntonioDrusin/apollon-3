@@ -14,12 +14,10 @@ void main() {
 
 
     if ( backgroundColorAlpha == 1.0 ) {
-        vec3 color = mix(s.rgb, backgroundColor.rgb, 1.0-d.g);
+        vec3 color = mix(s.rgb, backgroundColor.rgb, 1.0-(d.g*inkAlpha));
         gl_FragColor = vec4(color, 0.0);
     }
     else {
-        vec4 t = texture(backgroundTexture, vUv);
-
         vec3 bg = mix(t.rgb, backgroundColor.rgb, backgroundColorAlpha);
         vec3 color = mix(s.rgb, bg, (1.0-(d.g*inkAlpha)));
         gl_FragColor = vec4(color, 0.0);
