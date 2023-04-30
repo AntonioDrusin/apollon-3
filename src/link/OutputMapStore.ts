@@ -71,9 +71,16 @@ export class OutputMapStore {
         const noValue: NumberLink = {manualValue: 0, outputKey: undefined, highValue: 1, lowValue: 0};
         const noImage: ImageLink = {};
         const noColorLinks: ColorModesLinks = {};
+        const noBoolean: BooleanLink = { manualValue: false, threshold: 0, outputKey: undefined };
 
         // needs to fill depending on what actually we have, right?
         if (loadedMap) {
+            // Fix incorrect data
+            forEach(loadedMap, (parameter) => {
+                forEach(parameter, (link) => {
+                    if ( link.type === "boolean" && !link.booleanLink ) link.booleanLink = {...noBoolean};
+                });
+            });
             return loadedMap
         } else {
             forEach(ColorModeNames, (colorMode) => {
@@ -94,6 +101,7 @@ export class OutputMapStore {
                     } : null,
                     numberLink: i.type === "number" ? {...noValue} : null,
                     imageLink: i.type === "image" ? {...noImage} : null,
+                    booleanLink: i.type === "boolean" ? {...noBoolean} : null,
                 } as ParameterLink
             });
             return {links: newLinks};
