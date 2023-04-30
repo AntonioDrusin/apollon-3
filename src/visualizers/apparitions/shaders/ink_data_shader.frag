@@ -5,6 +5,17 @@ varying vec2 vUv;
 
 // Algorithm parameters
 uniform float dryRate;
+const float inkDisperse = 4.0;
+
+
+void disperse(inout float totalInk, inout float alpha, inout float mixers, in vec2 samplePosition) {
+    vec4 data = texture(dataTexture, samplePosition);
+    if ( data.r > inkDisperse ) {
+        totalInk += 1.0;
+        alpha += data.g;
+        mixers += 1.0;
+    }
+}
 
 void main() {
     vec2 step = 1.0/iResolution;
@@ -14,37 +25,13 @@ void main() {
 
     float totalInk = finalData.r;
     float alpha = finalData.g;
-    float inkDisperse = 4.0;
 
     if ( totalInk > inkDisperse ) totalInk -= inkDisperse;
 
-    vec4 dataUp = texture(dataTexture, vec2(vUv.x, vUv.y + step.y));
-    if ( dataUp.r > inkDisperse ) {
-        totalInk += 1.0;
-        alpha += dataUp.g;
-        mixers += 1.0;
-    }
-
-    vec4 dataDown = texture(dataTexture, vec2(vUv.x, vUv.y - step.y));
-    if ( dataDown.r > inkDisperse ) {
-        totalInk += 1.0;
-        alpha += dataDown.g;
-        mixers += 1.0;
-    }
-
-    vec4 dataRight = texture(dataTexture, vec2(vUv.x + step.x, vUv.y));
-    if ( dataRight.r > inkDisperse ) {
-        totalInk += 1.0;
-        alpha += dataRight.g;
-        mixers += 1.0;
-    }
-
-    vec4 dataLeft = texture(dataTexture, vec2(vUv.x - step.x, vUv.y));
-    if ( dataLeft.r > inkDisperse ) {
-        totalInk += 1.0;
-        alpha += dataLeft.g;
-        mixers += 1.0;
-    }
+    disperse(totalInk, alpha, mixers, vec2(vUv.x, vUv.y + step.y));
+    disperse(totalInk, alpha, mixers, vec2(vUv.x, vUv.y - step.y));
+    disperse(totalInk, alpha, mixers, vec2(vUv.x + step.x, vUv.y));
+    disperse (totalInk, alpha, mixers, vec2(vUv.x - step.x, vUv.y));
 
     if ( totalInk > dryRate ) totalInk -= dryRate;
 

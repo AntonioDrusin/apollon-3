@@ -5,6 +5,16 @@ varying vec2 vUv;
 
 // Algorithm parameters
 uniform float dryRate;
+const float inkDisperse = 4.0;
+
+void disperse(inout vec4 finalColor, inout float mixers, in vec2 samplePosition) {
+    vec4 data = texture(dataTexture, samplePosition);
+    if ( data.r > inkDisperse ) {
+        vec4 color = texture(imageTexture, samplePosition);
+        finalColor.rgb = (finalColor.rgb + color.rgb);
+        mixers += 1.0;
+    }
+}
 
 void main() {
     vec2 step = 1.0/iResolution;
@@ -12,35 +22,10 @@ void main() {
 
     vec4 finalColor = texture(imageTexture, vUv);
 
-    float inkDisperse = 4.0;
-
-    vec4 dataUp = texture(dataTexture, vec2(vUv.x, vUv.y + step.y));
-    if ( dataUp.r > inkDisperse ) {
-        vec4 colorUp = texture(imageTexture, vec2(vUv.x, vUv.y + step.y));
-        finalColor.rgb = (finalColor.rgb + colorUp.rgb);
-        mixers += 1.0;
-    }
-
-    vec4 dataDown = texture(dataTexture, vec2(vUv.x, vUv.y - step.y));
-    if ( dataDown.r > inkDisperse ) {
-        vec4 colorDown = texture(imageTexture, vec2(vUv.x, vUv.y - step.y));
-        finalColor.rgb = (finalColor.rgb + colorDown.rgb);
-        mixers += 1.0;
-    }
-
-    vec4 dataRight = texture(dataTexture, vec2(vUv.x + step.x, vUv.y));
-    if ( dataRight.r > inkDisperse ) {
-        vec4 colorRight = texture(imageTexture, vec2(vUv.x + step.x, vUv.y));
-        finalColor.rgb = (finalColor.rgb + colorRight.rgb);
-        mixers += 1.0;
-    }
-
-    vec4 dataLeft = texture(dataTexture, vec2(vUv.x - step.x, vUv.y));
-    if ( dataLeft.r > inkDisperse ) {
-        vec4 colorLeft = texture(imageTexture, vec2(vUv.x - step.x, vUv.y));
-        finalColor.rgb = (finalColor.rgb + colorLeft.rgb);
-        mixers += 1.0;
-    }
+    disperse(finalColor, mixers, vec2(vUv.x, vUv.y + step.y));
+    disperse(finalColor, mixers, vec2(vUv.x, vUv.y - step.y));
+    disperse(finalColor, mixers, vec2(vUv.x + step.x, vUv.y));
+    disperse(finalColor, mixers, vec2(vUv.x - step.x, vUv.y));
 
     finalColor.rgb = finalColor.rgb / mixers;
 
