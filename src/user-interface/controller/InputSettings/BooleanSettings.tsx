@@ -26,7 +26,6 @@ export function BooleanSettings({info, linkIndex, mapKey}: NumberSettingsProps) 
                 if (parameter) {
                     const newLink = parameter.links[linkIndex];
                     if (newLink && newLink.type === "boolean" && !_.isEqual(newLink.booleanLink, link)) {
-                        console.log("UPDATE LINK")
                         setLink({...newLink.booleanLink!});
                     }
                 }

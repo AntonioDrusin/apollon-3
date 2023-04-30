@@ -54,58 +54,51 @@ export class OutputMapStore {
     private verifyLoadedMap(loadedMap: ParameterMap | undefined, v: VisualizerInfo) : ParameterMap {
         v.inputs ||= [];
 
-        // We could do better than dropping everything.
-        // This matches the settings saved in local store with what the visualizer has declared.
-        // If we mismatch the length drop the loaded map
-        if (loadedMap && loadedMap.links.length !== v.inputs.length) { // If we mismatch the length, clear out the maps.
-            loadedMap = undefined;
-        } else if (loadedMap) {
-            // if we mismatch any of the keys, drop the map
-            const inputKeys = _.map(v.inputs, (i) => i.propertyKey);
-            const linksKeys = _.map(loadedMap.links, (l) => l.propertyKey);
-            if (!_.isEqual(inputKeys, linksKeys)) {
-                loadedMap = undefined;
-            }
-        }
-
+        // Prep the no value items
         const noValue: NumberLink = {manualValue: 0, outputKey: undefined, highValue: 1, lowValue: 0};
         const noImage: ImageLink = {};
         const noColorLinks: ColorModesLinks = {};
         const noBoolean: BooleanLink = { manualValue: false, threshold: 0, outputKey: undefined };
+        forEach(ColorModeNames, (colorMode) => {
+            noColorLinks[colorMode] = {
+                links: _.map([0, 1, 2], () => {
+                    return {...noValue};
+                })
+            }
+        });
 
-        // needs to fill depending on what actually we have, right?
-        if (loadedMap) {
-            // Fix incorrect data
-            forEach(loadedMap, (parameter) => {
-                forEach(parameter, (link) => {
-                    if ( link.type === "boolean" && !link.booleanLink ) link.booleanLink = {...noBoolean};
-                });
-            });
-            return loadedMap
-        } else {
-            forEach(ColorModeNames, (colorMode) => {
-                noColorLinks[colorMode] = {
-                    links: _.map([0, 1, 2], () => {
-                        return {...noValue};
-                    })
-                }
-            });
+        let newLinks : ParameterLink[] = [];
+        let links: ParameterLink[] = [];
+        if ( loadedMap?.links ) {
+            links = loadedMap.links;
+        }
+        let linksMap = _.reduce(links, (a: any,b) => {
+            a[b.propertyKey] = b;
+            return a;
+        }, {})
 
-            const newLinks = _.map(v.inputs, (i) => {
-                return {
-                    propertyKey: i.propertyKey,
-                    type: i.type,
-                    colorLink: i.type === "color" ? {
+
+        forEach(v.inputs, (input) => {
+            let link = linksMap[input.propertyKey] as ParameterLink;
+            if ( link && link.type === input.type) {
+                if ( link.type === "boolean" && !link.booleanLink ) link.booleanLink = {...noBoolean};
+            } else {
+                link = {
+                    propertyKey: input.propertyKey,
+                    type: input.type,
+                    colorLink: input.type === "color" ? {
                         colorMode: "rgb",
                         colorModeLinks: {...noColorLinks},
                     } : null,
-                    numberLink: i.type === "number" ? {...noValue} : null,
-                    imageLink: i.type === "image" ? {...noImage} : null,
-                    booleanLink: i.type === "boolean" ? {...noBoolean} : null,
-                } as ParameterLink
-            });
-            return {links: newLinks};
-        }
+                    numberLink: input.type === "number" ? {...noValue} : null,
+                    imageLink: input.type === "image" ? {...noImage} : null,
+                    booleanLink: input.type === "boolean" ? {...noBoolean} : null,
+                } as ParameterLink;
+            }
+            newLinks.push(link);
+        });
+
+        return {links: newLinks};
     }
 
     public get parameterMap$(): Observable<ParameterMaps> {
