@@ -7,7 +7,7 @@ varying vec2 vUv;
 uniform float dryRate;
 const float inkDisperse = 4.0;
 
-vec4 disperse(inout vec4 color, inout float mixers, in vec2 samplePosition, float alpha) {
+vec4 disperse(in vec4 color, inout float mixers, in vec2 samplePosition, float alpha) {
     vec4 data = texture(dataTexture, samplePosition);
     if (data.r > inkDisperse) {
         vec4 mix = texture(imageTexture, samplePosition);
