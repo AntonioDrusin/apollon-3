@@ -28,7 +28,7 @@ export class Apparitions_v2 implements IVisualizer {
     private noiseCoordOffset = 0.08;
     @numberInput("Move amplification", 1, 24)
     private pixelSkip = 12;
-    @numberInput("Dry rate", -0.0012, 0.0060)
+    @numberInput("Dry rate", -0.0008, 0.0060)
     private dryRate = 0.0012
     @numberInput("Paint amount", 0, 200)
     private paintDrop = 40
@@ -36,7 +36,7 @@ export class Apparitions_v2 implements IVisualizer {
     private backgroundAlpha = 0.5;
     @numberInput("Ink Alpha", 0, 1)
     private inkAlpha = 0.5;
-    @numberInput("Ink Barrier", 0, 1)
+    @numberInput("Ink Barrier", 1.0, 0.2) //0.0, 1.0
     private inkBarrier = 1.0;
     @booleanInput("Pen Down")
     private penDown: boolean = true;
