@@ -1,34 +1,27 @@
-import React, {useEffect, useState} from "react";
-import {Box, ToggleButton, ToggleButtonGroup} from "@mui/material";
+import React, {useContext, useEffect, useState} from "react";
+import {Box, Button, ToggleButton, ToggleButtonGroup} from "@mui/material";
 import {VisualizerInfo} from "../../../visualizers/VisualizerDirectory";
-import {PlayArrow} from "@mui/icons-material";
-import {ParameterLink, ParameterMap} from "../../../link/ScreenLink";
+import {FileDownload, FileUpload, PlayArrow, SaveAs} from "@mui/icons-material";
 import {InputSettingsPanel} from "./InputSettingsPanel";
+import {Register} from "../../../Register";
+import {SnackBarContext} from "../ContextProvider/Context";
 
 export interface VisualizerPanelProps {
     visualizerInfo: VisualizerInfo;
     live: boolean;
-    map?: ParameterMap;
+    mapKey: string;
     onLive(key: string): void;
-    onParameterChange(map: ParameterMap): void;
 }
 
-
-export function InputSettingsGroup({visualizerInfo, live, map, onLive, onParameterChange}: VisualizerPanelProps) {
+export function InputSettingsGroup({visualizerInfo, live, onLive, mapKey}: VisualizerPanelProps) {
 
     const [toggles, setToggles] = useState<string[]>([]);
-
-    const handleParameterChange = (index: number, link: ParameterLink) => {
-        if ( map ) {
-            map.links[index] = link;
-            onParameterChange(map);
-        }
-    };
+    const [store] = useState(Register.outputMapStore);
+    const snackContext = useContext(SnackBarContext);
 
     const handleToggles = (event: React.MouseEvent<HTMLElement>, value: any) => {
         onLive(visualizerInfo.label);
     };
-
 
     useEffect(() => {
         const toggle = (item: string, state: boolean): void => {
@@ -44,31 +37,49 @@ export function InputSettingsGroup({visualizerInfo, live, map, onLive, onParamet
                 }
             }
         }
-
         toggle("tv", live);
     }, [
         toggles,
         live
     ]);
 
+    const handleDownload = async () => {
+        await store.saveVisualizerSettings(mapKey);
+    };
+
+    const handleUpload = async () => {
+        const error = await store.loadVisualizerSettings(mapKey);
+        if ( error ) {
+            snackContext.setSnackMessage(error);
+        }
+    };
+
 
     return <Box>
-        <Box sx={{p: 3}}>
+        <Box sx={{p: 3, display: "flex", flexDirection: "row", alignItems: "center"}}>
             <ToggleButtonGroup value={toggles} onChange={handleToggles}>
                 <ToggleButton value="tv">
                     <PlayArrow/>
                 </ToggleButton>
             </ToggleButtonGroup>
+            <Box sx={{flexGrow: 1}}></Box>
+            <Button variant={"outlined"} onClick={handleDownload}>
+                <FileDownload/> Download Parameters
+            </Button>
+            <Button variant={"outlined"} onClick={handleUpload}>
+                <FileUpload/> Upload Parameters
+            </Button>
         </Box>
-        {(map && visualizerInfo.inputs &&
-            <Box sx={{display: "flex", flexWrap: "wrap"}}>
+        {(visualizerInfo.inputs &&
+            <Box sx={{display: "flex", flexWrap: "wrap", justifyContent: 'flex-start', flexDirection: 'row'}}>
                 {
-                    visualizerInfo.inputs.map((info, index) => {
+                    visualizerInfo.inputs
+                        .map((info, index) => {
                         return <InputSettingsPanel
                             key={info.label + "-viz"}
                             info={info}
-                            onParameterChange={(link) => handleParameterChange(index, link)}
-                            link={map.links[index]}
+                            linkIndex={index}
+                            mapKey={mapKey}
                         ></InputSettingsPanel>;
                     })
                 }

@@ -16,7 +16,7 @@ interface MultiGraphProps {
 }
 
 export function MultiGraph({valueId, dataSource, color, width, height, minPlot, maxPlot}: MultiGraphProps) {
-    const periodMs = 1000/120;
+    const periodMs = 1000/30;
     const samples = width;
     let value = useRef(0)
 

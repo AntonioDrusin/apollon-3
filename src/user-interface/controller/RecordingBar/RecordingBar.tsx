@@ -46,7 +46,7 @@ export default function RecordingBar() {
             }
         });
         return () => { sub.unsubscribe()};
-    }, [transmitter, dataPersister, snackContext]);
+    }, [recording, transmitter, dataPersister, snackContext]);
 
     const handleLabeling = () => {
         const tag = label || new Date().toLocaleString();

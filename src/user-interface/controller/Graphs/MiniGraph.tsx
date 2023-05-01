@@ -83,7 +83,7 @@ export function MiniGraph({valueId, dataSource, color, width, height}: MiniGraph
         p5.fill(theme.palette.secondary.main);
         const textWidth = p5.textWidth(values[samples - 1].toFixed(1));
         p5.text(values[samples - 1].toFixed(1), width - textWidth - margin, 12);
-    }, []);
+    }, [color, width, height, samples, theme, values]);
 
     return <Sketch setup={setup} draw={draw}></Sketch>
 }

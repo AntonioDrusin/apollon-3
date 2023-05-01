@@ -43,7 +43,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "optimized": "cross-env PUBLIC_URL=/ react-scripts build && serve build"
   },
   "eslintConfig": {
     "extends": [
@@ -64,7 +65,9 @@
     ]
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "gh-pages": "^4.0.0",
-    "protobufjs-cli": "^1.1.1"
+    "protobufjs-cli": "^1.1.1",
+    "serve": "^14.2.0"
   }
 }

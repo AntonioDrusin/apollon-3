@@ -1,9 +1,8 @@
-import {Box, Container, Tab, Tabs} from "@mui/material";
+import {Box, Tab, Tabs} from "@mui/material";
 import {VisualizerDirectory, VisualizerInfo} from "../../visualizers/VisualizerDirectory";
 import {TabPanel} from "./TabPanel";
 import {PreProcessGroup} from "./PreProcessing/PreProcessGroup";
 import {InputSettingsGroup} from "./InputSettings/InputSettingsGroup";
-import {ParameterMap, ParameterMaps} from "../../link/ScreenLink";
 import React, {useEffect, useMemo, useState} from "react";
 import {Register} from "../../Register";
 
@@ -12,7 +11,7 @@ export default function ControllerTabs() {
     const [visualizers] = useState(() => new VisualizerDirectory());
     const [liveVisualizer, setLiveVisualizer] = useState<string | null>(null);
     const [screenLink] = useState(() => Register.screenLink);
-    const [maps, setMaps] = useState<ParameterMaps>();
+
     const [loading, setLoading] = useState<boolean>(true);
     const dataProcessor = useMemo(() => Register.dataProcessor, []);
 
@@ -21,20 +20,6 @@ export default function ControllerTabs() {
             setLiveVisualizer(key);
         } else setLiveVisualizer(null);
     }
-    const handleParameterChange = (key: string, map: ParameterMap) => {
-        if (maps) {
-            const newMaps: ParameterMaps = maps;
-            newMaps[key] = map;
-            setMaps(newMaps);
-            // If I use an effect of maps to set this, it no longer refreshes.
-            // If I make a clone, then it goes in an infinite loop
-            screenLink.setMaps(newMaps);
-        }
-    }
-
-    useEffect(() => {
-        setMaps(screenLink.getMaps());
-    }, [screenLink]);
 
     useEffect(() => {
         if (!loading) {
@@ -44,7 +29,6 @@ export default function ControllerTabs() {
 
 
     useEffect(() => {
-        setMaps(screenLink.getMaps());
         setLiveVisualizer(screenLink.getVisualizer());
         setLoading(false);
     }, [screenLink]);
@@ -53,7 +37,7 @@ export default function ControllerTabs() {
     const onTabChange = (event: React.SyntheticEvent, newValue: any) => setSelectedPanel(newValue);
 
 
-    return (loading ? null : <Container maxWidth="xl">
+    return (loading ? null : <Box>
         <Box sx={{borderBottom: 1, borderColor: "divider"}}>
             <Tabs value={selectedPanel} onChange={onTabChange}>
                 <Tab key={"preprocessing"} label={"Preprocessing"}></Tab>
@@ -69,20 +53,19 @@ export default function ControllerTabs() {
             <PreProcessGroup processor={dataProcessor}></PreProcessGroup>
         </TabPanel>
 
-        {maps &&
+        {
             visualizers.visualizers.map((v: VisualizerInfo, i: number) => {
                 return <TabPanel key={v.label + "panel"} value={selectedPanel} index={i + 1}>
                     <InputSettingsGroup
                         key={v.label + "visualization-panel"}
                         visualizerInfo={v}
                         live={v.label === liveVisualizer}
+                        mapKey = {v.label}
                         onLive={handleLiveChange}
-                        onParameterChange={(map: ParameterMap) => handleParameterChange(v.label, map)}
-                        map={maps[v.label]}
                     ></InputSettingsGroup>
                 </TabPanel>
                     ;
             })
         }
-    </Container>)
+    </Box>)
 }

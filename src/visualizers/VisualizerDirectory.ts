@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import {VisualizersMap} from "./VisualizersMap";
+import {LinkType} from "../link/ScreenLink";
 
 export interface VisualizerInfo {
     Constructor: any;
@@ -10,10 +11,12 @@ export interface VisualizerInfo {
 
 export interface InputInfo {
     label: string;
-    min: number;
-    max: number;
+    min?: number;
+    max?: number;
+    type: LinkType;
     propertyKey: string;
 }
+
 
 export class VisualizerDirectory {
 
@@ -41,6 +44,7 @@ export class VisualizerDirectory {
 export function visualizer(label: string, p5mode: "2d" | "webgl") {
     return function (constructor: Function) {
         const __FIELD_VISUALIZERS_METADATA_KEY = "Field.Visualizers.Metadata.Key";
+
         const meta = Reflect.getMetadata(__FIELD_VISUALIZERS_METADATA_KEY, constructor) || {};
         meta.label = label;
         meta.p5mode = p5mode;
@@ -51,11 +55,47 @@ export function visualizer(label: string, p5mode: "2d" | "webgl") {
 export function numberInput(label: string, from: number, to: number) {
     return function (target: Object, propertyKey: string | symbol) {
         const __FIELD_VISUALIZERS_METADATA_KEY = "Field.Visualizers.Metadata.Key";
+
         const metaData = Reflect.getMetadata(__FIELD_VISUALIZERS_METADATA_KEY, target.constructor) || {};
         metaData.inputs ||= [];
-        metaData.inputs.push({label, min: from, max: to, propertyKey} as InputInfo);
+        metaData.inputs.push({label, min: from, max: to, propertyKey, type: "number"} as InputInfo);
         Reflect.defineMetadata(__FIELD_VISUALIZERS_METADATA_KEY, metaData, target.constructor);
     }
 }
 
+export function colorInput(label: string) {
+    return function(target: Object, propertyKey: string | symbol) {
+        const __FIELD_VISUALIZERS_METADATA_KEY = "Field.Visualizers.Metadata.Key";
+
+        const metaData = Reflect.getMetadata(__FIELD_VISUALIZERS_METADATA_KEY, target.constructor) || {};
+        metaData.inputs ||= [];
+        metaData.inputs.push({label, propertyKey, type: "color"} as InputInfo);
+        Reflect.defineMetadata(__FIELD_VISUALIZERS_METADATA_KEY, metaData, target.constructor);
+
+    }
+}
+
+export function imageInput(label: string) {
+    return function(target: Object, propertyKey: string | symbol) {
+        const __FIELD_VISUALIZERS_METADATA_KEY = "Field.Visualizers.Metadata.Key";
+
+        const metaData = Reflect.getMetadata(__FIELD_VISUALIZERS_METADATA_KEY, target.constructor) || {};
+        metaData.inputs ||= [];
+        metaData.inputs.push({label, propertyKey, type: "image"} as InputInfo);
+        Reflect.defineMetadata(__FIELD_VISUALIZERS_METADATA_KEY, metaData, target.constructor);
+
+    }
+}
+
+export function booleanInput(label: string) {
+    return function(target: Object, propertyKey: string | symbol) {
+        const __FIELD_VISUALIZERS_METADATA_KEY = "Field.Visualizers.Metadata.Key";
+
+        const metaData = Reflect.getMetadata(__FIELD_VISUALIZERS_METADATA_KEY, target.constructor) || {};
+        metaData.inputs ||= [];
+        metaData.inputs.push({label, propertyKey, type: "boolean"} as InputInfo);
+        Reflect.defineMetadata(__FIELD_VISUALIZERS_METADATA_KEY, metaData, target.constructor);
+
+    }
+}
 
