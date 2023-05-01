@@ -8,6 +8,7 @@ import effectShaderFile from './shaders/effect_shader.frag';
 import mixShaderFile from './shaders/mix_shader.frag';
 import mixDataShaderFile from './shaders/mix_data_shader.frag';
 import {
+    Color,
     ShaderMaterial,
     Vector2,
     Vector3,
@@ -20,23 +21,23 @@ import {noise2D} from "./Noise";
 // https://editor.p5js.org/StevesMakerspace/sketches/d0lPUJt8T
 
 
-@visualizer("Apparitions", "2d")
-export class Apparitions implements IVisualizer {
+@visualizer("Apparitions_v2", "2d")
+export class Apparitions_v2 implements IVisualizer {
     // Parameters
     @numberInput("Move noise", 0.001, 0.16)
     private noiseCoordOffset = 0.08;
     @numberInput("Move amplification", 1, 24)
     private pixelSkip = 12;
-    @numberInput("Dry rate", -0.0008, 0.0060) // -0.0028, 0.0048
+    @numberInput("Dry rate", -0.0012, 0.0060)
     private dryRate = 0.0012
-    @numberInput("Paint amount", 0, 400) // 0, 200
+    @numberInput("Paint amount", 0, 200)
     private paintDrop = 40
     @numberInput("Background Alpha", 0, 1)
     private backgroundAlpha = 0.5;
     @numberInput("Ink Alpha", 0, 1)
     private inkAlpha = 0.5;
-    @numberInput("Mix Ratio", 0, 1)
-    private mixRatio = 0.5;
+    @numberInput("Ink Barrier", 0, 1)
+    private inkBarrier = 1.0;
     @booleanInput("Pen Down")
     private penDown: boolean = true;
     @booleanInput("Hold Pen Color")
@@ -133,12 +134,6 @@ export class Apparitions implements IVisualizer {
         this.previousPos.x = this.pos.x = Math.random() * width;
         this.previousPos.y = this.pos.y = Math.random() * width;
 
-        // The color will be an input
-        // this.renderer.setRenderTarget(this.paintTexture);
-        // this.renderer.setClearColor(0xdad0bc, 1);
-        // this.renderer.clear();
-        // this.renderer.render(this.scene, this.camera);
-
     }
 
     pause(): void {
@@ -176,7 +171,7 @@ export class Apparitions implements IVisualizer {
         this.inkMaterial!.uniforms!.imageTexture = {value: this.paintTexture.texture};
         this.inkMaterial!.uniforms!.dataTexture = {value: this.paintDataTexture.texture};
         this.inkMaterial!.uniforms!.dryRate = {value: this.dryRate};
-        this.inkMaterial!.uniforms!.mixRatio = {value: this.mixRatio};
+        this.inkMaterial!.uniforms!.inkBarrier = {value: this.inkBarrier};
         this.renderer.setRenderTarget(this.firstTexture);
         this.renderer.render(this.inkScene!, this.camera);
 
@@ -185,7 +180,7 @@ export class Apparitions implements IVisualizer {
         this.inkDataMaterial!.uniforms!.imageTexture = {value: this.paintTexture.texture};
         this.inkDataMaterial!.uniforms!.dataTexture = {value: this.paintDataTexture.texture};
         this.inkDataMaterial!.uniforms!.dryRate = {value: this.dryRate};
-        this.inkDataMaterial!.uniforms!.mixRatio = {value: this.mixRatio};
+        this.inkDataMaterial!.uniforms!.inkBarrier = {value: this.inkBarrier};
         this.renderer.setRenderTarget(this.firstDataTexture);
         this.renderer.render(this.inkDataScene!, this.camera);
 
@@ -260,6 +255,19 @@ export class Apparitions implements IVisualizer {
 
         if (this.imageUrl) {
             this.backgroundTexture = await this.loadTexture(this.imageUrl);
+
+            const textureMaterial = new THREE.MeshBasicMaterial({
+                map: this.backgroundTexture,
+            });
+            const scene = new THREE.Scene();
+            scene.add(new THREE.Mesh(plane, textureMaterial));
+            this.renderer.setRenderTarget(this.paintTexture);
+            this.renderer.render(scene, this.camera);
+        } else {
+            this.renderer.setRenderTarget(this.paintTexture);
+            this.renderer.setClearColor(new Color(this.backgroundColor.red,this.backgroundColor.green,this.backgroundColor.blue), 1);
+            this.renderer.clear();
+            this.renderer.render(this.scene, this.camera);
         }
     }
 
