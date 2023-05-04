@@ -28,7 +28,7 @@ export class Apparitions_v2 implements IVisualizer {
     private noiseCoordOffset = 0.08;
     @numberInput("Move amplification", 1, 24)
     private pixelSkip = 12;
-    @numberInput("Dry rate", -0.0002, 0.0060)
+    @numberInput("Dry rate", -0.0001, 0.0060)
     private dryRate = 0.0012
     @numberInput("Paint amount", 0, 200)
     private paintDrop = 40
