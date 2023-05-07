@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import {Box, Button, ToggleButton, ToggleButtonGroup} from "@mui/material";
 import {VisualizerInfo} from "../../../visualizers/VisualizerDirectory";
-import {FileDownload, FileUpload, PlayArrow, SaveAs} from "@mui/icons-material";
+import {FileDownload, FileUpload, PlayArrow} from "@mui/icons-material";
 import {InputSettingsPanel} from "./InputSettingsPanel";
 import {Register} from "../../../Register";
 import {SnackBarContext} from "../ContextProvider/Context";

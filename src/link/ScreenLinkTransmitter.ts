@@ -2,7 +2,7 @@ import {NeurosityDataProcessor} from "../neurosity-adapter/NeurosityDataProcesso
 import {NeurosityData} from "../neurosity-adapter/OutputDataSource";
 import {
     __BROADCAST_CHANNEL_NAME__,
-    __BROADCAST_IMAGE_CHANNEL_NAME__, __BROADCAST_IMAGE_REQUEST_CHANNEL_NAME__, ImageLink, ImageMessage,
+    __BROADCAST_IMAGE_CHANNEL_NAME__, __BROADCAST_IMAGE_REQUEST_CHANNEL_NAME__, ImageMessage,
     InputData,
     NumberLink,
     ParameterMaps
@@ -16,10 +16,6 @@ import { forEach } from "lodash";
 
 export interface VisualizerChange {
     visualizer: string | null;
-}
-
-interface ImageMapData {
-    link: ImageLink;
 }
 
 export class ScreenLinkTransmitter {

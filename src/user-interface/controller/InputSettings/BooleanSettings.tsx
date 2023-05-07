@@ -4,7 +4,6 @@ import {InputInfo} from "../../../visualizers/VisualizerDirectory";
 import {NumberSettingsProps} from "./NumberSettings";
 import {Register} from "../../../Register";
 import {BooleanLink} from "../../../link/ScreenLink";
-import {take} from "rxjs";
 import {OutputSourceSelect} from "./OutputSourceSelect";
 import {KeysOfNeurosityData} from "../../../neurosity-adapter/OutputDataSource";
 import * as _ from "lodash";

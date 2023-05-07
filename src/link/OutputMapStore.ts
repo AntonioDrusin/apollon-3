@@ -34,7 +34,7 @@ export class OutputMapStore {
     }
 
     private writeMapsToStorage(maps: ParameterMaps) {
-        this._settings.setProp(this._storageKey, this._maps);
+        this._settings.setProp(this._storageKey, maps);
     }
 
     // factor this out of here
@@ -114,7 +114,6 @@ export class OutputMapStore {
                 break;
             }
             case "color": {
-                const colorLink : ColorLink = link as ColorLink;
                 map.colorLink = link as ColorLink;
                 break;
             }
