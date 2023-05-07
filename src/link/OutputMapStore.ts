@@ -51,28 +51,32 @@ export class OutputMapStore {
         return maps;
     }
 
-    private verifyLoadedMap(loadedMap: ParameterMap | undefined, v: VisualizerInfo) : ParameterMap {
+    private verifyLoadedMap(loadedMap: ParameterMap | undefined, v: VisualizerInfo): ParameterMap {
         v.inputs ||= [];
 
         // Prep the no value items
-        const noValue: NumberLink = {manualValue: 0, outputKey: undefined, highValue: 1, lowValue: 0};
-        const noImage: ImageLink = {};
-        const noColorLinks: ColorModesLinks = {};
-        const noBoolean: BooleanLink = { manualValue: false, threshold: 0, outputKey: undefined };
-        forEach(ColorModeNames, (colorMode) => {
-            noColorLinks[colorMode] = {
-                links: _.map([0, 1, 2], () => {
-                    return {...noValue};
-                })
-            }
-        });
+        const noNumber = () : NumberLink => {return {manualValue: 0, outputKey: undefined, highValue: 1, lowValue: 0}};
+        const noImage = () : ImageLink => {return {}};
+        const noColorLinks = (): ColorModesLinks => {
+            const cl: ColorModesLinks = {};
+            forEach(ColorModeNames, (colorMode) => {
+                cl[colorMode] = {
+                    links: _.map([0, 1, 2], () => {
+                        return noNumber();
+                    })
+                }
+            });
+            return cl;
+        };
+        const noBoolean = () : BooleanLink => {return {threshold: 0, modulation: "none", numberLink: noNumber()}};
 
-        let newLinks : ParameterLink[] = [];
+
+        let newLinks: ParameterLink[] = [];
         let links: ParameterLink[] = [];
-        if ( loadedMap?.links ) {
+        if (loadedMap?.links) {
             links = loadedMap.links;
         }
-        let linksMap = _.reduce(links, (a: any,b) => {
+        let linksMap = _.reduce(links, (a: any, b) => {
             a[b.propertyKey] = b;
             return a;
         }, {})
@@ -80,19 +84,23 @@ export class OutputMapStore {
 
         forEach(v.inputs, (input) => {
             let link = linksMap[input.propertyKey] as ParameterLink;
-            if ( link && link.type === input.type) {
-                if ( link.type === "boolean" && !link.booleanLink ) link.booleanLink = {...noBoolean};
+            if (link && link.type === input.type) {
+                if (link.type === "boolean") {
+                    link.booleanLink ??= noBoolean();
+                    link.booleanLink.modulation ??= "none";
+                    link.booleanLink.numberLink ??= noNumber();
+                }
             } else {
                 link = {
                     propertyKey: input.propertyKey,
                     type: input.type,
                     colorLink: input.type === "color" ? {
                         colorMode: "rgb",
-                        colorModeLinks: {...noColorLinks},
+                        colorModeLinks: noColorLinks(),
                     } : null,
-                    numberLink: input.type === "number" ? {...noValue} : null,
-                    imageLink: input.type === "image" ? {...noImage} : null,
-                    booleanLink: input.type === "boolean" ? {...noBoolean} : null,
+                    numberLink: input.type === "number" ? noNumber() : null,
+                    imageLink: input.type === "image" ? noImage() : null,
+                    booleanLink: input.type === "boolean" ? noBoolean() : null,
                 } as ParameterLink;
             }
             newLinks.push(link);
@@ -165,15 +173,14 @@ export class OutputMapStore {
 
             if (parameters.key === visualizerKey) {
                 const visualizer = _.find(new VisualizerDirectory().visualizers, (v) => v.label === visualizerKey);
-                if ( visualizer )  {
+                if (visualizer) {
                     this._maps[visualizerKey] = this.verifyLoadedMap(parameters.parameterMap, visualizer);
                     this._parameterMap$.next(this._maps);
                 }
             } else {
-                if ( parameters.key  ) {
+                if (parameters.key) {
                     return `File is for a different visualizer '${parameters.key}'`;
-                }
-                else {
+                } else {
                     return "Json file is not a parameter file";
                 }
             }

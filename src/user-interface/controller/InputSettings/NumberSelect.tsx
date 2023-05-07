@@ -3,7 +3,6 @@ import React  from "react";
 import {OutputSourceSelect} from "./OutputSourceSelect";
 
 export interface OutputSelectProps {
-    id: string;
     selectedInput?: string
     label: string;
     manualValue: number;
@@ -11,14 +10,11 @@ export interface OutputSelectProps {
     highValue: number;
 
     onSelectionChange(selectedInput: string): void;
-
     onClampChange(lowClamp: number, highClamp: number): void;
-
     onManualValueChange(manualValue: number): void;
 }
 
-export function NumberSelect({
-                                 manualValue,
+export function NumberSelect({   manualValue,
                                  lowValue,
                                  highValue,
                                  selectedInput,

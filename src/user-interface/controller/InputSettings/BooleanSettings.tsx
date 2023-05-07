@@ -1,12 +1,12 @@
-import {Box, Switch, Slider, Typography} from "@mui/material";
+import {Box, Slider, Typography} from "@mui/material";
 import React, {useEffect, useState} from "react";
 import {InputInfo} from "../../../visualizers/VisualizerDirectory";
-import {NumberSettingsProps} from "./NumberSettings";
 import {Register} from "../../../Register";
-import {BooleanLink} from "../../../link/ScreenLink";
-import {OutputSourceSelect} from "./OutputSourceSelect";
+import {BooleanLink, BooleanModulations} from "../../../link/ScreenLink";
 import {KeysOfNeurosityData} from "../../../neurosity-adapter/OutputDataSource";
 import * as _ from "lodash";
+import {BooleanModeSelect} from "./BooleanModeSelect";
+import {NumberSelect} from "./NumberSelect";
 
 export interface BooleanSettingsProps {
     info: InputInfo;
@@ -14,7 +14,7 @@ export interface BooleanSettingsProps {
     mapKey: string
 }
 
-export function BooleanSettings({info, linkIndex, mapKey}: NumberSettingsProps) {
+export function BooleanSettings({info, linkIndex, mapKey}: BooleanSettingsProps) {
     const [store] = useState(Register.outputMapStore);
     const [link, setLink] = useState<BooleanLink>();
 
@@ -39,41 +39,57 @@ export function BooleanSettings({info, linkIndex, mapKey}: NumberSettingsProps) 
         store.setParameterLink(mapKey, linkIndex, newLink);
     }
 
-    // REFACTOR
-    const handleSelectedInputChange = (value: string) => {
-        updateLink({...link!, outputKey: value as KeysOfNeurosityData | undefined});
-    }
-
     const handleThresholdChange = (event: any) => {
-        updateLink({...link!, threshold: event.target.value});
+        const updated = _.cloneDeep(link!);
+        updated.threshold = event.target.value;
+        updateLink(updated);
     }
 
-    const handleManualValueChange = (event: any) => {
-        updateLink({...link!, manualValue: event.target.checked});
+    const handleManualValueChange = (value: number) => {
+        const updated = _.cloneDeep(link!);
+        updated.numberLink.manualValue = value;
+        updateLink(updated);
     }
 
-    const selectedInput = link?.outputKey;
+    const handleModeChange = (value: BooleanModulations) => {
+        const updated = _.cloneDeep(link!);
+        updated.modulation = value;
+        updateLink(updated);
+    }
+
+    const handleSelectionChange = (value: string) => {
+        const updated = _.cloneDeep(link!);
+        updated.numberLink.outputKey =  value as KeysOfNeurosityData | undefined;
+        updateLink(updated);
+    }
+
+    const handleClampChange = (lowClamp: number, highClamp: number) => {
+        const updated = _.cloneDeep(link!);
+        updated.numberLink.lowValue = lowClamp;
+        updated.numberLink.highValue = highClamp;
+        updateLink(updated);
+    }
 
     return <Box sx={{display: "flex", flexWrap: "wrap", p: 1, m: 1}}>
         {!link ? null : <>
-            <OutputSourceSelect selectedInput={selectedInput}
-                                label={"Value"}
-                                handleChange={handleSelectedInputChange}
-            />
-            <Box sx={{m: 1, width: 320}}>
+            <NumberSelect key={`${info.propertyKey}-os`}
+                          label={"Value"}
+                          manualValue={link.numberLink.manualValue || 0}
+                          lowValue={link.numberLink.lowValue || 0}
+                          highValue={link.numberLink.highValue || 0}
+                          onManualValueChange={(value) => handleManualValueChange(value)}
+                          onSelectionChange={(selectedInput) => handleSelectionChange(selectedInput)}
+                          onClampChange={(lowClamp, highClamp) => handleClampChange(lowClamp, highClamp)}
+                          selectedInput={link.numberLink.outputKey}/>
+
+            <Box sx={{display: "flex", flexWrap: "wrap", m: 1, width: "100%"}}>
+                <BooleanModeSelect onChange={handleModeChange} id={`${info.propertyKey}-boolean-mode`}
+                                   value={link.modulation}/>
+            </Box>
+            <Box sx={{m: 1, width: "100%"}}>
                 <Typography gutterBottom>Threshold</Typography>
                 <Slider value={link.threshold} onChange={handleThresholdChange} step={0.01} min={0} max={1.0}
-                        disabled={!selectedInput}></Slider>
-
-
-            </Box>
-            <Box sx={{m: 1}}>
-                <Typography gutterBottom>Manual Value</Typography>
-                <Switch defaultChecked
-                        value={link.manualValue}
-                        onChange={handleManualValueChange}
-                        disabled={!!selectedInput}
-                />
+                        size={"small"}></Slider>
             </Box>
         </>
         }

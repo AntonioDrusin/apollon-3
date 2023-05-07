@@ -62,8 +62,7 @@ export function NumberSettings({info, linkIndex, mapKey}: NumberSettingsProps) {
 
     return <Box sx={{display: "flex", flexWrap: "wrap", p: 1, m: 1}}>
         {!link ? null :
-            <NumberSelect id={info.propertyKey}
-                          label={"Value"}
+            <NumberSelect label={"Value"}
                           manualValue={link.manualValue || 0}
                           lowValue={link.lowValue}
                           highValue={link.highValue}

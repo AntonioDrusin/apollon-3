@@ -13,6 +13,7 @@ import {IVisualizerColor} from "../visualizers/IVisualizer";
 import {ColorGenerator} from "./ColorGenerator";
 import {OutputMapStore} from "./OutputMapStore";
 import { forEach } from "lodash";
+import {BooleanGenerator} from "./BooleanGenerator";
 
 export interface VisualizerChange {
     visualizer: string | null;
@@ -117,11 +118,8 @@ export class ScreenLinkTransmitter {
                             return {red: 0, green: 0.8, blue: 0.0};
                         case "boolean":
                             if (link.booleanLink) {
-                                if (link.booleanLink.outputKey) {
-                                    return data[link.booleanLink.outputKey] > link.booleanLink.threshold;
-                                } else {
-                                    return link.booleanLink.manualValue;
-                                }
+                                const value = ScreenLinkTransmitter.getNumberLinkValue(link.booleanLink.numberLink, data);
+                                return BooleanGenerator(link.booleanLink.modulation, value, link.booleanLink.threshold, `${this._visualizerKey}:${link.propertyKey}`);
                             }
                             return true;
                         case "image":

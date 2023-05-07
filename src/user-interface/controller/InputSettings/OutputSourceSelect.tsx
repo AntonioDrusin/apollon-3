@@ -37,17 +37,17 @@ export const OutputSourceSelect = React.memo(({selectedInput, label, handleChang
     }
 
     return (
-        <Box sx={{display: "flex", p: 0, m: 0}} ref={drop}>
+        <Box sx={{display: "flex", p: 1, m: 0, width: "100%"}} ref={drop}>
             <Box
                 sx={{
-                    width: 54, height: 54, mx: 1, p: 1,
+                    width: 54, height: 54, mr: 1, p: 1,
                     borderRadius: 27,
                     backgroundColor: DataSourceInfos[selectedInputValue as KeysOfNeurosityData]?.color ?? theme.palette.background.default
                 }}>
                 <Box sx={{margin: "auto"}}><CurveDisplay curve={"linear"} color="white"/></Box>
             </Box>
-            <Box sx={{minWidth: 220}}>
-                <FormControl fullWidth component="span">
+            <Box sx={{flexGrow: 1}}>
+                <FormControl fullWidth component="span" sx={{width: "100%"}}>
                     <InputLabel id={"input-" + label}>{label}</InputLabel>
                     <Select value={selectedInputValue}
                             labelId={"input-" + label}

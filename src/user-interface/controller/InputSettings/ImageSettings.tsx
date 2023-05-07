@@ -57,14 +57,14 @@ export function ImageSettings({info, linkIndex, mapKey}: NumberSettingsProps) {
 
     return <Box sx={{display: "flex", flexWrap: "wrap", p: 1, m: 1}}>
         {!link ? null : <>
-            <Box>
+            <Box hidden={!link.imageUrl}>
                 <img alt={"Texture preview"} style={{width: "100%"}} src={link.imageUrl}></img>
             </Box>
             <Button variant="contained" component="label" sx={{mx: 1}}>
                 Upload
                 <input hidden accept="image/*" multiple type="file" onChange={handleFileChanged}/>
             </Button>
-            <Button variant="contained" component="label" sx={{mx: 1}} onClick={handleFileClear}>
+            <Button disabled={!link.imageUrl} variant="contained" component="label" sx={{mx: 1}} onClick={handleFileClear}>
                 Clear
             </Button>
         </>

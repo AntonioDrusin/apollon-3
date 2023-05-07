@@ -31,10 +31,13 @@ export interface NumberLink {
     outputKey: KeysOfNeurosityData | undefined;
 }
 
+export const BooleanModulationNames = ["none", "triangle", "perlin"];
+export type BooleanModulations = typeof BooleanModulationNames[number];
+
 export interface BooleanLink {
     threshold: number;
-    manualValue: boolean;
-    outputKey: KeysOfNeurosityData | undefined;
+    numberLink: NumberLink;
+    modulation: BooleanModulations;
 }
 
 export interface NumbersLink {

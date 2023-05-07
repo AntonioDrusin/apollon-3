@@ -1,32 +1,31 @@
 import React from "react";
 import {FormControl, InputLabel, MenuItem, Select} from "@mui/material";
-import {colorModes, ColorModes} from "../../../link/ColorTransmission";
+import {BooleanModulations} from "../../../link/ScreenLink";
+import {booleanModulationModes} from "../../../link/BooleanTransmission";
 
-
-interface ColorModeSelectProps {
-    onChange(value: ColorModes): void;
-
+interface BooleanModeSelectProps {
+    onChange(value: BooleanModulations): void;
     id: string;
     value?: string;
 }
 
-export function ColorModeSelect({id, onChange, value}: ColorModeSelectProps) {
+export function BooleanModeSelect({id, onChange, value}: BooleanModeSelectProps) {
     const handleChange = (event: any) => {
         onChange(event.target.value)
     };
 
     return <FormControl fullWidth component="span">
-        <InputLabel id={`${id}-input}`}>Color Mode</InputLabel>
+        <InputLabel id={`${id}-input}`}>Modulation</InputLabel>
         <Select value={value}
-                label={"Color Mode"}
+                label={"Modulation"}
                 labelId={`${id}-input}`}
                 onChange={handleChange}
         >
             {
-                Object.keys(colorModes).map((infoKey) => {
+                Object.keys(booleanModulationModes).map((infoKey) => {
                     return <MenuItem key={`${id}-${infoKey}-item`}
                                      value={infoKey}>
-                        {colorModes[infoKey as ColorModes].name}
+                        {booleanModulationModes[infoKey as BooleanModulations].name}
                     </MenuItem>;
                 })
             }
