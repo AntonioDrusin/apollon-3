@@ -48,7 +48,7 @@
     "optimized": "cross-env PUBLIC_URL=/ react-scripts build && serve -s build"
   },
   "eslintConfig": {
-    "extends": [
+    "extends":[
       "react-app",
       "react-app/jest"
     ]

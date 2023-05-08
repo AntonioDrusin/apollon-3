@@ -29,15 +29,14 @@ export function BooleanGenerator(modulation: BooleanModulations, value: number, 
 
     switch (modulation) {
         case "triangle":
-            value = triangle(state.time);
-            console.log(value / 100.0);
+            value = triangle(state.time*value/8);
             break;
         case "perlin":
-            value = perlin(state.time);
-            console.log(value / 400.0);
+            value = perlin(state.time*value/8);
             break;
     }
 
     return value > threshold;
 
 }
+
