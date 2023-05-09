@@ -5,9 +5,9 @@ import {
     ImageLink,
     NumberLink,
     ParameterLink, ParameterMap,
-    ParameterMaps
+    ParameterMaps, OptionsLink
 } from "./ScreenLink";
-import {VisualizerDirectory, VisualizerInfo} from "../visualizers/VisualizerDirectory";
+import {OptionInfo, VisualizerDirectory, VisualizerInfo} from "../visualizers/VisualizerDirectory";
 import * as _ from "lodash";
 import {Settings} from "../services/Settings";
 import {BehaviorSubject, debounceTime, Observable} from "rxjs";
@@ -55,8 +55,12 @@ export class OutputMapStore {
         v.inputs ||= [];
 
         // Prep the no value items
-        const noNumber = () : NumberLink => {return {manualValue: 0, outputKey: undefined, highValue: 1, lowValue: 0}};
-        const noImage = () : ImageLink => {return {}};
+        const noNumber = (): NumberLink => {
+            return {manualValue: 0, outputKey: undefined, highValue: 1, lowValue: 0}
+        };
+        const noImage = (): ImageLink => {
+            return {}
+        };
         const noColorLinks = (): ColorModesLinks => {
             const cl: ColorModesLinks = {};
             forEach(ColorModeNames, (colorMode) => {
@@ -68,7 +72,9 @@ export class OutputMapStore {
             });
             return cl;
         };
-        const noBoolean = () : BooleanLink => {return {threshold: 0, modulation: "none", numberLink: noNumber()}};
+        const noBoolean = (): BooleanLink => {
+            return {threshold: 0, modulation: "none", numberLink: noNumber()}
+        };
 
 
         let newLinks: ParameterLink[] = [];
@@ -106,11 +112,42 @@ export class OutputMapStore {
             newLinks.push(link);
         });
 
-        return {links: newLinks};
+        const newOptions = this.mapOptions(v.options, loadedMap?.options)
+
+        return {links: newLinks, options: newOptions};
     }
+
+    mapOptions(optionInfos?: OptionInfo[], options?: OptionsLink[]) {
+        optionInfos ||= [];
+        const newOptions: OptionsLink[] = [];
+        options ||= [];
+
+        let optionsMap : {[k: string]: OptionsLink} = _.reduce(options, (a: any, b) => {
+            a[b.key] = b;
+            return a;
+        }, {})
+
+        forEach(optionInfos, (info) => {
+            let option = optionsMap[info.label];
+            if (option) {
+                if ( option.value === null || option.value > info.options.length-1 ) option.value = 0;
+                newOptions.push({key: option.key, value: option.value});
+            }
+            else {
+                newOptions.push({key: info.label, value: 0});
+            }
+        });
+        return newOptions;
+    }
+
 
     public get parameterMap$(): Observable<ParameterMaps> {
         return this._parameterMap$;
+    }
+
+    public setOptions(visualizerKey: string, options: OptionsLink[]) {
+        this._maps[visualizerKey].options = options;
+        this._parameterMap$.next(this._maps);
     }
 
     public setParameterLink(visualizerKey: string, linkIndex: number, link: NumberLink | ColorLink | BooleanLink | ImageLink) {

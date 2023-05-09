@@ -10,12 +10,14 @@ export interface ColorData {
 export interface InputData {
     visualizerLabel: string | null;
     parameters: (number | ColorData | boolean | string | undefined)[];
+    options: number[];
     paused: boolean;
     reset: number;
 }
 
 export interface ParameterMap {
     links: ParameterLink[];
+    options: OptionsLink[];
 }
 
 export type ParameterMaps = { [k: string]: ParameterMap };
@@ -63,6 +65,11 @@ export interface ParameterLink {
     colorLink?: ColorLink;
     booleanLink?: BooleanLink;
     imageLink?: ImageLink;
+}
+
+export interface OptionsLink {
+    key: string;
+    value: number;
 }
 
 export interface ImageMessage {

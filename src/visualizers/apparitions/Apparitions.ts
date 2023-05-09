@@ -1,4 +1,4 @@
-import {booleanInput, colorInput, imageInput, numberInput, visualizer} from "../VisualizerDirectory";
+import {booleanInput, colorInput, imageInput, numberInput, selectOption, visualizer} from "../VisualizerDirectory";
 import {IVisualizer, IVisualizerColor} from "../IVisualizer";
 import * as THREE from "three";
 import inkShaderFile from './shaders/ink_shader.frag';
@@ -16,7 +16,7 @@ import {
 import {noise2D} from "./Noise";
 
 
-// This is a port to shaders of
+// This started from a port to shaders of
 // https://editor.p5js.org/StevesMakerspace/sketches/d0lPUJt8T
 
 
@@ -47,6 +47,8 @@ export class Apparitions implements IVisualizer {
     private backgroundColor: IVisualizerColor = {red: 0, green: 0, blue: 0};
     @imageInput("Image")
     private imageUrl?: string;
+    @selectOption("Pen Down Position", ["Same", "Randomized"])
+    private pendownPosition: number = 0;
 
     private penColor?: IVisualizerColor;
 
@@ -71,6 +73,8 @@ export class Apparitions implements IVisualizer {
     private readonly firstDataTexture: WebGLRenderTarget;
     private readonly paintDataTexture: WebGLRenderTarget;
     private backgroundTexture?: THREE.Texture;
+
+    private previousPenDown: boolean = false;
 
     private noiseOffsets = {
         x: Math.random() * 40000,
@@ -131,7 +135,7 @@ export class Apparitions implements IVisualizer {
         this.camera.rotateX(Math.PI);
 
         this.previousPos.x = this.pos.x = Math.random() * width;
-        this.previousPos.y = this.pos.y = Math.random() * width;
+        this.previousPos.y = this.pos.y = Math.random() * height;
 
         // The color will be an input
         // this.renderer.setRenderTarget(this.paintTexture);
@@ -166,6 +170,12 @@ export class Apparitions implements IVisualizer {
 
         this.pos.x += ((noise2D(this.noiseOffsets.x, 0) * this.pixelSkip));
         this.pos.y += ((noise2D(this.noiseOffsets.y, 0) * this.pixelSkip));
+
+        if (this.pendownPosition == 1 && !this.previousPenDown && this.penDown) {
+            this.previousPos.x = this.pos.x = Math.random() * this.width;
+            this.previousPos.y = this.pos.y = Math.random() * this.height;
+        }
+        this.previousPenDown = this.penDown;
     }
 
     private render(): void {
@@ -219,7 +229,6 @@ export class Apparitions implements IVisualizer {
         this.mixDataMaterial!.uniforms!.penDown = {value: this.penDown ? 1 : -1};
         this.renderer.setRenderTarget(this.paintDataTexture);
         this.renderer.render(this.mixDataScene, this.camera);
-
 
         // Apply the texture to the screen
         this.effectMaterial!.uniforms!.paintTexture = {value: this.paintTexture.texture};

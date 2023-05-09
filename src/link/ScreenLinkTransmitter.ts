@@ -99,6 +99,8 @@ export class ScreenLinkTransmitter {
 
     private mapData(data: NeurosityData, reset: number, paused: boolean, parameterMaps: ParameterMaps): InputData {
         let parameters: (number | IVisualizerColor | boolean | string | undefined)[] = [];
+        let options: number[] = [];
+
         if (this._visualizerKey) {
             parameters = parameterMaps[this._visualizerKey].links
                 .map((link, link_index) => {
@@ -132,10 +134,16 @@ export class ScreenLinkTransmitter {
                             return 0.0;
                     }
                 });
+
+            options = parameterMaps[this._visualizerKey].options
+                .map((option, option_index) => {
+                    return option.value | 0;
+                });
         }
         return {
             visualizerLabel: this._visualizerKey,
             parameters: parameters,
+            options: options,
             paused: paused,
             reset: reset,
         }

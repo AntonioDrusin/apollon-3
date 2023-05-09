@@ -32,7 +32,7 @@ export class ScreenLinkReceiver {
     private readonly _images: { [key: string]: string | undefined } = {};
 
     constructor() {
-        this._data = {visualizerLabel: null, parameters: [], paused: false, reset: 0};
+        this._data = {visualizerLabel: null, parameters: [], options: [], paused: false, reset: 0};
         this._ready = false;
 
         this._imageChannel = new BroadcastChannel(__BROADCAST_IMAGE_CHANNEL_NAME__);
@@ -145,7 +145,11 @@ export class ScreenLinkReceiver {
                         break;
                     }
                 }
-            })
+            });
+
+            info.options?.forEach((option, index) => {
+                visualizer[option.propertyKey] = this._data.options[index] ?? 0;
+            });
 
             const visualizerInterface = visualizer as IVisualizer;
             if (this._paused && !this._data.paused) {

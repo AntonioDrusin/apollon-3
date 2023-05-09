@@ -7,6 +7,13 @@ export interface VisualizerInfo {
     label: string;
     p5mode: string;
     inputs?: InputInfo[];
+    options?: OptionInfo[];
+}
+
+export interface OptionInfo {
+    label: string;
+    options: string[];
+    propertyKey: string;
 }
 
 export interface InputInfo {
@@ -31,7 +38,6 @@ export class VisualizerDirectory {
             info.Constructor = VisualizersMap[property];
             this._info.set(info.label, info);
         }
-
     }
 
     public get visualizers(): VisualizerInfo[] {
@@ -96,6 +102,17 @@ export function booleanInput(label: string) {
         metaData.inputs.push({label, propertyKey, type: "boolean"} as InputInfo);
         Reflect.defineMetadata(__FIELD_VISUALIZERS_METADATA_KEY, metaData, target.constructor);
 
+    }
+}
+
+export function selectOption(label: string, options: string[]) {
+    return function(target: Object, propertyKey: string | symbol) {
+        const __FIELD_VISUALIZERS_METADATA_KEY = "Field.Visualizers.Metadata.Key";
+
+        const metaData = Reflect.getMetadata(__FIELD_VISUALIZERS_METADATA_KEY, target.constructor) || {};
+        metaData.options ||= [];
+        metaData.options.push({label, options, propertyKey} as OptionInfo);
+        Reflect.defineMetadata(__FIELD_VISUALIZERS_METADATA_KEY, metaData, target.constructor);
     }
 }
 

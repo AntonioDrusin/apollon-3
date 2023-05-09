@@ -5,6 +5,7 @@ import {FileDownload, FileUpload, PlayArrow} from "@mui/icons-material";
 import {InputSettingsPanel} from "./InputSettingsPanel";
 import {Register} from "../../../Register";
 import {SnackBarContext} from "../ContextProvider/Context";
+import SettingsDialog from "../SettingsDialog/SettingsDialog";
 
 export interface VisualizerPanelProps {
     visualizerInfo: VisualizerInfo;
@@ -63,11 +64,12 @@ export function InputSettingsGroup({visualizerInfo, live, onLive, mapKey}: Visua
                 </ToggleButton>
             </ToggleButtonGroup>
             <Box sx={{flexGrow: 1}}></Box>
+            <SettingsDialog options={visualizerInfo.options} visualizerKey={visualizerInfo.label}/>
             <Button variant={"outlined"} onClick={handleDownload}>
-                <FileDownload/> Download Parameters
+                <FileDownload/> Download
             </Button>
             <Button variant={"outlined"} onClick={handleUpload}>
-                <FileUpload/> Upload Parameters
+                <FileUpload/> Upload
             </Button>
         </Box>
         {(visualizerInfo.inputs &&
