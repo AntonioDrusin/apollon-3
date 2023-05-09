@@ -35,7 +35,7 @@ export class Apparitions implements IVisualizer {
     private backgroundAlpha = 0.5;
     @numberInput("Ink Alpha", 0, 1)
     private inkAlpha = 0.5;
-    @numberInput("Mix Ratio", 0.02, 0.90) // 0, 1
+    @numberInput("Mix Ratio", 0.01, 0.99) // 0, 1
     private mixRatio = 0.5;
     @booleanInput("Pen Down")
     private penDown: boolean = true;
