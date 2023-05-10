@@ -49,6 +49,8 @@ export class Apparitions implements IVisualizer {
     private imageUrl?: string;
     @selectOption("Pen Down Position", ["Same", "Randomized"])
     private pendownPosition: number = 0;
+    @selectOption("Movement Mapping", ["Toroid", "Bounce"])
+    private movementMapping: number = 0;
 
     private penColor?: IVisualizerColor;
 
@@ -110,12 +112,12 @@ export class Apparitions implements IVisualizer {
         const imageTextureParams = {
             minFilter: THREE.LinearFilter,
             magFilter: THREE.NearestFilter,
-            type: THREE.FloatType,
+            type: THREE.HalfFloatType,
         };
         const dataTextureParams = {
             minFilter: THREE.LinearFilter,
             magFilter: THREE.NearestFilter,
-            type: THREE.FloatType,
+            type: THREE.HalfFloatType,
             format: THREE.RGFormat,
         }
 
@@ -178,6 +180,17 @@ export class Apparitions implements IVisualizer {
         this.previousPenDown = this.penDown;
     }
 
+
+    private mapCoordinate(x: number, p: number): number {
+        switch (this.movementMapping) {
+            case 1: // Triangle
+                return 2 * p * Math.abs(x / (2 * p) - Math.floor(x / (2 * p) + 0.5));
+            case 0: // Sawtooth
+            default:
+                return (x / p - Math.floor(0.5 + x / p)) * p + p / 2;
+        }
+    }
+
     private render(): void {
         this.addPaint();
 
@@ -199,12 +212,21 @@ export class Apparitions implements IVisualizer {
         this.renderer.setRenderTarget(this.firstDataTexture);
         this.renderer.render(this.inkDataScene!, this.camera);
 
+        const from = new Vector2(
+            this.mapCoordinate(this.previousPos.x, this.width),
+            this.mapCoordinate(this.previousPos.y, this.height),
+        );
+
+        const to = new Vector2(
+            this.mapCoordinate(this.pos.x, this.width),
+            this.mapCoordinate(this.pos.y, this.height),
+        );
 
         // Mix the two ink textures
         this.mixMaterial!.uniforms!.imageTexture = {value: this.firstTexture.texture};
         this.mixMaterial!.uniforms!.dataTexture = {value: this.firstDataTexture.texture};
-        this.mixMaterial!.uniforms!.from = {value: new Vector2(Math.abs(this.pos.x % this.width), Math.abs(this.pos.y % this.height))};
-        this.mixMaterial!.uniforms!.to = {value: new Vector2(Math.abs(this.previousPos.x % this.width), Math.abs(this.previousPos.y % this.height))};
+        this.mixMaterial!.uniforms!.from = {value: from};
+        this.mixMaterial!.uniforms!.to = {value: to};
         if (!this.penDown || !this.holdPenColor || !this.penColor) {
             this.penColor = {...this.inputPenColor};
         }
@@ -218,8 +240,8 @@ export class Apparitions implements IVisualizer {
         // Mix the two ink texture to the data texture as well
         this.mixDataMaterial!.uniforms!.imageTexture = {value: this.firstTexture.texture};
         this.mixDataMaterial!.uniforms!.dataTexture = {value: this.firstDataTexture.texture};
-        this.mixDataMaterial!.uniforms!.from = {value: new Vector2(Math.abs(this.pos.x % this.width), Math.abs(this.pos.y % this.height))};
-        this.mixDataMaterial!.uniforms!.to = {value: new Vector2(Math.abs(this.previousPos.x % this.width), Math.abs(this.previousPos.y % this.height))};
+        this.mixDataMaterial!.uniforms!.from = {value: from};
+        this.mixDataMaterial!.uniforms!.to = {value: to};
         if (!this.penDown || !this.holdPenColor || !this.penColor) {
             this.penColor = {...this.inputPenColor};
         }
