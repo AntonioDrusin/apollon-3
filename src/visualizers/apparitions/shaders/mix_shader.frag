@@ -9,25 +9,27 @@ uniform vec2 from;
 uniform vec2 to;
 uniform float paintDrop;
 uniform float penDown;
+uniform float thickness;
 
 
-float drawLine(vec2 p1, vec2 p2) {
-    float thickness = 1.0/(resolution.x+resolution.y);
-    vec2 uv = vUv.xy;
 
-    float a = abs(distance(p1, uv));
-    float b = abs(distance(p2, uv));
-    float c = abs(distance(p1, p2));
+float drawLine (vec2 p1, vec2 p2, vec2 uv, float a)
+{
+    float r = 0.;
+    float one_px = 1. / resolution.x; //not really one px
 
-    if (a >= c || b >=  c) return 0.0;
+    // get dist between points
+    float d = distance(p1, p2);
 
-    float p = (a + b + c) * 0.5;
+    // get dist between current pixel and p1
+    float duv = distance(p1, uv);
 
-    // median to (p1, p2) vector
-    float h = 2.0 / c * sqrt(p * (p - a) * (p - b) * (p - c));
+    //if point is on line, according to dist, it should match current uv
+    r = 1.-floor(1.-(a*one_px)+distance (mix(p1, p2, clamp(duv/d, 0., 1.)),  uv));
 
-    return mix(1.0, 0.0, smoothstep(0.5 * thickness, 1.5 * thickness, h));
+    return r;
 }
+
 
 void main() {
     // Draws the line
@@ -38,9 +40,10 @@ void main() {
 
     if (penDown > 0.0)
     if (distance(from / resolution, to / resolution)  < 0.9) {
-        float lineMultiplier = drawLine(from / resolution, to / resolution);
+        float lineMultiplier = drawLine(from / resolution, to / resolution, vUv, thickness);
         if (lineMultiplier > 0.0) {
-            finalColor = vec4((color.rgb + finalColor.rgb)/2.0, 0);
+            float alpha = texture(dataTexture,vUv).g;
+            finalColor = vec4(mix(color.rgb , finalColor.rgb, 0.5 + alpha/2.), 0);
         }
     }
 

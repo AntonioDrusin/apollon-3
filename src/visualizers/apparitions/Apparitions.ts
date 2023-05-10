@@ -37,6 +37,8 @@ export class Apparitions implements IVisualizer {
     private inkAlpha = 0.5;
     @numberInput("Mix Ratio", 0.01, 0.99) // 0, 1
     private mixRatio = 0.5;
+    @numberInput("Pen thickness", 1, 30)
+    private penThickness = 1.;
     @booleanInput("Pen Down")
     private penDown: boolean = true;
     @booleanInput("Hold Pen Color")
@@ -227,6 +229,7 @@ export class Apparitions implements IVisualizer {
         this.mixMaterial!.uniforms!.dataTexture = {value: this.firstDataTexture.texture};
         this.mixMaterial!.uniforms!.from = {value: from};
         this.mixMaterial!.uniforms!.to = {value: to};
+        this.mixMaterial!.uniforms!.thickness = {value: this.penThickness};
         if (!this.penDown || !this.holdPenColor || !this.penColor) {
             this.penColor = {...this.inputPenColor};
         }
@@ -242,6 +245,7 @@ export class Apparitions implements IVisualizer {
         this.mixDataMaterial!.uniforms!.dataTexture = {value: this.firstDataTexture.texture};
         this.mixDataMaterial!.uniforms!.from = {value: from};
         this.mixDataMaterial!.uniforms!.to = {value: to};
+        this.mixDataMaterial!.uniforms!.thickness = {value: this.penThickness};
         if (!this.penDown || !this.holdPenColor || !this.penColor) {
             this.penColor = {...this.inputPenColor};
         }
