@@ -1,6 +1,6 @@
 import {IVisualizerColor} from "../visualizers/IVisualizer";
 import {ColorModes} from "./ColorTransmission";
-import {noise2D} from "../visualizers/apparitions/Noise";
+import {noise2D} from "../visualizers/Noise";
 
 interface XYZ {
     x: number;

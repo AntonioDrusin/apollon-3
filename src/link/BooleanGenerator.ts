@@ -1,5 +1,5 @@
 import {BooleanModulations} from "./ScreenLink";
-import {noise2D} from "../visualizers/apparitions/Noise";
+import {noise2D} from "../visualizers/Noise";
 
 interface State {
     time: number;

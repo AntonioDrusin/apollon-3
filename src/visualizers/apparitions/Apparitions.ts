@@ -13,7 +13,7 @@ import {
     Vector3,
     WebGLRenderTarget
 } from "three";
-import {noise2D} from "./Noise";
+import {noise2D} from "../Noise";
 
 
 // This started from a port to shaders of
@@ -175,7 +175,7 @@ export class Apparitions implements IVisualizer {
         this.pos.x += ((noise2D(this.noiseOffsets.x, 0) * this.pixelSkip));
         this.pos.y += ((noise2D(this.noiseOffsets.y, 0) * this.pixelSkip));
 
-        if (this.pendownPosition == 1 && !this.previousPenDown && this.penDown) {
+        if (this.pendownPosition === 1 && !this.previousPenDown && this.penDown) {
             this.previousPos.x = this.pos.x = Math.random() * this.width;
             this.previousPos.y = this.pos.y = Math.random() * this.height;
         }
@@ -183,13 +183,13 @@ export class Apparitions implements IVisualizer {
     }
 
 
-    private mapCoordinate(x: number, p: number): number {
+    private mapCoordinate(coordinate: number, p: number): number {
         switch (this.movementMapping) {
             case 1: // Triangle
-                return 2 * p * Math.abs(x / (2 * p) - Math.floor(x / (2 * p) + 0.5));
+                return 2 * p * Math.abs(coordinate / (2 * p) - Math.floor(coordinate / (2 * p) + 0.5));
             case 0: // Sawtooth
             default:
-                return (x / p - Math.floor(0.5 + x / p)) * p + p / 2;
+                return (coordinate / p - Math.floor(0.5 + coordinate / p)) * p + p / 2;
         }
     }
 

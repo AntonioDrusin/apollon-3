@@ -14,7 +14,7 @@ import {
     Vector3,
     WebGLRenderTarget
 } from "three";
-import {noise2D} from "./Noise";
+import {noise2D} from "../Noise";
 
 
 // This is a port to shaders of
