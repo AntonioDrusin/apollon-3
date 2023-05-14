@@ -4,5 +4,5 @@ import {MarblePainting} from "./marble-painting/MarblePainting";
 
 
 export const VisualizersMap = {
-    Apparitions, Apparitions_v2, MarblePainting
+    Apparitions, Apparitions_v2
 };
