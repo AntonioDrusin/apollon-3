@@ -108,9 +108,9 @@ export class MarblePainting implements IVisualizer {
 
         // Create all the textures
         const imageTextureParams = {
-            minFilter: THREE.LinearFilter,
-            magFilter: THREE.NearestFilter,
-            type: THREE.FloatType,
+            //minFilter: THREE.LinearFilter,
+            //magFilter: THREE.NearestFilter,
+            type: THREE.UnsignedByteType,
             format: THREE.RGBAFormat,
         };
 

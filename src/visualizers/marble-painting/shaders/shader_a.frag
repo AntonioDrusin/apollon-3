@@ -2,16 +2,18 @@ void main()
 {
     vec4 Q = texture(iTextureA, vUv);
     vec4 m = texture(iTextureC, vUv);
-    float d = dot(m, vec4(-1, 1, -1, 1));
-    for (int x=-1;x<=1;x++)for (int y=-1;y<=1;y++) {
-        if (x!=0||y!=0)
-        {
-            vec2 u = vec2(x, y);
-            vec4 a = texture(iTextureA, (vUv+u/iResolution.xy));
-            vec4 c = texture(iTextureC, (vUv+u/iResolution.xy));
-            float p = .1*Paper(vUv+u);
-            float f = length(m-c)*d;
-            Q.xy -= 0.1*a.w*(p+a.w-Q.w*f-1.)*u;
+    float d = dot(m, vec4(-1., 1., -1., 1.));
+    for (int x=-1;x<=1;x++) {
+        for (int y=-1;y<=1;y++) {
+            if (x!=0||y!=0)
+            {
+                vec2 u = vec2(x, y);
+                vec4 a = texture(iTextureA, (vUv+u/iResolution.xy));
+                vec4 c = texture(iTextureC, (vUv+u/iResolution.xy));
+                float p = .1*Paper(vUv*iResolution+u);
+                float f = length(m-c)*d;
+                Q.xy -= 0.1*a.w*(p+a.w-Q.w*f-1.)*u;
+            }
         }
     }
 
