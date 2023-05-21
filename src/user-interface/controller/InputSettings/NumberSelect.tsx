@@ -1,7 +1,6 @@
 import {Box, Slider, Typography} from "@mui/material";
-import React, {useContext} from "react";
+import React from "react";
 import {OutputSourceSelect} from "./OutputSourceSelect";
-import {getThemeByName, ThemeContext} from "../../../App";
 
 export interface OutputSelectProps {
     selectedInput?: string
@@ -26,8 +25,6 @@ export function NumberSelect({   manualValue,
                                  onManualValueChange,
                                  onClampChange,
                              }: OutputSelectProps) {
-    const themeContext = useContext(ThemeContext);
-    const theme = getThemeByName(themeContext.themeName);
 
     const handleManualSignalChange = (event: any) => {
         onManualValueChange(event.target.value)
