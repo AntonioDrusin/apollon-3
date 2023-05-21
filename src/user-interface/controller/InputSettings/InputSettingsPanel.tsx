@@ -20,13 +20,13 @@ export function InputSettingsPanel({info, linkIndex, mapKey}: VisualizerInputPro
     const Settings = (type: string) => {
         switch(info.type) {
             case "number":
-                return <NumberSettings linkIndex={linkIndex} mapKey={mapKey} info={info}/>
+                return <NumberSettings linkIndex={linkIndex} mapKey={mapKey}/>
             case "color":
                 return <ColorSettings linkIndex={linkIndex} mapKey={mapKey} info={info}/>
             case "boolean":
                 return <BooleanSettings linkIndex={linkIndex} mapKey={mapKey} info={info}/>
             case "image":
-                return <ImageSettings linkIndex={linkIndex} mapKey={mapKey} info={info}/>
+                return <ImageSettings linkIndex={linkIndex} mapKey={mapKey}/>
             default:
                 return <Box>Not implemented</Box>
         }

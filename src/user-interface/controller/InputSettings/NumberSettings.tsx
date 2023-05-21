@@ -1,4 +1,3 @@
-import {InputInfo} from "../../../visualizers/VisualizerDirectory";
 import {Box} from "@mui/material";
 import {KeysOfNeurosityData} from "../../../neurosity-adapter/OutputDataSource";
 import React, {useEffect, useState} from "react";
@@ -8,12 +7,12 @@ import {NumberLink} from "../../../link/ScreenLink";
 import * as _ from 'lodash';
 
 export interface NumberSettingsProps {
-    info: InputInfo;
     linkIndex: number;
-    mapKey: string
+    mapKey: string;
+    rangeBackground?: string;
 }
 
-export function NumberSettings({info, linkIndex, mapKey}: NumberSettingsProps) {
+export function NumberSettings({linkIndex, mapKey, rangeBackground}: NumberSettingsProps) {
     const [store] = useState(Register.outputMapStore);
     const [link, setLink] = useState<NumberLink>();
 
@@ -69,6 +68,7 @@ export function NumberSettings({info, linkIndex, mapKey}: NumberSettingsProps) {
                           onSelectionChange={(selectedInput) => handleSelectedInputChange(selectedInput)}
                           onManualValueChange={handleManualSignalChange}
                           onClampChange={handleClampChange}
+                          rangeBackground={rangeBackground}
                           selectedInput={link.outputKey}/>
         }
     </Box>

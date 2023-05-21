@@ -5,7 +5,7 @@ import {NumberSelect} from "./NumberSelect";
 import {ColorModeSelect} from "./ColorModeSelect";
 import {InputInfo} from "../../../visualizers/VisualizerDirectory";
 import {ColorLink} from "../../../link/ScreenLink";
-import {colorModes} from "../../../link/ColorTransmission";
+import {ColorModes, colorModes} from "../../../link/ColorTransmission";
 import {Register} from "../../../Register";
 import * as _ from "lodash";
 
@@ -13,6 +13,37 @@ export interface ColorSettingsProps {
     info: InputInfo;
     linkIndex: number;
     mapKey: string;
+}
+
+
+const BackgroundColors: {[key in ColorModes]: string[]} = {
+    rgb: [
+        "linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(255,0,0,1) 100%)",
+        "linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(0,255,0,1) 100%)",
+        "linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(0,0,255,1) 100%)"],
+    hsv: [
+        "linear-gradient(90deg, rgba(255,0,0,1) 0%, rgba(255,255,0,1) 17%, rgba(0,255,0,1) 33%, rgba(0,255,255,1) 50%, rgba(0,0,255,1) 67%, rgba(255,0,255,1) 84%, rgba(255,0,0,1) 100%);",
+        "linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,0,0,1) 100%)",
+        "linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(255,255,255,1) 100%)"
+    ],
+    lab: [
+        "linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(255,255,255,1) 100%)",
+        "linear-gradient(90deg, rgba(0,255,0,1) 0%, rgba(255,0,0,1) 100%)",
+        "linear-gradient(90deg, rgba(0,0,255,1) 0%, rgba(255,255,0,1) 100%)",
+    ],
+    perlin_rgb: [
+        "linear-gradient(90deg, rgba(250,255,134,1) 0%, rgba(224,132,132,1) 100%)",
+        "linear-gradient(90deg, rgba(134,157,255,1) 0%, rgba(224,132,132,1) 100%)"
+    ],
+    perlin_hsv: [
+        "linear-gradient(90deg, rgba(250,255,134,1) 0%, rgba(224,132,132,1) 100%)",
+        "linear-gradient(90deg, rgba(134,157,255,1) 0%, rgba(224,132,132,1) 100%)"
+    ],
+    perlin_lab: [
+        "linear-gradient(90deg, rgba(250,255,134,1) 0%, rgba(224,132,132,1) 100%)",
+        "linear-gradient(90deg, rgba(134,157,255,1) 0%, rgba(224,132,132,1) 100%)"
+    ],
+
 }
 
 export function ColorSettings({info, linkIndex, mapKey}: ColorSettingsProps) {
@@ -74,6 +105,7 @@ export function ColorSettings({info, linkIndex, mapKey}: ColorSettingsProps) {
                                   manualValue={link.colorModeLinks[link.colorMode].links[index]?.manualValue || 0}
                                   lowValue={link.colorModeLinks[link.colorMode].links[index]?.lowValue || 0}
                                   highValue={link.colorModeLinks[link.colorMode].links[index]?.highValue || 0}
+                                  rangeBackground={BackgroundColors[link.colorMode][index]}
                                   onManualValueChange={(value) => handleManualValueChange(index, value)}
                                   onSelectionChange={(selectedInput) => handleSelectionChange(index, selectedInput)}
                                   onClampChange={(lowClamp, highClamp) => handleClampChange(index, lowClamp, highClamp)}

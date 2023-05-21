@@ -1,18 +1,15 @@
 import React, {useEffect, useState} from "react";
-import {InputInfo} from "../../../visualizers/VisualizerDirectory";
-import {NumberSettingsProps} from "./NumberSettings";
 import {Register} from "../../../Register";
 import {ImageLink} from "../../../link/ScreenLink";
 import {Box, Button} from "@mui/material";
 
 export interface ImageSettingsProps {
-    info: InputInfo;
     linkIndex: number;
     mapKey: string
 }
 
 
-export function ImageSettings({info, linkIndex, mapKey}: NumberSettingsProps) {
+export function ImageSettings({linkIndex, mapKey}: ImageSettingsProps) {
     const [store] = useState(Register.outputMapStore);
     const [link, setLink] = useState<ImageLink>();
 
