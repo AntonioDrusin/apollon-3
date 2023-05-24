@@ -30,7 +30,7 @@ export function NumberSelect({   manualValue,
         onManualValueChange(event.target.value)
     };
 
-    const flip = lowValue < highValue;
+    const flip = lowValue <= highValue;
 
     const leftSkip = flip ? `0%` : `${(highValue) * 100}%`;
     const leftWidth = flip ? `${lowValue * 100}%` : `${(lowValue - highValue) * 100}%`;
