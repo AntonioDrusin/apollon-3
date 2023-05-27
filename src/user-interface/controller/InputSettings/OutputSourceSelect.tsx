@@ -6,11 +6,11 @@ import {getThemeByName, ThemeContext} from "../../../App";
 import {useDrop} from "react-dnd";
 
 
-
 interface OutputSourceSelectProps {
     selectedInput?: string;
     label: string;
-    handleChange(event: any): void;
+
+    handleChange(key: string): void;
 }
 
 export const OutputSourceSelect = React.memo(({selectedInput, label, handleChange}: OutputSourceSelectProps) => {
@@ -28,7 +28,7 @@ export const OutputSourceSelect = React.memo(({selectedInput, label, handleChang
                 handleChange(item.key);
             }
         },
-    }))
+    }), [handleChange])
 
     const MANUAL = "Manual";
     const selectedInputValue = selectedInput || MANUAL;
