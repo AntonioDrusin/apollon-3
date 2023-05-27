@@ -45,6 +45,26 @@ export const OutputSourceSelect = React.memo(
     }
 
     return (<>
+
+        <Box sx={{width: "100%", p: 1, m: 0}}>
+            <FormControl fullWidth component="span" sx={{width: "100%"}}>
+                <InputLabel id={"input-" + label}>{label}</InputLabel>
+                <Select value={selectedInputValue}
+                        labelId={"input-" + label}
+                        label={label}
+                        onChange={handleInputChange}
+                >
+                    <MenuItem value={"Manual"} key={"Manual-key"}>{"<Manual>"}</MenuItem>
+                    {
+                        Object.keys(DataSourceInfos).map((infoKey) => {
+                            return <MenuItem key={infoKey + "-key"} value={infoKey}>
+                                {DataSourceInfos[infoKey as KeysOfNeurosityData].name}
+                            </MenuItem>;
+                        })
+                    }
+                </Select>
+            </FormControl>
+        </Box>
         <Box sx={{display: "flex", p: 1, m: 0, width: "100%"}} ref={drop}>
             <Box
                 sx={{
@@ -73,25 +93,6 @@ export const OutputSourceSelect = React.memo(
                     </Select>
                 </FormControl>
             </Box>
-        </Box>
-        <Box sx={{width: "100%", p: 1, m: 0}}>
-            <FormControl fullWidth component="span" sx={{width: "100%"}}>
-                <InputLabel id={"input-" + label}>{label}</InputLabel>
-                <Select value={selectedInputValue}
-                        labelId={"input-" + label}
-                        label={label}
-                        onChange={handleInputChange}
-                >
-                    <MenuItem value={"Manual"} key={"Manual-key"}>{"<Manual>"}</MenuItem>
-                    {
-                        Object.keys(DataSourceInfos).map((infoKey) => {
-                            return <MenuItem key={infoKey + "-key"} value={infoKey}>
-                                {DataSourceInfos[infoKey as KeysOfNeurosityData].name}
-                            </MenuItem>;
-                        })
-                    }
-                </Select>
-            </FormControl>
         </Box>
     </>);
 });
