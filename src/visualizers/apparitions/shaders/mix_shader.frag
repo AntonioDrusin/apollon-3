@@ -10,7 +10,7 @@ uniform vec2 to;
 uniform float paintDrop;
 uniform float penDown;
 uniform float thickness;
-
+uniform float colorSaturation;
 
 
 float drawLine (vec2 p1, vec2 p2, vec2 uv, float a)
@@ -43,7 +43,7 @@ void main() {
         float lineMultiplier = drawLine(from / resolution, to / resolution, vUv, thickness);
         if (lineMultiplier > 0.0) {
             float alpha = texture(dataTexture,vUv).g;
-            finalColor = vec4(mix(color.rgb , finalColor.rgb, 0.5 + alpha/2.), 0);
+            finalColor = vec4( mix(color.rgb, mix(color.rgb , finalColor.rgb, 0.5 + alpha/2.), 1.-colorSaturation) , 0);
         }
     }
 

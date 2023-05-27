@@ -39,6 +39,8 @@ export class Apparitions implements IVisualizer {
     private mixRatio = 0.5;
     @numberInput("Pen thickness", 1, 30)
     private penThickness = 1.;
+    @numberInput("Color saturation", 0, 1)
+    private colorSaturation = 0.5;
     @booleanInput("Pen Down")
     private penDown: boolean = true;
     @booleanInput("Hold Pen Color")
@@ -237,6 +239,7 @@ export class Apparitions implements IVisualizer {
         this.mixMaterial!.uniforms!.paintDrop = {value: this.paintDrop};
         this.mixMaterial!.uniforms!.resolution = {value: new Vector2(this.width, this.height)};
         this.mixMaterial!.uniforms!.penDown = {value: this.penDown ? 1 : -1};
+        this.mixMaterial!.uniforms!.colorSaturation = {value: this.colorSaturation};
         this.renderer.setRenderTarget(this.paintTexture);
         this.renderer.render(this.mixScene, this.camera);
 
