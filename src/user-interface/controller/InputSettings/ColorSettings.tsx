@@ -90,6 +90,12 @@ export function ColorSettings({info, linkIndex, mapKey}: ColorSettingsProps) {
         updateLink(updated);
     }
 
+    const handleCurveChange = (index: number, value: string) => {
+        const updated = _.cloneDeep(link!);
+        updated.colorModeLinks[link!.colorMode].links[index].curve = value;
+        updateLink(updated);
+    }
+
     const handleSetColorMode = (colorMode: string) => {
         const updated = _.cloneDeep(link!);
         updated!.colorMode = colorMode
@@ -106,10 +112,13 @@ export function ColorSettings({info, linkIndex, mapKey}: ColorSettingsProps) {
                                   lowValue={link.colorModeLinks[link.colorMode].links[index]?.lowValue || 0}
                                   highValue={link.colorModeLinks[link.colorMode].links[index]?.highValue || 0}
                                   rangeBackground={BackgroundColors[link.colorMode][index]}
+                                  onCurveChange={(value) => handleCurveChange(index, value)}
                                   onManualValueChange={(value) => handleManualValueChange(index, value)}
                                   onSelectionChange={(selectedInput) => handleSelectionChange(index, selectedInput)}
                                   onClampChange={(lowClamp, highClamp) => handleClampChange(index, lowClamp, highClamp)}
-                                  selectedInput={link.colorModeLinks[link.colorMode].links[index]?.outputKey}/>
+                                  selectedInput={link.colorModeLinks[link.colorMode].links[index]?.outputKey}
+                                  selectedCurve={link.colorModeLinks[link.colorMode].links[index]?.curve}
+                    />
                 </Box>;
             })
         }

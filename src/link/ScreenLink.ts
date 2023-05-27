@@ -31,6 +31,7 @@ export interface NumberLink {
     lowValue: number;
     highValue: number;
     outputKey: KeysOfNeurosityData | undefined;
+    curve: string;
 }
 
 export const BooleanModulationNames = ["none", "triangle", "perlin"];

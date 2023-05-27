@@ -5,7 +5,7 @@ import {
     ImageLink,
     NumberLink,
     ParameterLink, ParameterMap,
-    ParameterMaps, OptionsLink
+    ParameterMaps, OptionsLink, NumbersLink
 } from "./ScreenLink";
 import {OptionInfo, VisualizerDirectory, VisualizerInfo} from "../visualizers/VisualizerDirectory";
 import * as _ from "lodash";
@@ -56,7 +56,7 @@ export class OutputMapStore {
 
         // Prep the no value items
         const noNumber = (): NumberLink => {
-            return {manualValue: 0, outputKey: undefined, highValue: 1, lowValue: 0}
+            return {manualValue: 0, outputKey: undefined, highValue: 1, lowValue: 0, curve: "linear"}
         };
         const noImage = (): ImageLink => {
             return {}
@@ -95,6 +95,19 @@ export class OutputMapStore {
                     link.booleanLink ??= noBoolean();
                     link.booleanLink.modulation ??= "none";
                     link.booleanLink.numberLink ??= noNumber();
+                    link.booleanLink.numberLink.curve ??= "linear";
+                }
+                if (link.type === "number") {
+                    link.numberLink ??= noNumber();
+                    link.numberLink.curve ??= "linear";
+                }
+                if (link.type === "color" && link.colorLink) {
+                    this.SetAllCurves(link.colorLink.colorModeLinks.rgb, 3);
+                    this.SetAllCurves(link.colorLink.colorModeLinks.hsv, 3);
+                    this.SetAllCurves(link.colorLink.colorModeLinks.lab, 3);
+                    this.SetAllCurves(link.colorLink.colorModeLinks.perlin_rgb, 2);
+                    this.SetAllCurves(link.colorLink.colorModeLinks.perlin_hsv, 2);
+                    this.SetAllCurves(link.colorLink.colorModeLinks.perlin_lab, 2);
                 }
             } else {
                 link = {
@@ -117,12 +130,18 @@ export class OutputMapStore {
         return {links: newLinks, options: newOptions};
     }
 
+    private SetAllCurves(link: NumbersLink, length: number) {
+        for (let t = 0; t < length; t++) {
+            link.links[t].curve ??= "linear";
+        }
+    }
+
     mapOptions(optionInfos?: OptionInfo[], options?: OptionsLink[]) {
         optionInfos ||= [];
         const newOptions: OptionsLink[] = [];
         options ||= [];
 
-        let optionsMap : {[k: string]: OptionsLink} = _.reduce(options, (a: any, b) => {
+        let optionsMap: { [k: string]: OptionsLink } = _.reduce(options, (a: any, b) => {
             a[b.key] = b;
             return a;
         }, {})
@@ -130,10 +149,9 @@ export class OutputMapStore {
         forEach(optionInfos, (info) => {
             let option = optionsMap[info.label];
             if (option) {
-                if ( option.value === null || option.value > info.options.length-1 ) option.value = 0;
+                if (option.value === null || option.value > info.options.length - 1) option.value = 0;
                 newOptions.push({key: option.key, value: option.value});
-            }
-            else {
+            } else {
                 newOptions.push({key: info.label, value: 0});
             }
         });

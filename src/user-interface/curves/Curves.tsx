@@ -1,14 +1,12 @@
 import React from "react";
-
-const CurveNames = ["sigmoid", "reverse_sigmoid", "linear", "reverse_linear"];
-type Curve = typeof CurveNames[number];
+import {Curves} from "../../link/Curves";
 
 export interface CurveProps {
     color: string;
-    curve: Curve;
+    curve?: Curves;
 }
 
-function baseStyle (color: string): any {
+function baseStyle(color: string): any {
     return {
         stroke: color,
         fillRule: "nonzero",
@@ -21,7 +19,8 @@ function baseStyle (color: string): any {
     };
 }
 
-const Paths : {[key in Curve]: string} = {
+
+const Paths: { [key in Curves]: string } = {
     sigmoid: "M 20 480 C 400 480 100 20 480 20",
     reverse_gamma: "M 20 20 C 20 250 250 480 480 480",
     gamma: "M 20 480 C 250 480 480 250 480 20",
@@ -31,10 +30,15 @@ const Paths : {[key in Curve]: string} = {
 }
 
 export function CurveDisplay({color, curve}: CurveProps) {
-    return <svg viewBox="0 0 500 500" style={{width: "100%", height: "auto"}}>
-        <path
-            style={baseStyle(color)}
-            d={Paths[curve]}>
-        </path>
-    </svg>
+    return <>
+        {curve ?
+            (<svg viewBox="0 0 500 500" style={{width: "100%", height: "auto"}}>
+                <path
+                    style={baseStyle(color)}
+                    d={Paths[curve]}>
+                </path>
+            </svg>)
+            : null
+        }
+    </>
 }

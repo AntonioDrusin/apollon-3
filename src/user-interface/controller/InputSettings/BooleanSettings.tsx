@@ -63,6 +63,12 @@ export function BooleanSettings({info, linkIndex, mapKey}: BooleanSettingsProps)
         updateLink(updated);
     }
 
+    const handleCurveChange = (value: string) => {
+        const updated = _.cloneDeep(link!);
+        updated.numberLink.curve =  value ?? 'linear';
+        updateLink(updated);
+    }
+
     const handleClampChange = (lowClamp: number, highClamp: number) => {
         const updated = _.cloneDeep(link!);
         updated.numberLink.lowValue = lowClamp;
@@ -79,8 +85,11 @@ export function BooleanSettings({info, linkIndex, mapKey}: BooleanSettingsProps)
                           highValue={link.numberLink.highValue || 0}
                           onManualValueChange={(value) => handleManualValueChange(value)}
                           onSelectionChange={(selectedInput) => handleSelectionChange(selectedInput)}
+                          onCurveChange={(curve) => handleCurveChange(curve)}
                           onClampChange={(lowClamp, highClamp) => handleClampChange(lowClamp, highClamp)}
-                          selectedInput={link.numberLink.outputKey}/>
+                          selectedInput={link.numberLink.outputKey}
+                          selectedCurve={link.numberLink.curve}
+            />
 
             <Box sx={{display: "flex", flexWrap: "wrap", m: 1, width: "100%"}}>
                 <BooleanModeSelect onChange={handleModeChange} id={`${info.propertyKey}-boolean-mode`}

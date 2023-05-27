@@ -12,7 +12,7 @@ import {BehaviorSubject, Observable, Subject, withLatestFrom} from "rxjs";
 import {IVisualizerColor} from "../visualizers/IVisualizer";
 import {ColorGenerator} from "./ColorGenerator";
 import {OutputMapStore} from "./OutputMapStore";
-import { forEach } from "lodash";
+import {forEach} from "lodash";
 import {BooleanGenerator} from "./BooleanGenerator";
 
 export interface VisualizerChange {
@@ -51,11 +51,11 @@ export class ScreenLinkTransmitter {
         // No support for changing images in runtime.
         this._request$.pipe(
             withLatestFrom(this._store.parameterMap$)
-        ).subscribe( ([_, parameterMaps]) => {
+        ).subscribe(([_, parameterMaps]) => {
             // Set all the images at once.
             forEach(parameterMaps, (map, mapKey) => {
                 forEach(map.links, (link, linkIndex) => {
-                    if( link.type === "image" && link.imageLink) {
+                    if (link.type === "image" && link.imageLink) {
                         const key = `${mapKey}:${linkIndex}`;
                         const message: ImageMessage = {
                             key: key,
@@ -82,19 +82,38 @@ export class ScreenLinkTransmitter {
 
     private static getNumberLinkValue(link: NumberLink | null | undefined, data: NeurosityData): number {
         if (link) {
+            let value = link.outputKey ? data[link.outputKey] : link.manualValue;
+            value = ScreenLinkTransmitter.mapValue(value, link.curve);
 
-            const value = link.outputKey ? data[link.outputKey] : link.manualValue;
-            if ( link.lowValue === link.highValue) return 0;
-            if ( link.lowValue <= link.highValue ) {
-                return link.lowValue + (link.highValue-link.lowValue)*value;
-            }
-            else {
-                let unwrapped = link.lowValue + (link.highValue-link.lowValue+1)*value;
-                if ( unwrapped > 1.0 ) unwrapped -= 1.0;
+            if (link.lowValue === link.highValue) return 0;
+            if (link.lowValue <= link.highValue) {
+                return link.lowValue + (link.highValue - link.lowValue) * value;
+            } else {
+                let unwrapped = link.lowValue + (link.highValue - link.lowValue + 1) * value;
+                if (unwrapped > 1.0) unwrapped -= 1.0;
                 return unwrapped;
             }
         }
         return 0;
+    }
+
+    private static mapValue(value: number, curve?: string) {
+        switch (curve) {
+            case "linear":
+                return value;
+            case "reverse_linear":
+                return 1 - value;
+            case "sigmoid":
+                return 1 / (1 + Math.exp(-10 * (value - 0.5)));
+            case "reverse_sigmoid":
+                return 1 - (1 / (1 + Math.exp(-10 * (value - 0.5))));
+            case "gamma":
+                return Math.pow(value, 3);
+            case "reverse_gamma":
+                return 1 - Math.pow(value, 3);
+            default:
+                return value;
+        }
     }
 
     private mapData(data: NeurosityData, reset: number, paused: boolean, parameterMaps: ParameterMaps): InputData {
@@ -125,7 +144,7 @@ export class ScreenLinkTransmitter {
                             }
                             return true;
                         case "image":
-                            if ( link.imageLink ) {
+                            if (link.imageLink) {
                                 const key = `${this._visualizerKey}:${link_index}`
                                 return key;
                             }

@@ -51,6 +51,10 @@ export function NumberSettings({linkIndex, mapKey, rangeBackground}: NumberSetti
         });
     };
 
+    const handleCurveChange = (value: string) => {
+        updateLink({...link!, curve: value});
+    };
+
     const handleSelectedInputChange = (value: string) => {
         if ( link! ) {
             updateLink({...link,
@@ -68,8 +72,11 @@ export function NumberSettings({linkIndex, mapKey, rangeBackground}: NumberSetti
                           onSelectionChange={(selectedInput) => handleSelectedInputChange(selectedInput)}
                           onManualValueChange={handleManualSignalChange}
                           onClampChange={handleClampChange}
+                          onCurveChange={handleCurveChange}
                           rangeBackground={rangeBackground}
-                          selectedInput={link.outputKey}/>
+                          selectedInput={link.outputKey}
+                          selectedCurve={link.curve}
+            />
         }
     </Box>
 }

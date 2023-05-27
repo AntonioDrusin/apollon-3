@@ -3,7 +3,8 @@ import React from "react";
 import {OutputSourceSelect} from "./OutputSourceSelect";
 
 export interface OutputSelectProps {
-    selectedInput?: string
+    selectedInput?: string;
+    selectedCurve?: string;
     label: string;
     manualValue: number;
     lowValue: number;
@@ -11,19 +12,26 @@ export interface OutputSelectProps {
     rangeBackground?: string;
 
     onSelectionChange(selectedInput: string): void;
+
+    onCurveChange(selectedCurve: string): void;
+
     onClampChange(lowClamp: number, highClamp: number): void;
+
     onManualValueChange(manualValue: number): void;
 }
 
-export function NumberSelect({   manualValue,
+export function NumberSelect({
+                                 manualValue,
                                  lowValue,
                                  highValue,
                                  selectedInput,
+                                 selectedCurve,
                                  label,
                                  rangeBackground,
                                  onSelectionChange,
                                  onManualValueChange,
                                  onClampChange,
+                                 onCurveChange
                              }: OutputSelectProps) {
 
     const handleManualSignalChange = (event: any) => {
@@ -47,7 +55,9 @@ export function NumberSelect({   manualValue,
 
     return <>
         <OutputSourceSelect selectedInput={selectedInput}
-                            handleChange={onSelectionChange}
+                            selectedCurve={selectedCurve}
+                            onInputChange={onSelectionChange}
+                            onCurveChange={onCurveChange}
                             label={label}
         />
         <Box sx={{m: 1, width: 320}}>
