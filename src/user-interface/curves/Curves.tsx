@@ -27,6 +27,8 @@ const Paths: { [key in Curves]: string } = {
     linear: "M 20 480 480 20",
     reverse_linear: "M 20 20 480 480",
     reverse_sigmoid: "M 20 20 C 400 20 100 480 480 480",
+    center: "M 20 480 C 20 150 480 350 480 20",
+    reverse_center: "M 20 0 C 20 330 480 130 480 460"
 }
 
 export function CurveDisplay({color, curve}: CurveProps) {

@@ -111,6 +111,10 @@ export class ScreenLinkTransmitter {
                 return Math.pow(value, 3);
             case "reverse_gamma":
                 return 1 - Math.pow(value, 3);
+            case "center":
+                return (Math.log(value / (1 - value)) + 2.4) / 6;
+            case "reverse_center":
+                return 1-((Math.log(value / (1 - value)) + 2.4) / 6);
             default:
                 return value;
         }
