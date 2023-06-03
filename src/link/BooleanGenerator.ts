@@ -24,6 +24,8 @@ export function BooleanGenerator(modulation: BooleanModulations, value: number, 
     };
     states[valueKey] = state;
 
+    value += 0.05;
+
     state.time += value;
     if (state.time > 1000000000) state.time = 0;
 

@@ -85,6 +85,8 @@ export class ScreenLinkTransmitter {
             let value = link.outputKey ? data[link.outputKey] : link.manualValue;
             value = ScreenLinkTransmitter.mapValue(value, link.curve);
 
+            if ( Number.isNaN(value) ) value = 0.0;
+
             if (link.lowValue === link.highValue) return 0;
             if (link.lowValue <= link.highValue) {
                 return link.lowValue + (link.highValue - link.lowValue) * value;

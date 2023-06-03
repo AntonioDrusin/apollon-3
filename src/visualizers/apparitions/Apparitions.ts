@@ -83,8 +83,8 @@ export class Apparitions implements IVisualizer {
     private previousPenDown: boolean = false;
 
     private noiseOffsets = {
-        x: Math.random() * 40000,
-        y: Math.random() * 40000,
+        x: 0,
+        y: 0,
     };
 
     private pos = {
@@ -142,6 +142,9 @@ export class Apparitions implements IVisualizer {
 
         this.previousPos.x = this.pos.x = Math.random() * width;
         this.previousPos.y = this.pos.y = Math.random() * height;
+
+        this.noiseOffsets.x  = Math.random() * 40000;
+        this.noiseOffsets.y  = Math.random() * 40000;
 
         // The color will be an input
         // this.renderer.setRenderTarget(this.paintTexture);

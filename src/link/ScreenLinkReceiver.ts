@@ -53,7 +53,8 @@ export class ScreenLinkReceiver {
         this._channel = new BroadcastChannel(__BROADCAST_CHANNEL_NAME__);
         this._channel.onmessage = (message) => {
             this._data = message.data;
-            this.setVisualizer().then(r => {});
+            this.setVisualizer().then(r => {
+            });
         }
 
         this._directory = new VisualizerDirectory();
@@ -122,7 +123,11 @@ export class ScreenLinkReceiver {
                     case "number": {
                         const parameterValue: number = this._data.parameters[index] as number
                         const inputValue = input.min! + (input.max! - input.min!) * parameterValue;
-                        visualizer[input.propertyKey] = inputValue;
+                        if (Number.isNaN(inputValue)) {
+                            visualizer[input.propertyKey] = input.min;
+                        } else {
+                            visualizer[input.propertyKey] = inputValue;
+                        }
                         break;
                     }
                     case "color": {
