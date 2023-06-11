@@ -43,8 +43,8 @@ export class Apparitions implements IVisualizer {
     private colorSaturation = 0.5;
     @booleanInput("Pen Down")
     private penDown: boolean = true;
-    @booleanInput("Hold Pen Color")
-    private holdPenColor: boolean = true;
+    @selectOption("Pen Color", ["Change Continuously", "Hold when down"])
+    private holdPenColor: number = 0;
     @colorInput("Pen Color")
     private inputPenColor: IVisualizerColor = {red: 0, green: 0, blue: 0};
     @colorInput("Background Color")

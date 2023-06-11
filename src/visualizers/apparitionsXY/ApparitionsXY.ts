@@ -1,4 +1,4 @@
-import {booleanInput, colorInput, imageInput, numberInput, visualizer} from "../VisualizerDirectory";
+import {booleanInput, colorInput, imageInput, numberInput, selectOption, visualizer} from "../VisualizerDirectory";
 import {IVisualizer, IVisualizerColor} from "../IVisualizer";
 import * as THREE from "three";
 import inkShaderFile from './shaders/ink_shader.frag';
@@ -40,8 +40,8 @@ export class ApparitionsXY implements IVisualizer {
     private posY: number = 0;
     @booleanInput("Pen Down")
     private penDown: boolean = true;
-    @booleanInput("Hold Pen Color")
-    private holdPenColor: boolean = true;
+    @selectOption("Pen Color", ["Change Continuously", "Hold when down"])
+    private holdPenColor: number = 0;
     @colorInput("Pen Color")
     private inputPenColor: IVisualizerColor = {red: 0, green: 0, blue: 0};
     @colorInput("Background Color")
