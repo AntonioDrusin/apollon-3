@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import React, {useMemo, useState} from "react";
 import {Register} from "../../Register";
+import {useTranslation} from "react-i18next";
 
 
 interface LoginDialogProps {
@@ -49,6 +50,7 @@ export default function LoginDialog(props: LoginDialogProps) {
         close();
     }
 
+    const [t] = useTranslation();
     return (
         <Dialog open={props.open}>
             <Backdrop
@@ -57,12 +59,12 @@ export default function LoginDialog(props: LoginDialogProps) {
             >
                 <CircularProgress color="inherit"></CircularProgress>
             </Backdrop>
-            <DialogTitle>Neurosity Login</DialogTitle>
+            <DialogTitle>{t("dialog.title.login")}</DialogTitle>
             <DialogContent>
                 <Stack spacing={2} sx={{py: 4}}>
                     <TextField
                         id="username"
-                        label="Email"
+                        label={t("dialog.email")}
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -70,14 +72,13 @@ export default function LoginDialog(props: LoginDialogProps) {
                     ></TextField>
                     <TextField
                         id="password"
-                        label="Password"
+                        label={t("dialog.password")}
                         type="password"
                         onChange={e => setPassword(e.target.value)}
                         error={!password}
                     ></TextField>
                     <Typography hidden={!error} color="secondary">{error}</Typography>
                 </Stack>
-
             </DialogContent>
             <DialogActions>
                 <Button color="secondary" onClick={onCancel}>Cancel</Button>

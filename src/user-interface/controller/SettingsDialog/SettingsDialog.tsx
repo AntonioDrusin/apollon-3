@@ -17,6 +17,7 @@ import {take} from "rxjs";
 import * as _ from "lodash";
 import {OptionsLink} from "../../../link/ScreenLink";
 import {forEach} from "lodash";
+import {useTranslation} from "react-i18next";
 
 interface Props {
     visualizerKey: string;
@@ -58,36 +59,36 @@ const SettingsDialog: React.FC<Props> = ({options, visualizerKey}) => {
         handleCloseDialog();
     };
 
+    const [t] = useTranslation();
     return (
         <>
             {(options && <>
                     <Button variant={"outlined"} onClick={handleOpenDialog}>
-                        Options
+                        {t("dialog.settings")}
                     </Button>
                     <Dialog open={isOpen} onClose={handleCloseDialog} fullWidth={true} maxWidth={"md"}>
-                        <DialogTitle>Options</DialogTitle>
+                        <DialogTitle>{t("dialog.title.settings")}</DialogTitle>
                         <DialogContent>
                             {options.map((setting) => (
                                 <Box sx={{p: 2}} key={`${visualizerKey}-${setting.label}-bocs`}>
                                     <FormControl
                                         key={`${visualizerKey}-${setting.label}-formcontrol`}
                                         id={`${visualizerKey}-${setting.label}-formcontrol`}
-
                                         fullWidth>
                                         <InputLabel
-                                            id={`${visualizerKey}-${setting.label}-label`}>{setting.label}</InputLabel>
+                                            id={`${visualizerKey}-${setting.label}-label`}>{t(setting.label)}</InputLabel>
                                         <Select
                                             key={`${visualizerKey}-${setting.label}-select`}
                                             labelId={`${visualizerKey}-${setting.label}-label`}
                                             id={`${visualizerKey}-${setting.label}-select`}
                                             value={selectedSettings[setting.label] || ''}
-                                            label={setting.label}
+                                            label={t(setting.label)}
                                             onChange={(e) => handleSettingChange(setting.label, e.target.value as string)}
                                         >
                                             {setting.options.map((option, index) => (
                                                 <MenuItem key={option} value={index.toString()}
                                                           id={`${visualizerKey}-${setting.label}-${options}-item`}>
-                                                    {option}
+                                                    {t(option)}
                                                 </MenuItem>
                                             ))}
                                         </Select>
@@ -96,8 +97,8 @@ const SettingsDialog: React.FC<Props> = ({options, visualizerKey}) => {
                             ))}
                         </DialogContent>
                         <DialogActions>
-                            <Button onClick={handleCloseDialog}>Cancel</Button>
-                            <Button onClick={handleSave}>Save</Button>
+                            <Button onClick={handleCloseDialog}>{t("dialog.cancel")}</Button>
+                            <Button onClick={handleSave}>{t("dialog.save")}</Button>
                         </DialogActions>
                     </Dialog>
                 </>

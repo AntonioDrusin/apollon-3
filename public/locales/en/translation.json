@@ -1,0 +1,188 @@
+{
+  "appName": "Apollon 3",
+  "menu": {
+    "items": {
+      "themes": "Themes",
+      "showRecording": "Show Recording",
+      "loadRecording": "Load Recording",
+      "login": "Login",
+      "logout": "Log out",
+      "languages": "Change Language"
+    }
+  },
+  "dialog": {
+    "settings": "Options",
+    "close": "Close",
+    "cancel": "Cancel",
+    "save": "Save",
+    "email": "Email",
+    "password": "Password",
+    "title": {
+      "language": "Language",
+      "theme": "Select Color Theme",
+      "settings": "Options",
+      "login": "Neurosity Login"
+    }
+  },
+  "theme": {
+    "dark": "Dark",
+    "greenFields": "Green Fields",
+    "fire": "Fire"
+  },
+  "playback": {
+    "goto": "Go To..."
+  },
+  "booleanModulation": {
+    "none": "None",
+    "triangle": "Triangle",
+    "perlin": "Perlin"
+  },
+  "inputSettings": {
+    "value": "Value",
+    "threshold": "Threshold",
+    "colorMode": "Color Mode",
+    "download": "Download",
+    "upload": "Upload"
+  },
+  "color": {
+    "red": "Red",
+    "green": "Green",
+    "blue": "Blue",
+    "rgb": "RGB",
+    "hsv": "HSV",
+    "rgbPerlin": "Perlin RGB",
+    "hsvPerlin": "Perlin HSV",
+    "labPerlin": "Perlin Lab",
+    "lab": "Lab",
+    "hue": "Hue",
+    "saturation": "Saturation",
+    "value": "Value",
+    "amplitude": "Amplitude",
+    "variance": "Variance",
+    "l": "L",
+    "a": "a",
+    "b": "b"
+  },
+  "number": {
+    "mappedRange": "Mapped Range",
+    "value": "Value"
+  },
+  "image": {
+    "texturePreview": "Texture Preview",
+    "upload": "Upload",
+    "clear": "Clear"
+  },
+  "outputSelect": {
+    "curve": "Curve"
+  },
+  "curves": {
+    "sigmoid": "Sigmoid",
+    "reverse_gamma": "Reverse Gamma",
+    "gamma": "Gamma",
+    "linear": "Linear",
+    "reverse_linear": "Reverse Linear",
+    "reverse_sigmoid": "Reverse Sigmoid",
+    "center": "Center",
+    "reverse_center": "Reverse Center"
+  },
+  "output": {
+    "alphaAverage": "Alpha Average",
+    "betaAverage": "Beta Average",
+    "gammaAverage": "Gamma Average",
+    "thetaAverage": "Theta Average",
+    "deltaAverage": "Delta Average",
+    "focus": "Focus",
+    "calm": "Calm",
+    "valence": "Valence",
+    "vigilance": "Vigilance",
+    "engagement": "Engagement",
+    "workload": "Workload"
+  },
+  "pre": {
+    "tabName": "Preprocessing",
+    "autoscaling": "Autoscaling",
+    "seconds": "Seconds",
+    "clamp": "Clamp",
+    "low": "Low",
+    "high": "High",
+    "filtering": "Filtering",
+    "noFilter": "No filter",
+    "filterAverage": "{{n}} average"
+  },
+  "recording": {
+    "stopTag": "Visualizer stop",
+    "visualizerTag": "Visualizer {{name}}"
+  },
+  "snack": {
+    "fileLoaded": "File loaded",
+    "streamLabeled": "Stream labeled: '{{tag}}'",
+    "recordingStarted": "Recording Started",
+    "recordingCompleted": "Recording completed: {{name}}"
+  },
+  "dataSource": {
+    "connected": "Connected",
+    "disconnected": "Disconnected"
+  },
+  "errors": {
+    "differentVisualizer": "File is for a different visualizer '{{name}}'",
+    "notParameters": "Json file is not a parameter file",
+    "invalidFile": "Invalid file",
+    "loaded": "Loaded"
+  },
+  "headsetStatus": {
+    "noDevice": "No Device",
+    "booting": "Starting OS...",
+    "shuttingOff": "Shutting off...",
+    "updating": "Updating OS...",
+    "online": "Online",
+    "offline": "Offline"
+  },
+  "visualizer": {
+    "apparitions": {
+      "moveNoise": "Move noise",
+      "moveAmplification": "Move amplification",
+      "dryRate": "Dry rate",
+      "paintAmount": "Paint amount",
+      "backgroundAlpha": "Background Alpha",
+      "inkAlpha": "Ink Alpha",
+      "mixRatio": "Mix Ratio",
+      "penThickness": "Pen thickness",
+      "colorSaturation": "Color saturation",
+      "penDown": "Pen Down",
+      "penColor": "Pen Color",
+      "continuousChange": "Change Continuously",
+      "holdWhenDown":  "Hold When Down",
+      "backgroundColor": "Background Color",
+      "image": "Image",
+      "xCoord": "Coordinate X",
+      "yCoord": "Coordinate Y",
+      "penDownPosition": "Pen Down Position",
+      "same": "Same",
+      "randomized": "Randomized",
+      "movementMapping": "Movement Mapping",
+      "toroid": "Toroid",
+      "bounce": "Bounce",
+      "inkBarrier": "Ink Barrier",
+      "apparitionsXY": "Apparitions direct movement",
+      "apparitions": "Apparitions",
+      "apparitions2": "Apparitions Version 2.0"
+    },
+    "marble": {
+      "marblePainting": "Marble Painting",
+      "moveNoise": "Move Noise",
+      "moveAmplification": "Move amplification",
+      "expanse": "Expanse",
+      "disperse": "Disperse",
+      "brushSize": "Brush Size",
+      "penDownPosition": "Pen Down Position",
+      "same": "Same",
+      "randomized": "Randomized",
+      "penDown": "Pen Down",
+      "penColor": "Pen Color",
+      "holdPenColor": "Hold Pen Color",
+      "movementMapping": "Movement Mapping",
+      "toroid": "Toroid",
+      "bounce": "Bounce"
+    }
+  }
+}

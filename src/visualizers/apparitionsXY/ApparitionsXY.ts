@@ -19,34 +19,34 @@ import {
 // https://editor.p5js.org/StevesMakerspace/sketches/d0lPUJt8T
 
 
-@visualizer("Apparitions XY", "2d")
+@visualizer("visualizer.apparitions.apparitionsXY", "2d")
 export class ApparitionsXY implements IVisualizer {
     // Parameters
-    @numberInput("Dry rate", -0.0001, 0.0060) // -0.0028, 0.0048
+    @numberInput("visualizer.apparitions.dryRate", -0.0001, 0.0060) // -0.0028, 0.0048
     private dryRate = 0.0012
-    @numberInput("Paint amount", 0, 220) // 0, 200
+    @numberInput("visualizer.apparitions.paintAmount", 0, 220) // 0, 200
     private paintDrop = 40
-    @numberInput("Background Alpha", 0, 1)
+    @numberInput("visualizer.apparitions.backgroundAlpha", 0, 1)
     private backgroundAlpha = 0.5;
-    @numberInput("Ink Alpha", 0, 1)
+    @numberInput("visualizer.apparitions.inkAlpha", 0, 1)
     private inkAlpha = 0.5;
-    @numberInput("Mix Ratio", 0.01, 0.99) // 0, 1
+    @numberInput("visualizer.apparitions.mixRatio", 0.01, 0.99) // 0, 1
     private mixRatio = 0.5;
-    @numberInput("Pen thickness", 1, 30)
+    @numberInput("visualizer.apparitions.penThickness", 1, 30)
     private penThickness = 1.;
-    @numberInput("X", 0, 1)
+    @numberInput("visualizer.apparitions.xCoord", 0, 1)
     private posX: number = 0;
-    @numberInput("Y", 0, 1)
+    @numberInput("visualizer.apparitions.yCoord", 0, 1)
     private posY: number = 0;
-    @booleanInput("Pen Down")
+    @booleanInput("visualizer.apparitions.penDown")
     private penDown: boolean = true;
-    @selectOption("Pen Color", ["Change Continuously", "Hold when down"])
+    @selectOption("visualizer.apparitions.penColor", ["visualizer.apparitions.continuousChange", "visualizer.apparitions.holdWhenDown"])
     private holdPenColor: number = 0;
-    @colorInput("Pen Color")
+    @colorInput("visualizer.apparitions.penColor")
     private inputPenColor: IVisualizerColor = {red: 0, green: 0, blue: 0};
-    @colorInput("Background Color")
+    @colorInput("visualizer.apparitions.backgroundColor")
     private backgroundColor: IVisualizerColor = {red: 0, green: 0, blue: 0};
-    @imageInput("Image")
+    @imageInput("visualizer.apparitions.image")
     private imageUrl?: string;
 
     private penColor?: IVisualizerColor;

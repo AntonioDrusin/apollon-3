@@ -2,6 +2,7 @@ import React from "react";
 import {FormControl, InputLabel, MenuItem, Select} from "@mui/material";
 import {BooleanModulations} from "../../../link/ScreenLink";
 import {booleanModulationModes} from "../../../link/BooleanTransmission";
+import {useTranslation} from "react-i18next";
 
 interface BooleanModeSelectProps {
     onChange(value: BooleanModulations): void;
@@ -10,6 +11,7 @@ interface BooleanModeSelectProps {
 }
 
 export function BooleanModeSelect({id, onChange, value}: BooleanModeSelectProps) {
+    const {t} = useTranslation();
     const handleChange = (event: any) => {
         onChange(event.target.value)
     };
@@ -25,7 +27,7 @@ export function BooleanModeSelect({id, onChange, value}: BooleanModeSelectProps)
                 Object.keys(booleanModulationModes).map((infoKey) => {
                     return <MenuItem key={`${id}-${infoKey}-item`}
                                      value={infoKey}>
-                        {booleanModulationModes[infoKey as BooleanModulations].name}
+                        {t(booleanModulationModes[infoKey as BooleanModulations].name)}
                     </MenuItem>;
                 })
             }

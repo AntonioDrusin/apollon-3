@@ -19,7 +19,7 @@ declare module '@mui/material/styles' {
 
 export const AllThemes: { [key in string]: { name: string, theme: Theme } } = {
     "dark": {
-        name: "Dark",
+        name: "theme.dark",
         theme: createTheme({
             apollon: {
                 colorCardText: "#050607"
@@ -30,7 +30,7 @@ export const AllThemes: { [key in string]: { name: string, theme: Theme } } = {
         })
     },
     "green": {
-        name: "Green Fields",
+        name: "theme.greenFields",
         theme: createTheme({
             apollon: {
                 colorCardText: "#050607"
@@ -47,7 +47,7 @@ export const AllThemes: { [key in string]: { name: string, theme: Theme } } = {
         }),
     },
     "fire": {
-        name: "Fire",
+        name: "theme.fire",
         theme: createTheme({
             palette: {
                 primary: {

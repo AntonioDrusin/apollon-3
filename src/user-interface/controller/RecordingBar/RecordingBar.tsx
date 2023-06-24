@@ -12,6 +12,7 @@ import {FiberManualRecord, Label, Close} from "@mui/icons-material";
 import {RecordingBarContext, SnackBarContext} from "../ContextProvider/Context";
 import {Register} from "../../../Register";
 import RecordingBarTicker from "./RecordingBarTicker";
+import {useTranslation} from "react-i18next";
 
 export default function RecordingBar() {
     const [recording, setRecording] = useState(false);
@@ -21,6 +22,7 @@ export default function RecordingBar() {
     const dataPersister = useMemo(() => Register.neurosityFileWriter, []);
     const transmitter = useMemo(() => Register.screenLink, []);
     const [name, setName] = useState<string>();
+    const [t] = useTranslation();
 
     useEffect(() => {
         if (dataPersister) {
@@ -37,21 +39,23 @@ export default function RecordingBar() {
         }
     }, [dataPersister]);
 
-    useEffect( () => {
-        const sub = transmitter.visualizerChanges$.subscribe( (v) => {
-            if ( recording ) {
-                const tag = v.visualizer ? "Visualizer " + v.visualizer : "Visualizer stop";
+    useEffect(() => {
+        const sub = transmitter.visualizerChanges$.subscribe((v) => {
+            if (recording) {
+                const tag = v.visualizer ? t("recording.visualizerTag", {name: v.visualizer}) : t("recording.stopTag");
                 dataPersister.addTag(tag);
-                snackContext.setSnackMessage('Stream labeled: "' + tag + '"');
+                snackContext.setSnackMessage({text: "snack.streamLabeled", data: {tag: tag}});
             }
         });
-        return () => { sub.unsubscribe()};
-    }, [recording, transmitter, dataPersister, snackContext]);
+        return () => {
+            sub.unsubscribe()
+        };
+    }, [recording, transmitter, dataPersister, snackContext, t]);
 
     const handleLabeling = () => {
         const tag = label || new Date().toLocaleString();
         dataPersister.addTag(tag);
-        snackContext.setSnackMessage('Stream labeled: "' + tag + '"');
+        snackContext.setSnackMessage({text: "snack.streamLabeled", data: {tag: tag}});
         setLabel("");
     };
 
@@ -67,11 +71,11 @@ export default function RecordingBar() {
         if (isRecordingNow) {
             const recordingStarted = await dataPersister.startRecording();
             if (recordingStarted) {
-                snackContext.setSnackMessage('Recording Started');
+                snackContext.setSnackMessage({text: "snack.recordingStarted"});
             }
         } else {
             await dataPersister.stopRecording();
-            snackContext.setSnackMessage('Recording completed: ' + name);
+            snackContext.setSnackMessage({text: "snack.recordingCompleted", data: {name: name}});
         }
     };
 
@@ -100,7 +104,6 @@ export default function RecordingBar() {
                                    <InputAdornment position="end">
                                        <IconButton
                                            disabled={!recording}
-                                           aria-label="toggle password visibility"
                                            onClick={handleLabeling}
                                            edge="end"
                                        >

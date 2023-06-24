@@ -8,6 +8,7 @@ import {ColorLink} from "../../../link/ScreenLink";
 import {ColorModes, colorModes} from "../../../link/ColorTransmission";
 import {Register} from "../../../Register";
 import * as _ from "lodash";
+import { useTranslation } from "react-i18next";
 
 export interface ColorSettingsProps {
     info: InputInfo;
@@ -47,6 +48,7 @@ const BackgroundColors: {[key in ColorModes]: string[]} = {
 }
 
 export function ColorSettings({info, linkIndex, mapKey}: ColorSettingsProps) {
+    const {t} = useTranslation();
     const [link, setLink] = useState<ColorLink>();
     const [store] = useState(Register.outputMapStore);
 
@@ -107,7 +109,7 @@ export function ColorSettings({info, linkIndex, mapKey}: ColorSettingsProps) {
             colorModes[link.colorMode as KeysOfNeurosityData].inputNames.map((colorPartName, index) => {
                 return <Box sx={{display: "flex", flexWrap: "wrap", p: 1, m: 1}} key={`${index}-box`}>
                     <NumberSelect key={`${index}-os`}
-                                  label={colorPartName}
+                                  label={t(colorPartName)}
                                   manualValue={link.colorModeLinks[link.colorMode].links[index]?.manualValue || 0}
                                   lowValue={link.colorModeLinks[link.colorMode].links[index]?.lowValue || 0}
                                   highValue={link.colorModeLinks[link.colorMode].links[index]?.highValue || 0}

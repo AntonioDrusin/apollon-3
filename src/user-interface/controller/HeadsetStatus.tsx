@@ -10,13 +10,14 @@ import {
 } from "@mui/icons-material";
 import {Register} from "../../Register";
 import HeadsetQuality from "./HeadsetQuality";
+import {useTranslation} from "react-i18next";
 
 const statesLabels = {
-    booting: "Starting OS...",
-    shuttingOff: "Shutting off...",
-    updating: "Updating OS...",
-    online: "Online",
-    offline: "Offline"
+    booting: "headsetStatus.booting",
+    shuttingOff: "headsetStatus.shuttingOff",
+    updating: "headsetStatus.updating",
+    online: "headsetStatus.online",
+    offline: "headsetStatus.offline"
 };
 
 export interface StatusProps {
@@ -31,6 +32,7 @@ export function HeadsetStatus({headset}: StatusProps) {
     const neurosity = useMemo(() => Register.neurosityAdapter, []);
     const fileWriter = useMemo(() => Register.neurosityFileWriter, [])
     const fileReader = useMemo(() => Register.neurosityFileReader, [])
+    const [t] = useTranslation();
 
     useEffect(() => {
         const sub = fileReader.active$.subscribe((a) => {
@@ -61,7 +63,7 @@ export function HeadsetStatus({headset}: StatusProps) {
 
     if (!headset) {
         return <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
-            No device
+            {t("headsetStatus.noDevice")}
         </Typography>
     }
 
@@ -118,7 +120,7 @@ export function HeadsetStatus({headset}: StatusProps) {
                     </Box>
                     <Typography variant="h6" component="span">{status.battery.toLocaleString() +"%"} </Typography>
                     <Typography sx={{marginLeft: 1}} variant="h6"
-                                component="span">{headset} ({status.state in statesLabels ? statesLabels[status.state] : status.state})</Typography>
+                                component="span">{headset} ({status.state in statesLabels ? t(statesLabels[status.state]) : status.state})</Typography>
                 </span>
             }
         </Box>

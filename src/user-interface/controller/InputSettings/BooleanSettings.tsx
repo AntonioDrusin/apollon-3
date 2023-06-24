@@ -7,6 +7,7 @@ import {KeysOfNeurosityData} from "../../../neurosity-adapter/OutputDataSource";
 import * as _ from "lodash";
 import {BooleanModeSelect} from "./BooleanModeSelect";
 import {NumberSelect} from "./NumberSelect";
+import { useTranslation } from "react-i18next";
 
 export interface BooleanSettingsProps {
     info: InputInfo;
@@ -15,6 +16,7 @@ export interface BooleanSettingsProps {
 }
 
 export function BooleanSettings({info, linkIndex, mapKey}: BooleanSettingsProps) {
+    const {t} = useTranslation();
     const [store] = useState(Register.outputMapStore);
     const [link, setLink] = useState<BooleanLink>();
 
@@ -79,7 +81,7 @@ export function BooleanSettings({info, linkIndex, mapKey}: BooleanSettingsProps)
     return <Box sx={{display: "flex", flexWrap: "wrap", p: 1, m: 1}}>
         {!link ? null : <>
             <NumberSelect key={`${info.propertyKey}-os`}
-                          label={"Value"}
+                          label={t("inputSettings.value")}
                           manualValue={link.numberLink.manualValue || 0}
                           lowValue={link.numberLink.lowValue || 0}
                           highValue={link.numberLink.highValue || 0}
@@ -96,7 +98,7 @@ export function BooleanSettings({info, linkIndex, mapKey}: BooleanSettingsProps)
                                    value={link.modulation}/>
             </Box>
             <Box sx={{m: 1, width: "100%"}}>
-                <Typography gutterBottom>Threshold</Typography>
+                <Typography gutterBottom>{t("inputSettings.threshold")}</Typography>
                 <Slider value={link.threshold} onChange={handleThresholdChange} step={0.01} min={0} max={1.0}
                         size={"small"}></Slider>
             </Box>

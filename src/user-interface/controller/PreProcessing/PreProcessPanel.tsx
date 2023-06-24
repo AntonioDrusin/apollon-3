@@ -16,6 +16,7 @@ import {MultiGraph} from "../Graphs/MultiGraph";
 import {NeurosityDataProcessor} from "../../../neurosity-adapter/NeurosityDataProcessor";
 import {MiniGraph} from "../Graphs/MiniGraph";
 import {getThemeByName, ThemeContext} from "../../../App";
+import {useTranslation} from "react-i18next";
 
 export interface PreProcessOutputProps {
     outputInfo: OutputInfo;
@@ -89,6 +90,7 @@ export function PreProcessPanel({outputInfo, dataKey, processor}: PreProcessOutp
         setAutoscalingSeconds(event.target.value);
     }
 
+    const {t} = useTranslation();
     return loading ? null : (
         <Card sx={{m: 1, p: 0, outlineColor: outputInfo.color, outlineWidth: 2, outlineStyle: "solid"}}>
             <Box sx={{
@@ -97,7 +99,7 @@ export function PreProcessPanel({outputInfo, dataKey, processor}: PreProcessOutp
                 py: 1,
                 color: theme.palette.getContrastText(outputInfo.color)
             }}>
-                <Typography>{outputInfo.name}</Typography>
+                <Typography>{t(outputInfo.name)}</Typography>
             </Box>
             <Box sx={{m: 1, p: 0}}>
                 <Card sx={{m: 1, width: 190, height: 60}}>
@@ -111,7 +113,7 @@ export function PreProcessPanel({outputInfo, dataKey, processor}: PreProcessOutp
                 }}>
                     <Box sx={{m: 2}}>
                         <FormControlLabel control={<Switch checked={autoscaling} onChange={handleAutoscaling}/>}
-                                          label="Autoscaling"/>
+                                          label={t("pre.autoscaling")}/>
                     </Box>
 
                     {autoscaling ? (
@@ -119,12 +121,12 @@ export function PreProcessPanel({outputInfo, dataKey, processor}: PreProcessOutp
                             display: "flex",
                             flexDirection: "row",
                         }}>
-                            <TextField sx={{m: 1}} id={"autoscalingSeconds-" + dataKey} label="Seconds"
+                            <TextField sx={{m: 1}} id={"autoscalingSeconds-" + dataKey} label={t("pre.seconds")}
                                        variant="outlined"
                                        value={autoscalingSeconds}
                                        onChange={handleAutoscalingSeconds}
                                        inputProps={{inputMode: "numeric", pattern: "[0-9.]*"}}/>
-                            <TextField sx={{m: 1}} id={"clamp-" + dataKey} label="Clamp" variant="outlined"
+                            <TextField sx={{m: 1}} id={"clamp-" + dataKey} label={t("pre.clamp")} variant="outlined"
                                        value={autoMaxString}
                                        onChange={(event) => setAutoMaxString(event.target.value)}
                                        inputProps={{inputMode: "numeric", pattern: "[0-9.]*"}}/>
@@ -135,11 +137,11 @@ export function PreProcessPanel({outputInfo, dataKey, processor}: PreProcessOutp
                             display: "flex",
                             flexDirection: "row",
                         }}>
-                            <TextField sx={{m: 1}} id={"clampLow-" + dataKey} label="Low" variant="outlined"
+                            <TextField sx={{m: 1}} id={"clampLow-" + dataKey} label={t("pre.low")} variant="outlined"
                                        value={clampLowString}
                                        onChange={handleClampLow}
                                        inputProps={{inputMode: "numeric", pattern: "[0-9.]*"}}/>
-                            <TextField sx={{m: 1}} id={"clampHigh-" + dataKey} label="High" variant="outlined"
+                            <TextField sx={{m: 1}} id={"clampHigh-" + dataKey} label={t("pre.high")} variant="outlined"
                                        value={clampHighString}
                                        onChange={handleClampHigh}
                                        inputProps={{inputMode: "numeric", pattern: "[0-9.]*"}}/>
@@ -149,14 +151,14 @@ export function PreProcessPanel({outputInfo, dataKey, processor}: PreProcessOutp
                 </Box>
                 <Box sx={{mr: 2}}>
                     <FormControl sx={{m: 1}} fullWidth>
-                        <InputLabel id={"input-" + dataKey}>Filtering</InputLabel>
-                        <Select labelId={"input-" + dataKey} value={filter} label="Filtering"
+                        <InputLabel id={"input-" + dataKey}>{t("pre.filtering")}</InputLabel>
+                        <Select labelId={"input-" + dataKey} value={filter} label={t("pre.filtering")}
                                 onChange={handleFilterChange}>
-                            <MenuItem value={"0"}>No Filter</MenuItem>
-                            <MenuItem value={"8"}>8 average</MenuItem>
-                            <MenuItem value={"16"}>16 average</MenuItem>
-                            <MenuItem value={"24"}>24 average</MenuItem>
-                            <MenuItem value={"32"}>32 average</MenuItem>
+                            <MenuItem value={"0"}>{t("pre.noFilter")}</MenuItem>
+                            <MenuItem value={"8"}>{t("pre.filterAverage", {n: 8})}</MenuItem>
+                            <MenuItem value={"16"}>{t("pre.filterAverage", {n: 16})}</MenuItem>
+                            <MenuItem value={"24"}>{t("pre.filterAverage", {n: 24})}</MenuItem>
+                            <MenuItem value={"32"}>{t("pre.filterAverage", {n: 32})}</MenuItem>
                         </Select>
                     </FormControl>
                 </Box>

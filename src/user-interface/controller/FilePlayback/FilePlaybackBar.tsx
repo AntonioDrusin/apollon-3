@@ -11,6 +11,7 @@ import {PlayArrow, Pause, Eject} from "@mui/icons-material";
 import {Register} from "../../../Register";
 import {FileTag} from "../../../neurosity-adapter/FilePlayback";
 import FilePlaybackProgress from "./FilePlaybackProgress";
+import {useTranslation} from "react-i18next";
 
 
 export default function FilePlaybackBar() {
@@ -20,6 +21,7 @@ export default function FilePlaybackBar() {
     }, []);
     const [tags, setTags] = useState<FileTag[]>([]);
     const [play, setPlay] = useState<boolean>(false);
+    const {t} = useTranslation();
 
     useEffect(() => {
         const sub = fileReader.active$.subscribe((started) => {
@@ -74,7 +76,7 @@ export default function FilePlaybackBar() {
                             id="combo-box-demo"
                             options={tags}
                             sx={{width: 300}}
-                            renderInput={(params) => <TextField {...params} label="Go To..."/>}
+                            renderInput={(params) => <TextField {...params} label={t("playback.goto")}/>}
                         />
                     </Box>
                     <FilePlaybackProgress></FilePlaybackProgress>

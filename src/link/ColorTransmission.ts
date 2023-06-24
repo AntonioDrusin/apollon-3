@@ -8,10 +8,10 @@ export interface ColorModeInfo {
     inputNames: string[];
 }
 export const colorModes: {[key in ColorModes]: ColorModeInfo} = {
-    rgb: {name: "RGB", inputNames: ["Red","Green","Blue"]},
-    hsv: {name: "HSV", inputNames: ["Hue","Saturation","Value"]},
-    perlin_rgb: {name: "Perlin RGB", inputNames: ["Variance","Amplitude"]},
-    perlin_hsv: {name: "Perlin HSV", inputNames: ["Variance","Amplitude"]},
-    perlin_lab: {name: "Perlin LAB", inputNames: ["Variance","Amplitude"]},
-    lab: {name: "Lab", inputNames: ["L","a","b"]}
+    rgb: {name: "color.rgb", inputNames: ["color.red","color.green","color.blue"]},
+    hsv: {name: "color.hsv", inputNames: ["color.hue","color.saturation","color.value"]},
+    perlin_rgb: {name: "color.rgbPerlin", inputNames: ["color.variance","color.amplitude"]},
+    perlin_hsv: {name: "color.hsvPerlin", inputNames: ["color.variance","color.amplitude"]},
+    perlin_lab: {name: "color.labPerlin", inputNames: ["color.variance","color.amplitude"]},
+    lab: {name: "color.lab", inputNames: ["color.l","color.a","color.b"]}
 }

@@ -1,6 +1,7 @@
 import {Box, Slider, Typography} from "@mui/material";
 import React from "react";
 import {OutputSourceSelect} from "./OutputSourceSelect";
+import {useTranslation} from "react-i18next";
 
 export interface OutputSelectProps {
     selectedInput?: string;
@@ -53,6 +54,7 @@ export function NumberSelect({
     };
     const background = rangeBackground ?? "linear-gradient(90deg, rgba(48,143,43,1) 0%, rgba(53,219,41,1) 100%)";
 
+    const {t} = useTranslation();
     return <>
         <OutputSourceSelect selectedInput={selectedInput}
                             selectedCurve={selectedCurve}
@@ -63,7 +65,7 @@ export function NumberSelect({
         <Box sx={{m: 1, width: 320}}>
             <Slider size="small" value={manualValue} onChange={handleManualSignalChange} step={0.01} min={0} max={1.0}
                     disabled={!!selectedInput}></Slider>
-            <Typography>Mapped Range</Typography>
+            <Typography>{t("number.mappedRange")}</Typography>
             <Slider size="small" value={lowValue} onChange={(event: any) => {
                 onClampChange(event.target.value, highValue);
             }} step={0.01} min={0} max={1.0}></Slider>

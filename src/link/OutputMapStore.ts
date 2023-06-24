@@ -14,12 +14,18 @@ import {BehaviorSubject, debounceTime, Observable} from "rxjs";
 import {forEach} from "lodash";
 import {ColorModeNames} from "./ColorTransmission";
 
+export interface ErrorMessage {
+    text: string,
+    data?: object
+}
+
 export class OutputMapStore {
 
     private readonly _maps: ParameterMaps;
     private readonly _parameterMap$: BehaviorSubject<ParameterMaps>;
     private readonly _storageKey = "parameterMaps_1.4"; // Up this version if you break compat
     private _settings: Settings;
+    private _t: any;
 
     constructor(settings: Settings) {
         this._settings = settings;
@@ -204,7 +210,7 @@ export class OutputMapStore {
         await writable.close();
     }
 
-    public async loadVisualizerSettings(visualizerKey: string): Promise<string | null> {
+    public async loadVisualizerSettings(visualizerKey: string): Promise<ErrorMessage | null> {
         const files = await window.showOpenFilePicker();
         if (files) {
             const file = await files[0].getFile();
@@ -223,7 +229,7 @@ export class OutputMapStore {
             try {
                 parameters = JSON.parse(value);
             } catch {
-                return "Invalid file";
+                return {text: "errors.invalidFile"};
             }
 
             if (parameters.key === visualizerKey) {
@@ -234,13 +240,13 @@ export class OutputMapStore {
                 }
             } else {
                 if (parameters.key) {
-                    return `File is for a different visualizer '${parameters.key}'`;
+                    return {text: "errors.differentVisualizer", data: {name: parameters.key}};
                 } else {
-                    return "Json file is not a parameter file";
+                    return {text: "errors.notParameters"};
                 }
             }
 
         }
-        return "Loaded";
+        return {text: "errors.loaded"};
     }
 }

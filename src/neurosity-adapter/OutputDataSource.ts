@@ -34,17 +34,17 @@ export type NeurosityData = { [key in KeysOfNeurosityData]: number };
 export type PartialNeurosityData = Partial<NeurosityData>;
 
 export const DataSourceInfos: { [key in KeysOfNeurosityData]: OutputInfo } = {
-    alpha: {name: "Alpha Average", min: 0, max: 200, color: "#da62a1"},
-    beta: {name: "Beta Average", min: 0, max: 200, color: "#178ec5"},
-    gamma: {name: "Gamma Average", min: 0, max: 200, color: "#00cbb9"},
-    theta: {name: "Theta Average", min: 0, max: 200, color: "#ffd493"},
-    delta: {name: "Delta Average", min: 0, max: 200, color: "#3ff3a8"},
-    focus: {name: "Focus", min: 0, max: 1, color: "#3bb9f1"},
-    calm: {name: "Calm", min: 0, max: 1, color: "#acafff"},
-    valence: {name: "Valence", min: 0, max: 1, color: "#1caf7f"},
-    vigilance: {name: "Vigilance", min: 0, max: 1, color: "#2caf9f"},
-    engagement: {name: "Engagement", min: 0, max: 1, color: "#ecaf9e"}, // 3cafaf
-    workload: {name: "Workload", min: 0, max: 1, color: "#4cafff"},
+    alpha: {name: "output.alphaAverage", min: 0, max: 200, color: "#da62a1"},
+    beta: {name: "output.betaAverage", min: 0, max: 200, color: "#178ec5"},
+    gamma: {name: "output.gammaAverage", min: 0, max: 200, color: "#00cbb9"},
+    theta: {name: "output.thetaAverage", min: 0, max: 200, color: "#ffd493"},
+    delta: {name: "output.deltaAverage", min: 0, max: 200, color: "#3ff3a8"},
+    focus: {name: "output.focus", min: 0, max: 1, color: "#3bb9f1"},
+    calm: {name: "output.calm", min: 0, max: 1, color: "#acafff"},
+    valence: {name: "output.valence", min: 0, max: 1, color: "#1caf7f"},
+    vigilance: {name: "output.vigilance", min: 0, max: 1, color: "#2caf9f"},
+    engagement: {name: "output.engagement", min: 0, max: 1, color: "#ecaf9e"}, // 3cafaf
+    workload: {name: "output.workload", min: 0, max: 1, color: "#4cafff"},
 }
 
 export class OutputDataSource implements GraphSource {

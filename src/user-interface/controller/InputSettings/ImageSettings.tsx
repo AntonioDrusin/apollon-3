@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Register} from "../../../Register";
 import {ImageLink} from "../../../link/ScreenLink";
 import {Box, Button} from "@mui/material";
+import {useTranslation} from "react-i18next";
 
 export interface ImageSettingsProps {
     linkIndex: number;
@@ -52,17 +53,18 @@ export function ImageSettings({linkIndex, mapKey}: ImageSettingsProps) {
         }
     }
 
+    const {t}= useTranslation();
     return <Box sx={{display: "flex", flexWrap: "wrap", p: 1, m: 1}}>
         {!link ? null : <>
             <Box hidden={!link.imageUrl}>
-                <img alt={"Texture preview"} style={{width: "100%"}} src={link.imageUrl}></img>
+                <img alt={t("image.texturePreview")} style={{width: "100%"}} src={link.imageUrl}></img>
             </Box>
             <Button variant="contained" component="label" sx={{mx: 1}}>
-                Upload
+                {t("image.upload")}
                 <input hidden accept="image/*" multiple type="file" onChange={handleFileChanged}/>
             </Button>
             <Button disabled={!link.imageUrl} variant="contained" component="label" sx={{mx: 1}} onClick={handleFileClear}>
-                Clear
+                {t("image.clear")}
             </Button>
         </>
         }

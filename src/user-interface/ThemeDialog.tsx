@@ -11,6 +11,7 @@ import {
 import React, {useContext} from "react";
 import {ThemeContext} from "../App";
 import {AllThemes} from "./Themes";
+import {useTranslation} from "react-i18next";
 
 interface ThemeDialogProps {
     onClose?(): void;
@@ -19,6 +20,7 @@ interface ThemeDialogProps {
 
 export default function ThemeDialog({open, onClose}: ThemeDialogProps) {
     const themeContext = useContext(ThemeContext);
+    const [t] = useTranslation();
 
     function close() {
         onClose?.();
@@ -33,18 +35,18 @@ export default function ThemeDialog({open, onClose}: ThemeDialogProps) {
     }
 
     return <Dialog open={open}>
-        <DialogTitle>Select your theme</DialogTitle>
+        <DialogTitle>{t('dialog.title.theme')}</DialogTitle>
         <DialogContent>
             <RadioGroup value={themeContext.themeName} onChange={handleThemeChange}>
                 {
-                    Object.keys(AllThemes).map((t) => {
-                        return <FormControlLabel key={t} value={t} control={<Radio/>} label={AllThemes[t].name}></FormControlLabel>
+                    Object.keys(AllThemes).map((theme) => {
+                        return <FormControlLabel key={theme} value={theme} control={<Radio/>} label={t(AllThemes[theme].name)}></FormControlLabel>
                     })
                 }
             </RadioGroup>
         </DialogContent>
         <DialogActions>
-            <Button onClick={onAccept}>Close</Button>
+            <Button onClick={onAccept}>{t('dialog.close')}</Button>
         </DialogActions>
     </Dialog>
 }

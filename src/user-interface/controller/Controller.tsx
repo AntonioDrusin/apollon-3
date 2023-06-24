@@ -22,6 +22,7 @@ import PauseButton from "./PauseButton";
 import {VisualizerDirectory} from "../../visualizers/VisualizerDirectory";
 import {ControllerTabs} from "./ControllerTabs";
 import {ControllerPanels} from "./ControllerPanels";
+import {useTranslation} from "react-i18next";
 
 export function controllerLoader() {
     return null;
@@ -69,6 +70,7 @@ export default function Controller() {
 
     const onTabChange = (event: React.SyntheticEvent, newValue: any) => setSelectedPanel(newValue);
 
+    const [t] = useTranslation();
     return (
         <>
             <ContextProvider>
@@ -78,7 +80,7 @@ export default function Controller() {
                             <Toolbar>
                                 <MainMenu></MainMenu>
                                 <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
-                                    Apollon 3
+                                    {t("appName")}
                                 </Typography>
                                 <Box sx={{flexGrow: 1}}></Box>
                                 <Box sx={{mx: 4}}>

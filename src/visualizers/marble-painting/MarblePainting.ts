@@ -20,30 +20,30 @@ import {noise2D} from "../Noise";
 // This started from a port to shaders of
 // https://www.shadertoy.com/view/Dlt3zs
 
-@visualizer("Marble Painting", "2d")
+@visualizer("visualizer.marble.marblePainting", "2d")
 export class MarblePainting implements IVisualizer {
     // Dynamic Parameters
-    @numberInput("Move noise", 0.001, 0.16)
+    @numberInput("visualizer.marble.moveNoise", 0.001, 0.16)
     private noiseCoordOffset = 0.08;
-    @numberInput("Move amplification", 1, 24)
+    @numberInput("visualizer.marble.moveAmplification", 1, 24)
     private pixelSkip = 12;
-    @numberInput("Expanse", 1, 40)
+    @numberInput("visualizer.marble.expanse", 1, 40)
     private expanse: number = 20;
-    @numberInput("Disperse", 0.2, 3)
+    @numberInput("visualizer.marble.disperse", 0.2, 3)
     private disperse: number = 1;
-    @numberInput("Brush Size", 2, 80)
+    @numberInput("visualizer.marble.brushSize", 2, 80)
     private brushSize: number = 40;
-    @selectOption("Pen Down Position", ["Same", "Randomized"])
+    @selectOption("visualizer.marble.penDownPosition", ["visualizer.marble.same", "visualizer.marble.randomized"])
     private pendownPosition: number = 0;
-    @booleanInput("Pen Down")
+    @booleanInput("visualizer.marble.penDown")
     private penDown: boolean = true;
-    @booleanInput("Hold Pen Color")
+    @booleanInput("visualizer.marble.holdPenColor")
     private holdPenColor: boolean = true;
-    @colorInput("Pen Color")
+    @colorInput("visualizer.marble.penColor")
     private inputPenColor: IVisualizerColor = {red: 0, green: 0, blue: 0};
 
     // Options
-    @selectOption("Movement Mapping", ["Toroid", "Bounce"])
+    @selectOption("visualizer.marble.movementMapping", ["visualizer.marble.toroid", "visualizer.marble.bounce"])
     private movementMapping: number = 0;
 
     private penColor?: IVisualizerColor;

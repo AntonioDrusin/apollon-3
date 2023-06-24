@@ -5,6 +5,7 @@ import {NumberSelect} from "./NumberSelect";
 import {Register} from "../../../Register";
 import {NumberLink} from "../../../link/ScreenLink";
 import * as _ from 'lodash';
+import {useTranslation} from "react-i18next";
 
 export interface NumberSettingsProps {
     linkIndex: number;
@@ -63,9 +64,10 @@ export function NumberSettings({linkIndex, mapKey, rangeBackground}: NumberSetti
         }
     }
 
+    const {t} = useTranslation();
     return <Box sx={{display: "flex", flexWrap: "wrap", p: 1, m: 1}}>
         {!link ? null :
-            <NumberSelect label={"Value"}
+            <NumberSelect label={t("number.value")}
                           manualValue={link.manualValue || 0}
                           lowValue={link.lowValue}
                           highValue={link.highValue}

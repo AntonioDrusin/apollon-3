@@ -21,32 +21,32 @@ import {noise2D} from "../Noise";
 // https://editor.p5js.org/StevesMakerspace/sketches/d0lPUJt8T
 
 
-@visualizer("Apparitions_v2", "2d")
+@visualizer("visualizer.apparitions.apparitions2", "2d")
 export class Apparitions_v2 implements IVisualizer {
     // Parameters
-    @numberInput("Move noise", 0.001, 0.16)
+    @numberInput("visualizer.apparitions.moveNoise", 0.001, 0.16)
     private noiseCoordOffset = 0.08;
-    @numberInput("Move amplification", 1, 24)
+    @numberInput("visualizer.apparitions.moveAmplification", 1, 24)
     private pixelSkip = 12;
-    @numberInput("Dry rate", -0.0001, 0.0060)
+    @numberInput("visualizer.apparitions.dryRate", -0.0001, 0.0060)
     private dryRate = 0.0012
-    @numberInput("Paint amount", 0, 200)
+    @numberInput("visualizer.apparitions.paintAmount", 0, 200)
     private paintDrop = 40
-    @numberInput("Background Alpha", 0, 1)
+    @numberInput("visualizer.apparitions.backgroundAlpha", 0, 1)
     private backgroundAlpha = 0.5;
-    @numberInput("Ink Alpha", 0, 1)
+    @numberInput("visualizer.apparitions.inkAlpha", 0, 1)
     private inkAlpha = 0.5;
-    @numberInput("Ink Barrier", 1.0, 0.2) //0.0, 1.0
+    @numberInput("visualizer.apparitions.inkBarrier", 1.0, 0.2) //0.0, 1.0
     private inkBarrier = 1.0;
-    @booleanInput("Pen Down")
+    @booleanInput("visualizer.apparitions.penDown")
     private penDown: boolean = true;
-    @selectOption("Pen Color", ["Change Continuously", "Hold when down"])
+    @selectOption("visualizer.apparitions.penColor", ["visualizer.apparitions.continuousChange", "visualizer.apparitions.holdWhenDown"])
     private holdPenColor: number = 0;
-    @colorInput("Pen Color")
+    @colorInput("visualizer.apparitions.penColor")
     private inputPenColor: IVisualizerColor = {red: 0, green: 0, blue: 0};
-    @colorInput("Background Color")
+    @colorInput("visualizer.apparitions.backgroundColor")
     private backgroundColor: IVisualizerColor = {red: 0, green: 0, blue: 0};
-    @imageInput("Image")
+    @imageInput("visualizer.apparitions.image")
     private imageUrl?: string;
 
     private penColor?: IVisualizerColor;

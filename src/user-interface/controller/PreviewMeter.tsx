@@ -8,6 +8,7 @@ import {
 import {useDrag} from "react-dnd";
 import {Observable} from "rxjs";
 import {MultiGraph} from "./Graphs/MultiGraph";
+import { useTranslation } from "react-i18next";
 
 interface PreviewMeterProps {
     dataSource: Observable<NeurosityData>;
@@ -26,6 +27,7 @@ export function PreviewMeter({dataSource, valueId, color}: PreviewMeterProps) {
         })
     }), []);
 
+    const[t] = useTranslation();
     return <Box ref={dragRef}
                 sx={{
                     p: 1,
@@ -45,7 +47,7 @@ export function PreviewMeter({dataSource, valueId, color}: PreviewMeterProps) {
                     flexWrap: "wrap"
                 }}
     >
-        <Box sx={{color: color}}>{label}</Box>
+        <Box sx={{color: color}}>{t(label)}</Box>
         <MultiGraph key={"mg-"+label} valueId={valueId} dataSource={dataSource} color={color} width={120} height={32} minPlot={0}
                     maxPlot={1}></MultiGraph>
     </Box>

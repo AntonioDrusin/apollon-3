@@ -5,6 +5,7 @@ import React, {useContext} from "react";
 import {getThemeByName, ThemeContext} from "../../../App";
 import {useDrop} from "react-dnd";
 import {CurveLabels, CurveNames, Curves } from "../../../link/Curves";
+import { useTranslation } from "react-i18next";
 
 
 interface OutputSourceSelectProps {
@@ -44,21 +45,21 @@ export const OutputSourceSelect = React.memo(
         onCurveChange(event.target.value);
     }
 
+    const {t} = useTranslation();
     return (<>
-
         <Box sx={{width: "100%", p: 1, m: 0}}>
             <FormControl fullWidth component="span" sx={{width: "100%"}}>
-                <InputLabel id={"input-" + label}>{label}</InputLabel>
+                <InputLabel id={"input-" + label}>{t(label)}</InputLabel>
                 <Select value={selectedInputValue}
                         labelId={"input-" + label}
-                        label={label}
+                        label={t(label)}
                         onChange={handleInputChange}
                 >
                     <MenuItem value={"Manual"} key={"Manual-key"}>{"<Manual>"}</MenuItem>
                     {
                         Object.keys(DataSourceInfos).map((infoKey) => {
                             return <MenuItem key={infoKey + "-key"} value={infoKey}>
-                                {DataSourceInfos[infoKey as KeysOfNeurosityData].name}
+                                {t(DataSourceInfos[infoKey as KeysOfNeurosityData].name)}
                             </MenuItem>;
                         })
                     }
@@ -76,17 +77,17 @@ export const OutputSourceSelect = React.memo(
             </Box>
             <Box sx={{flexGrow: 1}}>
                 <FormControl fullWidth component="span" sx={{width: "100%"}}>
-                    <InputLabel id={"input-curve-" + label}>Curve</InputLabel>
+                    <InputLabel id={"input-curve-" + label}>{t("outputSelect.curve")}</InputLabel>
                     <Select value={selectedCurve}
                             labelId={"input-curve-" + label}
-                            label="Curve"
+                            label={t("outputSelect.curve")}
                             onChange={handleCurveChange}
                     >
                         {
                             CurveNames.map((curve: Curves) =>
                             {
                                 return <MenuItem key={curve + "-curve-key-" + label} value={curve}>
-                                    {CurveLabels[curve]}
+                                    {t(CurveLabels[curve])}
                                 </MenuItem>;
                             })
                         }

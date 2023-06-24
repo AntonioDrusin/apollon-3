@@ -4,11 +4,11 @@ import {DeviceInfo} from "@neurosity/sdk/dist/cjs/types/deviceInfo";
 import {Register} from "../../Register";
 import LoginDialog from "./LoginDialog";
 import { SnackBarContext} from "./ContextProvider/Context";
+import {useTranslation} from "react-i18next";
 
 
 export default function ConnectionMenu() {
     const DISCONNECTED = "Disconnected";
-
     const [headsets, setHeadsets] = useState<DeviceInfo[]>([]);
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const [menuOpen, setMenuOpen] = useState(false);
@@ -21,7 +21,7 @@ export default function ConnectionMenu() {
     useEffect(() => {
         const devicesSub = neurosityAdapter.devices$.subscribe(setHeadsets);
         const loggedInSub = neurosityAdapter.loggedIn$.subscribe((loggedIn) => {
-            setDataSource(loggedIn ? "Connected" : "Disconnected");
+            setDataSource(loggedIn ? "dataSource.connected" : "dataSource.disconnected");
         })
         return () => {
             devicesSub.unsubscribe();
@@ -58,16 +58,17 @@ export default function ConnectionMenu() {
 
     const loadRecording = async () => {
         if ( await fileReader.loadFile() ) {
-            snackContext.setSnackMessage("File loaded");
+            snackContext.setSnackMessage({text: "snack.fileLoaded"});
         }
         handleMenuClose();
     };
 
+    const [t] = useTranslation();
     return <Box>
         <Button
             variant="outlined"
             onClick={menuButtonClick}
-        >{dataSource}</Button>
+        >{t(dataSource)}</Button>
         <Menu
             anchorEl={anchorEl}
             open={menuOpen}
@@ -80,10 +81,10 @@ export default function ConnectionMenu() {
                 })
             }
             <MenuItem divider={true} hidden={!headsets || headsets.length === 0} disabled={true}/>
-            <MenuItem onClick={loadRecording}>Load Recording</MenuItem>
+            <MenuItem onClick={loadRecording}>{t("menu.items.loadRecording")}</MenuItem>
             <MenuItem divider={true} disabled={true}/>
-            <MenuItem onClick={openDialog}>Login</MenuItem>
-            <MenuItem onClick={logOut}>Log out</MenuItem>
+            <MenuItem onClick={openDialog}>{t("menu.items.login")}</MenuItem>
+            <MenuItem onClick={logOut}>{t("menu.items.logout")}</MenuItem>
         </Menu>
         <LoginDialog open={dialogOpen} onClose={closeDialog}></LoginDialog>
     </Box>

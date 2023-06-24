@@ -5,9 +5,14 @@ interface RecordingBarContextValue {
     setRecordingBar: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
+export interface SnackMessage {
+    text: string,
+    data?: object,
+}
+
 interface SnackBarContextValue {
-    snackMessage: string | undefined,
-    setSnackMessage: React.Dispatch<React.SetStateAction<string | undefined>>,
+    snackMessage: SnackMessage | undefined,
+    setSnackMessage: React.Dispatch<React.SetStateAction<SnackMessage | undefined>>,
 }
 
 export const RecordingBarContext =  React.createContext({} as RecordingBarContextValue);

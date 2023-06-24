@@ -6,6 +6,7 @@ import {InputSettingsPanel} from "./InputSettingsPanel";
 import {Register} from "../../../Register";
 import {SnackBarContext} from "../ContextProvider/Context";
 import SettingsDialog from "../SettingsDialog/SettingsDialog";
+import { useTranslation } from "react-i18next";
 
 export interface VisualizerPanelProps {
     visualizerInfo: VisualizerInfo;
@@ -51,11 +52,12 @@ export function InputSettingsGroup({visualizerInfo, live, onLive, mapKey}: Visua
     const handleUpload = async () => {
         const error = await store.loadVisualizerSettings(mapKey);
         if ( error ) {
-            snackContext.setSnackMessage(error);
+            snackContext.setSnackMessage({text: error.text, data: error.data});
         }
     };
 
 
+    const {t} = useTranslation();
     return <Box>
         <Box sx={{p: 3, display: "flex", flexDirection: "row", alignItems: "center"}}>
             <ToggleButtonGroup value={toggles} onChange={handleToggles}>
@@ -66,10 +68,10 @@ export function InputSettingsGroup({visualizerInfo, live, onLive, mapKey}: Visua
             <Box sx={{flexGrow: 1}}></Box>
             <SettingsDialog options={visualizerInfo.options} visualizerKey={visualizerInfo.label}/>
             <Button variant={"outlined"} onClick={handleDownload}>
-                <FileDownload/> Download
+                <FileDownload/> {t("inputSettings.download")}
             </Button>
             <Button variant={"outlined"} onClick={handleUpload}>
-                <FileUpload/> Upload
+                <FileUpload/> {t("inputSettings.upload")}
             </Button>
         </Box>
         {(visualizerInfo.inputs &&
