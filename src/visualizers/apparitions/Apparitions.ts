@@ -301,6 +301,7 @@ export class Apparitions implements IVisualizer {
 
         if (this.imageUrl) {
             this.backgroundTexture = await this.loadTexture(this.imageUrl);
+            this.render(); // Render first frame with texture
         }
     }
 
