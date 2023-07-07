@@ -3,25 +3,25 @@
   "menu": {
     "items": {
       "themes": "Temi",
-      "showRecording": "Mostra Registrazione",
-      "loadRecording": "Carica Registrazione",
-      "login": "Accedi",
+      "showRecording": "Mostra registrazione",
+      "loadRecording": "Carica registrazione",
+      "login": "Accesso",
       "logout": "Esci",
       "languages": "Cambia Lingua"
     }
   },
   "dialog": {
+    "settings": "Opzioni",
     "close": "Chiudi",
     "cancel": "Annulla",
     "save": "Salva",
     "email": "Email",
     "password": "Password",
-    "settings": "Opzioni",
     "title": {
       "language": "Lingua",
       "theme": "Seleziona Tema Colore",
-      "settings": "Modifica Opzioni",
-      "login": "Accesso Neurosity"
+      "settings": "Opzioni",
+      "login": "Accesso a Neurosity"
     }
   },
   "theme": {
@@ -54,7 +54,7 @@
     "hsvPerlin": "Perlin HSV",
     "labPerlin": "Perlin Lab",
     "lab": "Lab",
-    "hue": "Tonalità",
+    "hue": "Tinta",
     "saturation": "Saturazione",
     "value": "Valore",
     "amplitude": "Ampiezza",
@@ -70,39 +70,39 @@
   "image": {
     "texturePreview": "Anteprima Texture",
     "upload": "Carica",
-    "clear": "Pulisci"
+    "clear": "Cancella"
   },
   "outputSelect": {
     "curve": "Curva"
   },
   "curves": {
-    "sigmoid": "Sigmoidale",
+    "sigmoid": "Sigmoide",
     "reverse_gamma": "Gamma Inversa",
     "gamma": "Gamma",
     "linear": "Lineare",
     "reverse_linear": "Lineare Inversa",
-    "reverse_sigmoid": "Sigmoidale Inversa",
+    "reverse_sigmoid": "Sigmoide Inversa",
     "center": "Centro",
-    "reverse_center": "Centro Inversa"
+    "reverse_center": "Centro Inverso"
   },
   "output": {
-    "alphaAverage": "Media Alfa",
+    "alphaAverage": "Media Alpha",
     "betaAverage": "Media Beta",
     "gammaAverage": "Media Gamma",
     "thetaAverage": "Media Theta",
     "deltaAverage": "Media Delta",
-    "focus": "Focalizzazione",
+    "focus": "Focus",
     "calm": "Calma",
     "valence": "Valenza",
     "vigilance": "Vigilanza",
-    "engagement": "Coinvolgimento",
-    "workload": "Carico di Lavoro"
+    "engagement": "Impegno",
+    "workload": "Carico di lavoro"
   },
   "pre": {
     "tabName": "Pre-elaborazione",
-    "autoscaling": "Auto-scaling",
+    "autoscaling": "Autoscaling",
     "seconds": "Secondi",
-    "clamp": "Vincolo",
+    "clamp": "Limita",
     "low": "Basso",
     "high": "Alto",
     "filtering": "Filtraggio",
@@ -110,18 +110,18 @@
     "filterAverage": "{{n}} media"
   },
   "recording": {
-    "stopTag": "Stop Visualizzatore",
+    "stopTag": "Ferma visualizzatore",
     "visualizerTag": "Visualizzatore {{name}}"
   },
   "snack": {
     "fileLoaded": "File caricato",
     "streamLabeled": "Flusso etichettato: '{{tag}}'",
-    "recordingStarted": "Registrazione Avviata",
+    "recordingStarted": "Registrazione iniziata",
     "recordingCompleted": "Registrazione completata: {{name}}"
   },
   "dataSource": {
     "connected": "Connesso",
-    "disconnected": "Non Connesso"
+    "disconnected": "Disconnesso"
   },
   "errors": {
     "differentVisualizer": "Il file è per un visualizzatore diverso '{{name}}'",
@@ -131,57 +131,57 @@
   },
   "headsetStatus": {
     "noDevice": "Nessun dispositivo",
-    "booting": "Avvio in corso...",
+    "booting": "Avvio OS...",
     "shuttingOff": "Spegnimento...",
-    "updating": "Aggiornamento in corso...",
+    "updating": "Aggiornamento OS...",
     "online": "Online",
     "offline": "Offline"
   },
   "visualizer": {
     "apparitions": {
-      "moveNoise": "Rumore Movimento",
-      "moveAmplification": "Amplicazione Movimento",
-      "dryRate": "Rateo Asciutto",
-      "paintAmount": "Quantità Pittura",
-      "backgroundAlpha": "Alpha Sfondo",
-      "inkAlpha": "Alpha Inchiostro",
-      "mixRatio": "Rapporto Miscela",
-      "penThickness": "Spessore Penna",
-      "colorSaturation": "Saturazione Colore",
-      "penDown": "Penna Abbassata",
-      "penColor": "Colore Penna",
-      "continuousChange": "Cambio Continuo",
-      "holdWhenDown": "Mantieni Quando Abbassato",
-      "backgroundColor": "Colore Sfondo",
+      "moveNoise": "Spostamento rumore",
+      "moveAmplification": "Amplificazione spostamento",
+      "dryRate": "Tasso di asciugatura",
+      "paintAmount": "Quantità di pittura",
+      "backgroundAlpha": "Alpha di sfondo",
+      "inkAlpha": "Alpha dell'inchiostro",
+      "mixRatio": "Rapporto di miscelazione",
+      "penThickness": "Spessore della penna",
+      "colorSaturation": "Saturazione del colore",
+      "penDown": "Penna giù",
+      "penColor": "Colore della penna",
+      "continuousChange": "Cambio continuo",
+      "holdWhenDown": "Tieni premuto quando in basso",
+      "backgroundColor": "Colore di sfondo",
       "image": "Immagine",
-      "xCoord": "Coord X",
-      "yCoord": "Coord Y",
-      "penDownPosition": "Posizione Penna Abbassata",
+      "xCoord": "Coordinata X",
+      "yCoord": "Coordinata Y",
+      "penDownPosition": "Posizione della penna in basso",
       "same": "Stesso",
-      "randomized": "Casuale",
-      "movementMapping": "Mappatura Movimento",
-      "toroid": "Toroide",
+      "randomized": "Casualizzato",
+      "movementMapping": "Mappatura del movimento",
+      "toroid": "Toroidale",
       "bounce": "Rimbalzo",
-      "inkBarrier": "Barriera Inchiostro",
-      "apparitionsXY": "Movimento diretto apparizioni",
+      "inkBarrier": "Barriera d'inchiostro",
+      "apparitionsXY": "Movimento diretto delle apparizioni",
       "apparitions": "Apparizioni",
       "apparitions2": "Apparizioni Versione 2.0"
     },
     "marble": {
-      "marblePainting": "Pittura di Marmo",
-      "moveNoise": "Rumore Movimento",
-      "moveAmplification": "Amplicazione Movimento",
-      "expanse": "Estensione",
-      "disperse": "Disperso",
-      "brushSize": "Dimensione Pennello",
-      "penDownPosition": "Posizione Penna Abbassata",
+      "marblePainting": "Pittura di marmo",
+      "moveNoise": "Spostamento rumore",
+      "moveAmplification": "Amplificazione spostamento",
+      "expanse": "Espansione",
+      "disperse": "Dispersione",
+      "brushSize": "Dimensionedel pennello",
+      "penDownPosition": "Posizione della penna in basso",
       "same": "Stesso",
-      "randomized": "Casuale",
-      "penDown": "Penna Abbassata",
-      "penColor": "Colore Penna",
-      "holdPenColor": "Mantieni Colore Penna",
-      "movementMapping": "Mappatura Movimento",
-      "toroid": "Toroide",
+      "randomized": "Casualizzato",
+      "penDown": "Penna giù",
+      "penColor": "Colore della penna",
+      "holdPenColor": "Tieni il colore della penna",
+      "movementMapping": "Mappatura del movimento",
+      "toroid": "Toroidale",
       "bounce": "Rimbalzo"
     }
   }
