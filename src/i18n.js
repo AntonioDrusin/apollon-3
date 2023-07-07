@@ -11,7 +11,7 @@ i18n
         debug: true,
         fallbackLng: 'en',
         backend: {
-            loadPath: `./apollon-3/locales/{{lng}}/{{ns}}.json`
+            loadPath: window.location.href + `/locales/{{lng}}/{{ns}}.json`
         },
     });
 
