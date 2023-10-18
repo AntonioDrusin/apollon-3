@@ -46,7 +46,7 @@ export default function RecordingBar() {
             }
         });
         return () => { sub.unsubscribe()};
-    }, [transmitter]);
+    }, [transmitter]); // Only transmitter should be in the deps, or we'll resubscribe on change
 
     const handleLabeling = () => {
         const tag = label || new Date().toLocaleString();
