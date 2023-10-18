@@ -39,7 +39,7 @@ export default function HeadsetQuality() {
         return () => {
             sub.unsubscribe();
         };
-    }, [quality, neurosity]);
+    }, [neurosity]);
 
 
     return <>
