@@ -1,10 +1,8 @@
-# Getting Started with Create React App
+# Apollon setup
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
-
-In the project directory, you can run:
 
 ### `npm start`
 
@@ -25,4 +23,19 @@ Your app is ready to be deployed!
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
 ### `npm run deploy`
-Deploys the app online
+Deploys the app online onto the github page that was configured
+
+## Developing for Apollon
+
+### Adding a visualizer
+Create a new folder in the visualizers folder. Inputs to the visualizer 
+will have the "Input" attributes.
+
+constructor: called once the first time your visualizer is selected
+load: called once after the constructor. Can run async functions to load any resources you may need.
+pause: called to pause the visualizer, either for just pausing the visualization or for switching to a new visualizer.
+start: called to start the visualizer. Called after load and after pause, to restart the visualization.
+
+### Adding to the code
+You are free to fork and change this project as much as you want. 
+If there is interest we may help maintain this project, but at this point it's pretty much all there will be.
