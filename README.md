@@ -39,3 +39,25 @@ start: called to start the visualizer. Called after load and after pause, to res
 ### Adding to the code
 You are free to fork and change this project as much as you want. 
 If there is interest we may help maintain this project, but at this point it's pretty much all there will be.
+
+---
+
+__Sponsored by:__
+
+[Associazione RiMeMuTe](https://rimemute.it/)
+
+_Premiered in_:
+
+[MezzoCielo 3.0 - an experiment in live music, visual arts and neuroscience](https://rimemute.it/produzione/mezzocielo-3-0/)
+
+---
+
+__Credits:__
+
+[TheDruid](https://github.com/AntonioDrusin) - _main coding, design, maintenance_
+
+[AlePax](https://github.com/AlePax) - _design, project management, testing_
+
+---
+
+
