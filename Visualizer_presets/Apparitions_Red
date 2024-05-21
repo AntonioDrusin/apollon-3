@@ -1,0 +1,441 @@
+{
+  "key": "Apparitions",
+  "parameterMap": {
+    "links": [
+      {
+        "propertyKey": "noiseCoordOffset",
+        "type": "number",
+        "colorLink": null,
+        "numberLink": {
+          "manualValue": 0.04,
+          "highValue": 1,
+          "lowValue": 0,
+          "curve": "linear"
+        },
+        "imageLink": null
+      },
+      {
+        "propertyKey": "pixelSkip",
+        "type": "number",
+        "colorLink": null,
+        "numberLink": {
+          "manualValue": 0.77,
+          "highValue": 0.08,
+          "lowValue": 0,
+          "outputKey": "focus",
+          "curve": "linear"
+        },
+        "imageLink": null
+      },
+      {
+        "propertyKey": "dryRate",
+        "type": "number",
+        "colorLink": null,
+        "numberLink": {
+          "manualValue": 0.99,
+          "highValue": 0.26,
+          "lowValue": 0.04,
+          "curve": "linear"
+        },
+        "imageLink": null
+      },
+      {
+        "propertyKey": "paintDrop",
+        "type": "number",
+        "colorLink": null,
+        "numberLink": {
+          "manualValue": 0.19,
+          "highValue": 1,
+          "lowValue": 0,
+          "outputKey": "focus",
+          "curve": "linear"
+        },
+        "imageLink": null
+      },
+      {
+        "propertyKey": "backgroundAlpha",
+        "type": "number",
+        "colorLink": null,
+        "numberLink": {
+          "manualValue": 0,
+          "highValue": 1,
+          "lowValue": 0,
+          "curve": "linear"
+        },
+        "imageLink": null
+      },
+      {
+        "propertyKey": "inkAlpha",
+        "type": "number",
+        "colorLink": null,
+        "numberLink": {
+          "manualValue": 0.86,
+          "highValue": 1,
+          "lowValue": 0,
+          "curve": "linear"
+        },
+        "imageLink": null
+      },
+      {
+        "propertyKey": "mixRatio",
+        "type": "number",
+        "colorLink": null,
+        "numberLink": {
+          "manualValue": 0.63,
+          "highValue": 0.74,
+          "lowValue": 0.42,
+          "curve": "linear"
+        },
+        "imageLink": null,
+        "booleanLink": null
+      },
+      {
+        "propertyKey": "penThickness",
+        "type": "number",
+        "colorLink": null,
+        "numberLink": {
+          "manualValue": 0,
+          "highValue": 1,
+          "lowValue": 0,
+          "curve": "linear"
+        },
+        "imageLink": null,
+        "booleanLink": null
+      },
+      {
+        "propertyKey": "colorSaturation",
+        "type": "number",
+        "colorLink": null,
+        "numberLink": {
+          "manualValue": 0.55,
+          "highValue": 1,
+          "lowValue": 0,
+          "curve": "linear"
+        },
+        "imageLink": null,
+        "booleanLink": null
+      },
+      {
+        "propertyKey": "penDown",
+        "type": "boolean",
+        "colorLink": null,
+        "numberLink": null,
+        "imageLink": null,
+        "booleanLink": {
+          "manualValue": true,
+          "threshold": 0.5,
+          "outputKey": "focus",
+          "modulation": "none",
+          "numberLink": {
+            "manualValue": 0.88,
+            "highValue": 1,
+            "lowValue": 0,
+            "curve": "linear"
+          }
+        }
+      },
+      {
+        "propertyKey": "inputPenColor",
+        "type": "color",
+        "colorLink": {
+          "colorMode": "hsv",
+          "colorModeLinks": {
+            "rgb": {
+              "links": [
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                },
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                },
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                }
+              ]
+            },
+            "hsv": {
+              "links": [
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                },
+                {
+                  "manualValue": 1,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                },
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "outputKey": "focus",
+                  "curve": "linear"
+                }
+              ]
+            },
+            "lab": {
+              "links": [
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                },
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                },
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                }
+              ]
+            },
+            "perlin_rgb": {
+              "links": [
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                },
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                },
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0
+                }
+              ]
+            },
+            "perlin_hsv": {
+              "links": [
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                },
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                },
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0
+                }
+              ]
+            },
+            "perlin_lab": {
+              "links": [
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                },
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                },
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0
+                }
+              ]
+            }
+          }
+        },
+        "numberLink": null,
+        "imageLink": null
+      },
+      {
+        "propertyKey": "backgroundColor",
+        "type": "color",
+        "colorLink": {
+          "colorMode": "hsv",
+          "colorModeLinks": {
+            "rgb": {
+              "links": [
+                {
+                  "manualValue": 1,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                },
+                {
+                  "manualValue": 1,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                },
+                {
+                  "manualValue": 1,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                }
+              ]
+            },
+            "hsv": {
+              "links": [
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                },
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                },
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                }
+              ]
+            },
+            "lab": {
+              "links": [
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                },
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                },
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                }
+              ]
+            },
+            "perlin_rgb": {
+              "links": [
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                },
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                },
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0
+                }
+              ]
+            },
+            "perlin_hsv": {
+              "links": [
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                },
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                },
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0
+                }
+              ]
+            },
+            "perlin_lab": {
+              "links": [
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                },
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0,
+                  "curve": "linear"
+                },
+                {
+                  "manualValue": 0,
+                  "highValue": 1,
+                  "lowValue": 0
+                }
+              ]
+            }
+          }
+        },
+        "numberLink": null,
+        "imageLink": null
+      },
+      {
+        "propertyKey": "imageUrl",
+        "type": "image",
+        "colorLink": null,
+        "numberLink": null,
+        "imageLink": {}
+      }
+    ],
+    "options": [
+      {
+        "key": "Pen Color",
+        "value": 0
+      },
+      {
+        "key": "Pen Down Position",
+        "value": 1
+      },
+      {
+        "key": "Movement Mapping",
+        "value": 1
+      }
+    ]
+  }
+}
