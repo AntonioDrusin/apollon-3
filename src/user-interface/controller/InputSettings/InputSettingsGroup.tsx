@@ -49,9 +49,14 @@ export function InputSettingsGroup({visualizerInfo, live, onLive, mapKey}: Visua
     };
 
     const handleUpload = async () => {
-        const error = await store.loadVisualizerSettings(mapKey);
-        if ( error ) {
-            snackContext.setSnackMessage(error);
+        const result = await store.loadVisualizerSettings(mapKey);
+        if ( result.error || result.fileName ) {
+            if ( !result.error ) {
+                snackContext.setSnackMessage(`Loaded setting file "${result.fileName}"`);
+            } else
+            {
+                snackContext.setSnackMessage(`Error loading setting file "${result.fileName}": ${result.error}`);
+            }
         }
     };
 

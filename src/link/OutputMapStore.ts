@@ -4,15 +4,24 @@ import {
     ColorModesLinks,
     ImageLink,
     NumberLink,
-    ParameterLink, ParameterMap,
-    ParameterMaps, OptionsLink, NumbersLink
+    NumbersLink,
+    OptionsLink,
+    ParameterLink,
+    ParameterMap,
+    ParameterMaps
 } from "./ScreenLink";
 import {OptionInfo, VisualizerDirectory, VisualizerInfo} from "../visualizers/VisualizerDirectory";
 import * as _ from "lodash";
+import {forEach} from "lodash";
 import {Settings} from "../services/Settings";
 import {BehaviorSubject, debounceTime, Observable} from "rxjs";
-import {forEach} from "lodash";
 import {ColorModeNames} from "./ColorTransmission";
+
+
+export interface LoadResults {
+    fileName?: string;
+    error?: string;
+}
 
 export class OutputMapStore {
 
@@ -204,10 +213,14 @@ export class OutputMapStore {
         await writable.close();
     }
 
-    public async loadVisualizerSettings(visualizerKey: string): Promise<string | null> {
-        const files = await window.showOpenFilePicker();
+    public async loadVisualizerSettings(visualizerKey: string): Promise<LoadResults> {
+        let fileName: (string | null) = null;
+
+        const files = await this.getFiles();
+
         if (files) {
             const file = await files[0].getFile();
+            fileName = file.name;
             const fileReader = file.stream().getReader();
             let value = "";
             let readResult;
@@ -223,7 +236,7 @@ export class OutputMapStore {
             try {
                 parameters = JSON.parse(value);
             } catch {
-                return "Invalid file";
+                return {fileName: fileName, error: "Invalid file"};
             }
 
             if (parameters.key === visualizerKey) {
@@ -234,13 +247,21 @@ export class OutputMapStore {
                 }
             } else {
                 if (parameters.key) {
-                    return `File is for a different visualizer '${parameters.key}'`;
+                    return {fileName: fileName, error: `File is for a different visualizer '${parameters.key}'`};
                 } else {
-                    return "Json file is not a parameter file";
+                    return {fileName: fileName, error: "Json file is not a parameter file"};
                 }
             }
-
+            return {fileName: fileName};
         }
-        return "Loaded";
+        return {};
+    }
+
+    private async getFiles() {
+        try {
+            return await window.showOpenFilePicker();
+        } catch {
+            return null;
+        }
     }
 }

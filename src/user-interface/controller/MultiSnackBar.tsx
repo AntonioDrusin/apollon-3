@@ -38,6 +38,7 @@ export default function MultiSnackBar() {
             return;
         }
         setOpen(false);
+        setMessageInfo(undefined);
     };
 
     const handleExited = () => {
@@ -47,7 +48,7 @@ export default function MultiSnackBar() {
     return<Snackbar
         key={messageInfo ? messageInfo.key : undefined}
         open={open}
-        autoHideDuration={6000}
+        autoHideDuration={12000}
         onClose={handleClose}
         TransitionProps={{ onExited: handleExited }}
         message={messageInfo ? messageInfo.message : undefined}
