@@ -207,7 +207,7 @@ export class OutputMapStore {
         const data = JSON.stringify(
             {
                 key: visualizerKey,
-                parameterMap: this._maps[visualizerKey]
+                parameterMap: this._maps[visualizerKey],
             }, null, 2);
         await writable.write({data: data, type: "write"});
         await writable.close();

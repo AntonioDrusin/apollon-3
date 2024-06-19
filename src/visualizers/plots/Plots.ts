@@ -1,33 +1,54 @@
-import {numberInput, visualizer} from "../VisualizerDirectory";
-import {IVisualizer} from "../IVisualizer";
+import {colorInput, numberInput, selectOption, visualizer} from "../VisualizerDirectory";
+import {IVisualizer, IVisualizerColor} from "../IVisualizer";
 import * as d3 from 'd3';
 
 @visualizer("Plots", "2d")
 export class Plots implements IVisualizer {
-    @numberInput("Plot Uno", 0.0, 1.0)
-    private noiseCoordOffset = 0.50;
+    @numberInput("Plot 0", 0.0, 1.0)
+    private plot_0 = 0.50;
+    @numberInput("Plot 1", 0.0, 1.0)
+    private plot_1 = 0.50;
+    @numberInput("Plot 2", 0.0, 1.0)
+    private plot_2 = 0.50;
+    @numberInput("Plot 3", 0.0, 1.0)
+    private plot_3 = 0.50;
+    @selectOption("Number of plots", ["1", "2", "3", "4"])
+    private numberOfPlots: number = 2;
 
+    @colorInput("Color 0")
+    private plotColor_0: IVisualizerColor = {red: 1, green: 1, blue: 1};
+    @colorInput("Color 1")
+    private plotColor_1: IVisualizerColor = {red: 1, green: 1, blue: 1};
+    @colorInput(" Color 2")
+    private plotColor_2: IVisualizerColor = {red: 1, green: 1, blue: 1};
+    @colorInput("Color 3")
+    private plotColor_3: IVisualizerColor = {red: 1, green: 1, blue: 1};
+
+    private dataLen = 800;
+    private sampleRate = 60;
 
     private svg: d3.Selection<SVGGElement, unknown, null, undefined>;
-    private xScale: d3.ScaleLinear<number, number>;
-    private yScale: d3.ScaleLinear<number, number>;
-    private margin = { top: 10, right: 30, bottom: 30, left: 40 };
-    private width: number;
-    private height: number;
+    private xScale?: d3.ScaleLinear<number, number>;
+    private axisScale?: d3.ScaleLinear<number, number>;
+    private yScale?: d3.ScaleLinear<number, number>;
+    private margin = {top: 10, right: 30, bottom: 30, left: 40};
     private effectiveWidth: number;
     private effectiveHeight: number;
-    private data: number[];
+    private data: number[][];
     private frameId: number | null = null;
     private timer: NodeJS.Timer | null = null;
 
+    private currentNumberOfPlots: number = 0;
+
     constructor(width: number, height: number, element: Element) {
-        this.width = width;
-        this.height = height;
         this.effectiveWidth = width - this.margin.left - this.margin.right;
         this.effectiveHeight = height - this.margin.top - this.margin.bottom;
 
         // Initialize data with random values
-        this.data = Array.from({ length: 800 }, () => (0));
+        this.data = Array.from(
+            {length: 4},
+            () => Array.from({length: this.dataLen}, () => (0))
+        );
 
         // Select the element and append an SVG
         this.svg = d3.select(element)
@@ -37,39 +58,58 @@ export class Plots implements IVisualizer {
             .append('g')
             .attr('transform', `translate(${this.margin.left}, ${this.margin.top})`);
 
+        this.currentNumberOfPlots = this.numberOfPlots+1;
+
+        this.calculateScales();
+        // Draw initial graph
+        this.draw();
+    }
+
+    calculateScales(): void {
         // Initialize scales
         this.xScale = d3.scaleLinear()
             .domain([0, 800])
             .range([0, this.effectiveWidth]);
 
+        this.axisScale = d3.scaleLinear()
+            .domain([0, this.dataLen / this.sampleRate])
+            .range([0, this.effectiveWidth]);
+
         this.yScale = d3.scaleLinear()
             .domain([0, 1.0])
-            .range([0, -this.effectiveHeight]);
-
-        // Draw initial graph
-        this.draw();
+            .range([0, -this.effectiveHeight / this.currentNumberOfPlots]);
     }
 
     load(): Promise<void> {
         return Promise.resolve();
     }
+
     render(): void {
 
-        this.data.push(this.noiseCoordOffset);
-        this.data.shift();
+        if ( this.currentNumberOfPlots !== this.numberOfPlots+1 ) {
+            this.currentNumberOfPlots = this.numberOfPlots+1;
+            this.calculateScales();
+            this.draw();
+        }
+
+        this.data[0].push(this.plot_0);
+        this.data[1].push(this.plot_1);
+        this.data[2].push(this.plot_2);
+        this.data[3].push(this.plot_3);
+        for (let t = 0; t < 4; t++) {
+            this.data[t].shift();
+        }
         this.redraw();
     }
 
     start(): void {
-        // Ensure any existing interval is cleared before starting a new one
         if (this.frameId !== null) {
             clearInterval(this.frameId);
         }
 
-        // Set up an interval to update the visualization at approximately 60 times per second
         this.timer = setInterval(() => {
             this.render();
-        }, 1000 / 60);  // Approximately 16.67 milliseconds per update
+        }, 1000 / this.sampleRate);
     }
 
     pause(): void {
@@ -81,40 +121,46 @@ export class Plots implements IVisualizer {
     }
 
     private lineGenerator = d3.line<number>()
-        .x((d, i) => this.xScale(i)) // Using index i for the x-coordinate
-        .y(d => this.yScale(d)) // Using data value d for the y-coordinate
-        .curve(d3.curveBasis); // Optional: makes the line smooth
+        .x((d, i) => this.xScale!(i))
+        .y(d => this.yScale!(d))
+        .curve(d3.curveBasis);
 
 
     private draw(): void {
-        this.svg.append('g')
-            .attr('transform', `translate(0, ${this.effectiveHeight})`)
-            .attr('class', 'x-axis')
-            .call(d3.axisBottom(this.xScale));
+        const height = this.effectiveHeight / this.currentNumberOfPlots;
+        this.svg.selectAll('g').remove();
 
-        this.svg.append('g')
-            .attr('class', 'y-axis')
-            .call(d3.axisLeft(this.yScale));
+        for ( let i=0; i<this.currentNumberOfPlots; i++) {
+            const group = this.svg.append('g')
+                .attr('transform', `translate(0, ${(i+1) * height})`)
+                .attr('class', 'x-axis')
+                .call(d3.axisBottom(this.axisScale!)
+                    .tickFormat(d => `${d.valueOf().toFixed(0)} s`)
+                );
+
+            group.append('path')
+                .attr('class', `line line-${i}`);
+        }
     }
 
     private redraw(): void {
+        const colors = [this.plotColor_0,this.plotColor_1,this.plotColor_2,this.plotColor_3];
 
-        this.svg.select('path')
-            .datum(this.data) // Rebind data to the path
-            .attr('d', this.lineGenerator); // Redraw line
-
-
-        //  // Rebind the data to the circles, updating positions and adding or removing elements as necessary
-        // const circles = this.svg.selectAll('circle')
-        //     .data(this.data)
-        //     .join(
-        //         enter => enter.append('circle').attr('r', 5).style('fill', '#d04a35'),
-        //         update => update,
-        //         exit => exit.remove()
-        //     );
-        //
-        // circles
-        //     .attr('cx', (d,i) => this.xScale(i))
-        //     .attr('cy', d => this.yScale(d));
+        for ( let i=0; i<this.currentNumberOfPlots; i++) {
+            this.svg.select(`path.line-${i}`)
+                .datum(this.data[i])
+                .attr('d', this.lineGenerator)
+                .attr('stroke', this.formatColor(colors[i]))
+                .attr('stroke-width', 2)
+                .attr('fill', 'none');
+        }
     }
+
+    private formatColor(color: IVisualizerColor): string {
+        const red = Math.round(color.red * 255);
+        const green = Math.round(color.green * 255);
+        const blue = Math.round(color.blue * 255);
+        return `rgb(${red}, ${green}, ${blue})`;
+    }
+
 }
