@@ -46,7 +46,7 @@ export const OutputSourceSelect = React.memo(
 
     return (<>
 
-        <Box sx={{width: "100%", p: 1, m: 0}}>
+        <Box sx={{width: "100%", p: 1, m: 0}} ref={drop}>
             <FormControl fullWidth component="span" sx={{width: "100%"}}>
                 <InputLabel id={"input-" + label}>{label}</InputLabel>
                 <Select value={selectedInputValue}
@@ -65,7 +65,7 @@ export const OutputSourceSelect = React.memo(
                 </Select>
             </FormControl>
         </Box>
-        <Box sx={{display: "flex", p: 1, m: 0, width: "100%"}} ref={drop}>
+        <Box sx={{display: "flex", p: 1, m: 0, width: "100%"}}>
             <Box
                 sx={{
                     width: 54, height: 54, mr: 1, p: 1,
