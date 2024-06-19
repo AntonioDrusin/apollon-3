@@ -3,9 +3,9 @@ import {DeviceInfo} from "@neurosity/sdk/dist/cjs/types/deviceInfo";
 import {DeviceStatus} from "@neurosity/sdk/dist/esm/types/status";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {Credentials} from "@neurosity/sdk/dist/cjs/types/credentials";
-import {OutputDataSource} from "./OutputDataSource";
 import {Settings} from "../services/Settings";
 import {SignalQuality} from "@neurosity/sdk/dist/esm/types/signalQuality";
+import {GraphSource} from "./GraphSource";
 
 
 export class NeurosityAdapter {
@@ -15,10 +15,10 @@ export class NeurosityAdapter {
     private readonly _devices$: Subject<DeviceInfo[]>;
     private readonly _loggedIn$: Subject<boolean>;
     private readonly _selectedDevice$: BehaviorSubject<DeviceInfo | null>;
-    private _dataSource: OutputDataSource;
+    private _dataSource: GraphSource;
     private _settings: Settings;
 
-    constructor(neurosity: Neurosity, dataSource: OutputDataSource, settings: Settings) {
+    constructor(neurosity: Neurosity, dataSource: GraphSource, settings: Settings) {
         this._loggedIn = false;
         this._neurosity = neurosity;
         this._dataSource = dataSource;

@@ -1,4 +1,4 @@
-import {KeysOfNeurosityData, NeurosityData, NeurosityDataKeys, OutputDataSource} from "./OutputDataSource";
+import {KeysOfNeurosityData, NeurosityData, NeurosityDataKeys} from "./OutputDataSource";
 import {filter, map, interval, Observable, withLatestFrom, connectable, Subject} from "rxjs";
 import {InputProcessor} from "./InputProcessor";
 import {GraphSource} from "./GraphSource";
@@ -13,11 +13,11 @@ export interface InputProcessorParameters {
 }
 
 export class NeurosityDataProcessor implements GraphSource {
-    private readonly _dataSource: OutputDataSource;
+    private readonly _dataSource: GraphSource;
     private readonly _data$: Observable<NeurosityData>;
     private readonly _processors: { [key in KeysOfNeurosityData]: InputProcessor };
 
-    constructor(dataSource: OutputDataSource) {
+    constructor(dataSource: GraphSource) {
         this._dataSource = dataSource;
 
         this._processors = NeurosityDataKeys.reduce((o: any, key) => {
@@ -43,6 +43,9 @@ export class NeurosityDataProcessor implements GraphSource {
         const c = connectable(source, {connector: () => new Subject(), resetOnDisconnect: false});
         c.connect();
         this._data$ = c;
+    }
+
+    resetData(): void {
     }
 
     public getInputProcessor(key: KeysOfNeurosityData): InputProcessor {

@@ -9,10 +9,12 @@ import {NeurosityDataWrapper} from "./neurosity-adapter/NeurosityDataWrapper";
 import {NeurosityFileWriter} from "./neurosity-adapter/NeurosityFileWriter";
 import {NeurosityFileReader} from "./neurosity-adapter/NeurosityFileReader";
 import { OutputMapStore } from "./link/OutputMapStore";
+import {TestDataSource} from "./neurosity-adapter/TestDataSource";
+import {GraphSource} from "./neurosity-adapter/GraphSource";
 
 export class Register {
     private static _neurosityAdapter: NeurosityAdapter;
-    private static _outputDataSource: OutputDataSource;
+    private static _outputDataSource: GraphSource;
     private static _dataProcessor: NeurosityDataProcessor;
     private static _screenLink: ScreenLinkTransmitter;
     private static _screenLinkReceiver: ScreenLinkReceiver;
@@ -27,8 +29,18 @@ export class Register {
         return Register._neurosity ??= new Neurosity({autoSelectDevice: false});
     }
 
-    public static get outputDataSource(): OutputDataSource {
-        return Register._outputDataSource ??= new OutputDataSource(Register.neurosity, Register.neurosityDataWrapper);
+    public static get outputDataSource(): GraphSource {
+        return Register._outputDataSource ??= this.getOutputDataSource();
+    }
+
+    private static getOutputDataSource() : GraphSource {
+        const urlParams = new URLSearchParams(window.location.search);
+        if ( urlParams.has('testing') ) {
+            return new TestDataSource();
+        }
+        else {
+            return new OutputDataSource(Register.neurosity, Register.neurosityDataWrapper);
+        }
     }
 
     public static get neurosityAdapter(): NeurosityAdapter {
