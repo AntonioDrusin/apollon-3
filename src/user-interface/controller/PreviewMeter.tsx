@@ -26,16 +26,13 @@ export function PreviewMeter({dataSource, valueId, color}: PreviewMeterProps) {
         })
     }), []);
 
-    return <Box ref={dragRef}
-                sx={{
+    return <Box sx={{
                     p: 1,
                     m: 1,
-                    opacity: opacity,
                     color: (theme) => (theme.palette.mode === "dark" ? "grey.300" : "grey.800"),
                     border: "1px solid",
                     borderColor: (theme) =>
                         theme.palette.mode === "dark" ? "grey.800" : "grey.300",
-                    // backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#101010" : "grey.100"),
                     backGroundColor: color,
                     borderRadius: 2,
                     fontSize: "0.875rem",
@@ -45,7 +42,7 @@ export function PreviewMeter({dataSource, valueId, color}: PreviewMeterProps) {
                     flexWrap: "wrap"
                 }}
     >
-        <Box sx={{color: color}}>{label}</Box>
+        <Box sx={{color: color, opacity: opacity}} ref={dragRef}>{label}</Box>
         <MultiGraph key={"mg-"+label} valueId={valueId} dataSource={dataSource} color={color} width={120} height={32} minPlot={0}
                     maxPlot={1}></MultiGraph>
     </Box>
