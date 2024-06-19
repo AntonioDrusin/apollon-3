@@ -24,8 +24,9 @@ export class Plots implements IVisualizer {
     @colorInput("Color 3")
     private plotColor_3: IVisualizerColor = {red: 1, green: 1, blue: 1};
 
-    private dataLen = 800;
+    private plotSeconds = 15;
     private sampleRate = 60;
+    private dataLen = this.plotSeconds * this.sampleRate;
 
     private svg: d3.Selection<SVGGElement, unknown, null, undefined>;
     private xScale?: d3.ScaleLinear<number, number>;
@@ -68,7 +69,7 @@ export class Plots implements IVisualizer {
     calculateScales(): void {
         // Initialize scales
         this.xScale = d3.scaleLinear()
-            .domain([0, 800])
+            .domain([0, this.dataLen])
             .range([0, this.effectiveWidth]);
 
         this.axisScale = d3.scaleLinear()
