@@ -15,8 +15,10 @@ interface MultiGraphProps {
     maxPlot: number;
 }
 
+
 export function MultiGraph({valueId, dataSource, color, width, height, minPlot, maxPlot}: MultiGraphProps) {
-    const periodMs = 1000/30;
+    const renderer = useRef<P5.Renderer | null>(null);
+    const periodMs = 1000 / 30;
     const samples = width;
     let value = useRef(0)
 
@@ -47,15 +49,23 @@ export function MultiGraph({valueId, dataSource, color, width, height, minPlot, 
     }, [dataSource, valueId]);
 
     const setup = (p5: P5, canvasParentRef: Element) => {
-        p5.createCanvas(width, height).parent(canvasParentRef)
+        if (!renderer.current) {
+            renderer.current = p5.createCanvas(width, height).parent(canvasParentRef);
+        }
     }
 
-    const draw = useCallback( (p5: P5) => {
+    useEffect(() => {
+        return () => {
+            renderer.current?.remove();
+        };
+    }, []);
+
+    const draw = useCallback((p5: P5) => {
         p5.background(theme.palette.background.default);
 
         const fillColor = p5.lerpColor(p5.color(color), p5.color(theme.palette.background.default), 0.33);
         p5.fill(fillColor);
-        const strokeColor = p5.lerpColor(p5.color(color),p5.color(255,255,255), 0.33);
+        const strokeColor = p5.lerpColor(p5.color(color), p5.color(255, 255, 255), 0.33);
         p5.stroke(strokeColor);
         p5.strokeWeight(1);
 
