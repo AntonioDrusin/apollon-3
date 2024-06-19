@@ -23,8 +23,15 @@ export class Plots implements IVisualizer {
     private plotColor_2: IVisualizerColor = {red: 1, green: 1, blue: 1};
     @colorInput("Color 3")
     private plotColor_3: IVisualizerColor = {red: 1, green: 1, blue: 1};
+    @colorInput("Background Color")
+    private backgroundColor: IVisualizerColor = {red: 1, green: 1, blue: 1};
+    @colorInput("Label Color")
+    private labelColor: IVisualizerColor = {red: 1, green: 1, blue: 1};
+    @colorInput("Axis Color")
+    private axisColor: IVisualizerColor = {red: 1, green: 1, blue: 1};
 
     private plotSeconds = 15;
+    private element: Element;
     private sampleRate = 60;
     private dataLen = this.plotSeconds * this.sampleRate;
 
@@ -42,6 +49,7 @@ export class Plots implements IVisualizer {
     private currentNumberOfPlots: number = 0;
 
     constructor(width: number, height: number, element: Element) {
+        this.element = element;
         this.effectiveWidth = width - this.margin.left - this.margin.right;
         this.effectiveHeight = height - this.margin.top - this.margin.bottom;
 
@@ -134,7 +142,7 @@ export class Plots implements IVisualizer {
         for ( let i=0; i<this.currentNumberOfPlots; i++) {
             const group = this.svg.append('g')
                 .attr('transform', `translate(0, ${(i+1) * height})`)
-                .attr('class', 'x-axis')
+                .attr('class', `x-axis-${i}`)
                 .call(d3.axisBottom(this.axisScale!)
                     .tickFormat(d => `${d.valueOf().toFixed(0)} s`)
                 );
@@ -147,7 +155,13 @@ export class Plots implements IVisualizer {
     private redraw(): void {
         const colors = [this.plotColor_0,this.plotColor_1,this.plotColor_2,this.plotColor_3];
 
+        d3.select(this.element).style('background-color', this.formatColor(this.backgroundColor));
+        d3.select('g').attr('stroke', this.formatColor(this.labelColor));
+
         for ( let i=0; i<this.currentNumberOfPlots; i++) {
+            this.svg.select(`.x-axis-${i}`).selectAll('path.domain, g.tick line')
+                .style('stroke', this.formatColor(this.axisColor));
+
             this.svg.select(`path.line-${i}`)
                 .datum(this.data[i])
                 .attr('d', this.lineGenerator)
