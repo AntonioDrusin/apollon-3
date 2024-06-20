@@ -14,6 +14,8 @@ export class Plots implements IVisualizer {
     private plot_3 = 0.50;
     @selectOption("Number of plots", ["1", "2", "3", "4"])
     private numberOfPlots: number = 2;
+    @selectOption("Plot type", ["Line", "Fill"])
+    private plotType: number = 0;
 
     @colorInput("Color 0")
     private plotColor_0: IVisualizerColor = {red: 1, green: 1, blue: 1};
@@ -29,6 +31,7 @@ export class Plots implements IVisualizer {
     private labelColor: IVisualizerColor = {red: 1, green: 1, blue: 1};
     @colorInput("Axis Color")
     private axisColor: IVisualizerColor = {red: 1, green: 1, blue: 1};
+
 
     private plotSeconds = 15;
     private element: Element;
@@ -135,6 +138,8 @@ export class Plots implements IVisualizer {
         .curve(d3.curveBasis);
 
 
+
+
     private draw(): void {
         const height = this.effectiveHeight / this.currentNumberOfPlots;
         this.svg.selectAll('g').remove();
@@ -162,12 +167,25 @@ export class Plots implements IVisualizer {
             this.svg.select(`.x-axis-${i}`).selectAll('path.domain, g.tick line')
                 .style('stroke', this.formatColor(this.axisColor));
 
-            this.svg.select(`path.line-${i}`)
-                .datum(this.data[i])
-                .attr('d', this.lineGenerator)
-                .attr('stroke', this.formatColor(colors[i]))
-                .attr('stroke-width', 2)
-                .attr('fill', 'none');
+            if (this.plotType === 0) {
+                this.svg.select(`path.line-${i}`)
+                    .datum(this.data[i])
+                    .attr('d', this.lineGenerator)
+                    .attr('stroke', this.formatColor(colors[i]))
+                    .attr('stroke-width', 2)
+                    .attr('fill', 'none');
+            } else {
+                const areaGenerator = d3.area<number>()
+                    .x((d, i) => this.xScale!(i))
+                    .y0(this.yScale!(0))
+                    .y1(d => this.yScale!(d));
+
+                this.svg.select(`path.line-${i}`)
+                    .datum(this.data[i])
+                    .attr('d', areaGenerator)
+                    .attr('fill', this.formatColor(colors[i]))
+                    .attr('stroke', 'none'); // Optionally remove stroke for area fills
+            }
         }
     }
 
