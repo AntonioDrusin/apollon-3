@@ -1,4 +1,4 @@
-import {colorInput, numberInput, selectOption, visualizer} from "../VisualizerDirectory";
+import {colorInput, namesInput, numberInput, selectOption, visualizer} from "../VisualizerDirectory";
 import {IVisualizer, IVisualizerColor} from "../IVisualizer";
 import * as d3 from 'd3';
 
@@ -31,6 +31,8 @@ export class Plots implements IVisualizer {
     private labelColor: IVisualizerColor = {red: 1, green: 1, blue: 1};
     @colorInput("Axis Color")
     private axisColor: IVisualizerColor = {red: 1, green: 1, blue: 1};
+    @namesInput()
+    private names: { [key:string]: string} = {};
 
 
     private plotSeconds = 15;
@@ -151,6 +153,15 @@ export class Plots implements IVisualizer {
                 .call(d3.axisBottom(this.axisScale!)
                     .tickFormat(d => `${d.valueOf().toFixed(0)} s`)
                 );
+            //
+            // group.append('text')
+            //     .attr('class', `x-axis-label-${i}`)
+            //     .attr('text-anchor', 'start')
+            //     .attr('x', 0)
+            //     .attr('y', -50) // Adjust this to prevent overlap with axis ticks
+            //     .style('font-family', 'Arial')
+            //     .style('font-size', '12px')
+            //     .text(`X-axis ${i}`);
 
             group.append('path')
                 .attr('class', `line line-${i}`);
@@ -159,6 +170,9 @@ export class Plots implements IVisualizer {
 
     private redraw(): void {
         const colors = [this.plotColor_0,this.plotColor_1,this.plotColor_2,this.plotColor_3];
+        const fontFamily = 'Arial'; // Customize the font family
+        const fontSize = '48px'; // Customize the font size
+        const height = this.effectiveHeight / this.currentNumberOfPlots;
 
         d3.select(this.element).style('background-color', this.formatColor(this.backgroundColor));
         d3.select('g').attr('stroke', this.formatColor(this.labelColor));
@@ -186,6 +200,24 @@ export class Plots implements IVisualizer {
                     .attr('fill', this.formatColor(colors[i]))
                     .attr('stroke', 'none'); // Optionally remove stroke for area fills
             }
+
+            this.svg.selectAll(`.x-axis-label-${i}`)
+                .data([this.names[`plot_${i}`]]) // Bind data for each label
+                .join(
+                    enter => enter.append('text') // Handles entering elements
+                        .attr('class', `x-axis-label-${i}`)
+                        .attr('text-anchor', 'start')
+                        .attr('x', 0)
+                        .attr('y', 56 + (i * height))
+                        .attr('fill', this.formatColor(colors[i]))
+                        .attr('stroke', this.formatColor(this.backgroundColor))
+                        .style('font-family', fontFamily)
+                        .style('font-size', fontSize)
+                        .text(d => d),
+                    update => update // Handles updating elements
+                        .attr('y', 64 + (i * height))
+                        .text(d => d)
+                );
         }
     }
 

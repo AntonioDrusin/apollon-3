@@ -1,14 +1,17 @@
 import {NeurosityDataProcessor} from "../neurosity-adapter/NeurosityDataProcessor";
-import {NeurosityData} from "../neurosity-adapter/OutputDataSource";
+import {DataSourceInfos, KeysOfNeurosityData, NeurosityData} from "../neurosity-adapter/OutputDataSource";
 import {
     __BROADCAST_CHANNEL_NAME__,
-    __BROADCAST_IMAGE_CHANNEL_NAME__, __BROADCAST_IMAGE_REQUEST_CHANNEL_NAME__, ImageMessage,
+    __BROADCAST_IMAGE_CHANNEL_NAME__,
+    __BROADCAST_IMAGE_REQUEST_CHANNEL_NAME__,
+    __BROADCAST_NAMES_CHANNEL_NAME__,
+    ImageMessage,
     InputData,
     NumberLink,
     ParameterMaps
 } from "./ScreenLink";
 import {Settings} from "../services/Settings";
-import {BehaviorSubject, Observable, Subject, withLatestFrom} from "rxjs";
+import {BehaviorSubject, interval, Observable, Subject, withLatestFrom} from "rxjs";
 import {IVisualizerColor} from "../visualizers/IVisualizer";
 import {ColorGenerator} from "./ColorGenerator";
 import {OutputMapStore} from "./OutputMapStore";
@@ -23,6 +26,7 @@ export class ScreenLinkTransmitter {
     private _store: OutputMapStore;
     private _dataProcessor: NeurosityDataProcessor;
     private _channel: BroadcastChannel;
+    private _namesChannel: BroadcastChannel;
     private _imageChannel: BroadcastChannel;
     private _requestChannel: BroadcastChannel;
     private _visualizerKey: string | null;
@@ -40,6 +44,7 @@ export class ScreenLinkTransmitter {
         this._dataProcessor = dataProcessor;
         this._store = store;
         this._channel = new BroadcastChannel(__BROADCAST_CHANNEL_NAME__);
+        this._namesChannel = new BroadcastChannel(__BROADCAST_NAMES_CHANNEL_NAME__);
         this._imageChannel = new BroadcastChannel(__BROADCAST_IMAGE_CHANNEL_NAME__);
         this._requestChannel = new BroadcastChannel(__BROADCAST_IMAGE_REQUEST_CHANNEL_NAME__);
 
@@ -77,6 +82,13 @@ export class ScreenLinkTransmitter {
                 this._channel.postMessage(message);
             });
 
+
+        interval(2000).pipe(
+            withLatestFrom(this._store.parameterMap$)
+        ).subscribe(([i, parameterMaps]) => {
+            this._namesChannel.postMessage(this.getNameMap(parameterMaps));
+        });
+
         this._visualizerKey = this._settings.getProp<string>(this._visualizerStorageKey) || null;
     }
 
@@ -85,7 +97,7 @@ export class ScreenLinkTransmitter {
             let value = link.outputKey ? data[link.outputKey] : link.manualValue;
             value = ScreenLinkTransmitter.mapValue(value, link.curve);
 
-            if ( Number.isNaN(value) ) value = 0.0;
+            if (Number.isNaN(value)) value = 0.0;
 
             if (link.lowValue === link.highValue) return 0;
             if (link.lowValue <= link.highValue) {
@@ -116,10 +128,39 @@ export class ScreenLinkTransmitter {
             case "center":
                 return (Math.log(value / (1 - value)) + 3) / 6;
             case "reverse_center":
-                return 1-((Math.log(value / (1 - value)) + 3) / 6);
+                return 1 - ((Math.log(value / (1 - value)) + 3) / 6);
             default:
                 return value;
         }
+    }
+
+    private getOutputKey(link: { outputKey?: string | null }): string {
+        if (link.outputKey && link.outputKey in DataSourceInfos) {
+            return DataSourceInfos[link.outputKey as KeysOfNeurosityData].name;
+        }
+        return link.outputKey ?? "Manual";
+    }
+
+    private getNameMap(parameterMaps: ParameterMaps): { [key: string]: string } {
+        if (!this._visualizerKey) {
+            return {};
+        }
+
+        return parameterMaps[this._visualizerKey].links.reduce((result, link) => {
+            switch (link.type) {
+                case "number":
+                    if (link.numberLink) {
+                        result[link.propertyKey] = this.getOutputKey(link.numberLink);
+                    }
+                    break;
+                case "boolean":
+                    if (link.booleanLink) {
+                        result[link.propertyKey] = this.getOutputKey(link.booleanLink.numberLink);
+                    }
+                    break;
+            }
+            return result;
+        }, {} as { [key: string]: string });
     }
 
     private mapData(data: NeurosityData, reset: number, paused: boolean, parameterMaps: ParameterMaps): InputData {

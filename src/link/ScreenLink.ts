@@ -22,7 +22,7 @@ export interface ParameterMap {
 
 export type ParameterMaps = { [k: string]: ParameterMap };
 
-export const linkTypeNames = ["number", "color", "bool", "image"];
+export const linkTypeNames = ["number", "color", "bool", "image", "names"];
 export type LinkType = typeof linkTypeNames[number];
 
 
@@ -80,6 +80,7 @@ export interface ImageMessage {
 
 
 export const __BROADCAST_CHANNEL_NAME__ = "Link.Broadcast.Data";
+export const __BROADCAST_NAMES_CHANNEL_NAME__ = "Link.Broadcast.Names";
 export const __BROADCAST_IMAGE_CHANNEL_NAME__ = "Link.Broadcast.Image";
 export const __BROADCAST_IMAGE_REQUEST_CHANNEL_NAME__ = "Link.Broadcast.ImageRequest";
 

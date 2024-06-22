@@ -81,6 +81,7 @@ export function InputSettingsGroup({visualizerInfo, live, onLive, mapKey}: Visua
             <Box sx={{display: "flex", flexWrap: "wrap", justifyContent: 'flex-start', flexDirection: 'row'}}>
                 {
                     visualizerInfo.inputs
+                        .filter(info => info.showPanel)
                         .map((info, index) => {
                         return <InputSettingsPanel
                             key={info.label + "-viz"}

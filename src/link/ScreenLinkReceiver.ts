@@ -1,6 +1,6 @@
 import {
     __BROADCAST_CHANNEL_NAME__,
-    __BROADCAST_IMAGE_CHANNEL_NAME__, __BROADCAST_IMAGE_REQUEST_CHANNEL_NAME__,
+    __BROADCAST_IMAGE_CHANNEL_NAME__, __BROADCAST_IMAGE_REQUEST_CHANNEL_NAME__, __BROADCAST_NAMES_CHANNEL_NAME__,
     ColorData,
     ImageMessage,
     InputData
@@ -18,6 +18,8 @@ export class ScreenLinkReceiver {
     private _channel: BroadcastChannel;
     private _imageChannel: BroadcastChannel;
     private _requestChannel: BroadcastChannel;
+    private _namesChannel: BroadcastChannel;
+    private _names: { [key: string]: string};
     private _data: InputData;
     private _directory: VisualizerDirectory;
     private readonly _visualizersData: { [k: string]: VisualizerData };
@@ -32,6 +34,7 @@ export class ScreenLinkReceiver {
     private readonly _images: { [key: string]: string | undefined } = {};
 
     constructor() {
+        this._names = {};
         this._data = {visualizerLabel: null, parameters: [], options: [], paused: false, reset: 0};
         this._ready = false;
 
@@ -55,6 +58,11 @@ export class ScreenLinkReceiver {
             this._data = message.data;
             this.setVisualizer().then(r => {
             });
+        }
+
+        this._namesChannel = new BroadcastChannel(__BROADCAST_NAMES_CHANNEL_NAME__);
+        this._namesChannel.onmessage = (message) => {
+            this._names = message.data;
         }
 
         this._directory = new VisualizerDirectory();
@@ -147,6 +155,10 @@ export class ScreenLinkReceiver {
                         if (key && this._images[key]) {
                             visualizer[input.propertyKey] = this._images[key];
                         }
+                        break;
+                    }
+                    case "names": {
+                        visualizer[input.propertyKey] = this._names;
                         break;
                     }
                 }
