@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
-import {Box, Button, ToggleButton, ToggleButtonGroup} from "@mui/material";
+import {Box, Button, ToggleButton, ToggleButtonGroup, Typography} from "@mui/material";
 import {VisualizerInfo} from "../../../visualizers/VisualizerDirectory";
 import {FileDownload, FileUpload, PlayArrow} from "@mui/icons-material";
 import {InputSettingsPanel} from "./InputSettingsPanel";
@@ -19,6 +19,7 @@ export function InputSettingsGroup({visualizerInfo, live, onLive, mapKey}: Visua
     const [toggles, setToggles] = useState<string[]>([]);
     const [store] = useState(Register.outputMapStore);
     const snackContext = useContext(SnackBarContext);
+    const [lastUploadedLabel, setLastUploadedLabel] = useState<string | null>(null);
 
     const handleToggles = (event: React.MouseEvent<HTMLElement>, value: any) => {
         onLive(visualizerInfo.label);
@@ -52,9 +53,13 @@ export function InputSettingsGroup({visualizerInfo, live, onLive, mapKey}: Visua
         const result = await store.loadVisualizerSettings(mapKey);
         if ( result.error || result.fileName ) {
             if ( !result.error ) {
+                // set label to file name without extension
+                if (result.fileName) {
+                    const baseName = result.fileName.replace(/\.[^.]+$/, "");
+                    setLastUploadedLabel(baseName);
+                }
                 snackContext.setSnackMessage(`Loaded setting file "${result.fileName}"`);
-            } else
-            {
+            } else {
                 snackContext.setSnackMessage(`Error loading setting file "${result.fileName}": ${result.error}`);
             }
         }
@@ -68,7 +73,22 @@ export function InputSettingsGroup({visualizerInfo, live, onLive, mapKey}: Visua
                     <PlayArrow/>
                 </ToggleButton>
             </ToggleButtonGroup>
-            <Box sx={{flexGrow: 1}}></Box>
+            {/* Spacer that always grows to push the action buttons to the right. When present, the label is shown inside it. */}
+            <Box sx={{flexGrow: 1, minWidth: 0, display: 'flex', alignItems: 'center'}}>
+                {lastUploadedLabel && (
+                    <Typography
+                        variant="body1"
+                        sx={{
+                            ml: 2,
+                            mr: 2,
+                            color: 'primary.main'
+                        }}
+                    >
+                        {lastUploadedLabel}
+                    </Typography>
+                )}
+            </Box>
+            {/* options and actions on the right */}
             <SettingsDialog options={visualizerInfo.options} visualizerKey={visualizerInfo.label}/>
             <Button variant={"outlined"} onClick={handleDownload}>
                 <FileDownload/> Download
