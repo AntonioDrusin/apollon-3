@@ -14,19 +14,16 @@ uniform float thickness;
 
 float drawLine (vec2 p1, vec2 p2, vec2 uv, float a)
 {
-    float r = 0.;
-    float one_px = 1. / resolution.x; //not really one px
+    // Work in pixels so the pen stays round whatever the aspect ratio.
+    vec2 start = p1 * resolution;
+    vec2 end = p2 * resolution;
+    vec2 p = uv * resolution;
 
-    // get dist between points
-    float d = distance(p1, p2);
+    // Project the current pixel onto the segment to find its closest point.
+    vec2 segment = end - start;
+    float t = clamp(dot(p - start, segment) / max(dot(segment, segment), 1e-6), 0., 1.);
 
-    // get dist between current pixel and p1
-    float duv = distance(p1, uv);
-
-    //if point is on line, according to dist, it should match current uv
-    r = 1.-floor(1.-(a*one_px)+distance (mix(p1, p2, clamp(duv/d, 0., 1.)),  uv));
-
-    return r;
+    return step(distance(mix(start, end, t), p), a);
 }
 
 void main() {
